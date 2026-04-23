@@ -207,7 +207,8 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  aspect-square;
+  width: 100%;
+  aspect-ratio: 1;
   border: 2.5px solid #000;
   border-radius: 4px;
   padding: 4px;
