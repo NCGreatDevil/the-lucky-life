@@ -39,14 +39,6 @@
       <div class="login-footer">
         <p>还没有账号？<router-link to="/register">立即注册</router-link></p>
       </div>
-
-      <div class="warning-box">
-        <p class="warning-title">⚠️ 隐私提示</p>
-        <p class="warning-text">
-          这是一个虚拟人生体验项目。请勿填写真实的个人信息，<br/>
-          但建议填写与真实情况相似的信息以获得更真实的体验。
-        </p>
-      </div>
     </div>
   </div>
 </template>

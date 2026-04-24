@@ -38,8 +38,8 @@ function goToLogin() {
   justify-content: center;
   height: 100%;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #FFF8E1;
+  color: #333;
 }
 
 .fortune-symbol {
@@ -98,19 +98,19 @@ function goToLogin() {
 }
 
 .btn-register {
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(10px);
+  background: #667eea;
   color: white;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid #667eea;
 }
 
 .btn-register:hover {
-  background: rgba(255,255,255,0.3);
+  background: #5a6fd8;
 }
 
 .btn-login {
   background: white;
-  color: #667eea;
+  color: #333;
+  border: 2px solid #ddd;
 }
 
 .btn-login:hover {

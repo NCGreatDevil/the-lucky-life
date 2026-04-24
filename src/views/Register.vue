@@ -102,7 +102,14 @@
         </div>
 
         <div class="form-group">
-          <label>工作岗位 <span class="required">*</span></label>
+          <label for="occupation">工作岗位 <span class="required">*</span></label>
+          <input
+            type="text"
+            id="occupation"
+            v-model="form.occupation"
+            placeholder="请输入工作岗位"
+            required
+          />
           <div class="occupation-grid">
             <button
               v-for="job in occupationOptions"
@@ -429,7 +436,7 @@ async function handleRegister() {
   gap: 8px;
   padding: 12px;
   background: #fafafa;
-  border: 2px solid #000;
+  border: none;
   border-radius: 4px;
 }
 
