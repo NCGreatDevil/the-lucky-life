@@ -89,6 +89,7 @@
             <option value="销售">销售</option>
             <option value="公务员">公务员</option>
             <option value="学生">学生</option>
+            <option value="管理者">管理者</option>
             <option value="自由职业">自由职业</option>
             <option value="企业家">企业家</option>
             <option value="艺术家">艺术家</option>
