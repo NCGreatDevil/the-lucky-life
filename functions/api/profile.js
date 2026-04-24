@@ -1,4 +1,4 @@
-import { hashToken, corsHeaders } from '../../_utils.js';
+import { hashToken, corsHeaders } from '../_utils.js';
 
 function getUserPublicData(user) {
     return {
