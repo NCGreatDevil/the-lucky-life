@@ -38,7 +38,7 @@ function goToLogin() {
   justify-content: center;
   height: 100%;
   padding: 20px;
-  background: #FFF8E1;
+  background: #E6EFFF;
   color: #333;
 }
 

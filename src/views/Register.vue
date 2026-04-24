@@ -109,8 +109,10 @@
             v-model="form.occupation"
             placeholder="请输入工作岗位"
             required
+            @focus="showOccupationGrid = true"
+            @blur="showOccupationGrid = false"
           />
-          <div class="occupation-grid">
+          <div v-if="showOccupationGrid" class="occupation-grid">
             <button
               v-for="job in occupationOptions"
               :key="job"
@@ -185,6 +187,7 @@ const form = ref({
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const showOccupationGrid = ref(false)
 
 const daysInMonth = computed(() => {
   if (!form.value.birthYear || !form.value.birthMonth) {
@@ -237,6 +240,7 @@ watch(() => form.value.birthMonth, () => {
 
 function selectOccupation(job) {
   form.value.occupation = job
+  showOccupationGrid.value = false
 }
 
 function validateUserId() {

@@ -37,7 +37,7 @@
   left: -2px;
   right: -2px;
   bottom: -2px;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   border-radius: 6px;
   pointer-events: none;
   opacity: 0.3;
