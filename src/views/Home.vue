@@ -1,11 +1,24 @@
 <template>
   <div class="home-page">
+    <!-- 用户状态栏 -->
+    <div class="user-bar">
+      <template v-if="userStore.isLoggedIn">
+        <router-link to="/profile" class="user-link">
+          <span class="user-icon">👤</span>
+          <span class="user-name">{{ userStore.user?.nickname }}</span>
+        </router-link>
+      </template>
+      <template v-else>
+        <router-link to="/login" class="auth-link">登录</router-link>
+        <router-link to="/register" class="auth-link">注册</router-link>
+      </template>
+    </div>
+
     <!-- 顶部标题 -->
     <header class="header">
       <div class="title-wrapper">
         <h1 class="title sketch-font">好运人生</h1>
         <div class="title-underline"></div>
-        <!-- 装饰线条 -->
         <svg class="title-decoration" viewBox="0 0 100 100">
           <path d="M10,50 Q30,10 50,50 T90,50" fill="none" stroke="black" stroke-width="3"></path>
         </svg>
@@ -20,8 +33,8 @@
         <span class="nav-label">求神问卜</span>
       </router-link>
       <router-link to="/role" class="nav-item">
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">我的角色</span>
+        <span class="nav-icon">🎮</span>
+        <span class="nav-label">游戏角色</span>
       </router-link>
       <router-link to="/events" class="nav-item">
         <span class="nav-icon">⚡</span>
@@ -76,10 +89,19 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRoleStore } from '@/stores/role'
+import { useUserStore } from '@/stores/user'
 
 const roleStore = useRoleStore()
+const userStore = useUserStore()
 
-// 获取当前日期
+onMounted(() => {
+  roleStore.checkDailyReset()
+})
+
+const visibleAttrs = computed(() => {
+  return roleStore.visibleAttributes
+})
+
 const currentDate = computed(() => {
   const now = new Date()
   const month = now.getMonth() + 1
@@ -87,7 +109,6 @@ const currentDate = computed(() => {
   return `${month}月${day}日`
 })
 
-// 节气（简化版，实际项目中可用日历库）
 const solarTerm = computed(() => {
   const now = new Date()
   const month = now.getMonth() + 1
@@ -106,12 +127,10 @@ const solarTerm = computed(() => {
   return terms[key] || '日常'
 })
 
-// 每日运势图（使用占位图，实际项目替换真实图片）
 const dailyFortuneImage = computed(() => {
   return 'https://modao.cc/agent-py/media/generated_images/2026-04-20/9ae827ab420b44f1ab4b20089803fbc7.jpg'
 })
 
-// 每日语录
 const dailyQuotes = [
   '今日宜：放下执念，顺其自然。',
   '宜保持微笑，微笑带来好运。',
@@ -125,21 +144,9 @@ const dailyQuote = computed(() => {
   return dailyQuotes[index]
 })
 
-// 运势等级
 const luckLevel = computed(() => {
   const stars = Math.min(5, Math.floor(Math.random() * 3) + 3)
   return '★'.repeat(stars) + '☆'.repeat(5 - stars)
-})
-
-// 可见属性（最多显示2个）
-const visibleAttrs = computed(() => {
-  const attrs = roleStore.visibleAttributes
-  const entries = Object.entries(attrs).slice(0, 2)
-  return Object.fromEntries(entries)
-})
-
-onMounted(() => {
-  roleStore.checkDailyReset()
 })
 </script>
 
@@ -151,8 +158,35 @@ onMounted(() => {
   overflow: hidden;
 }
 
+.user-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f5f5f5;
+  font-size: 12px;
+}
+
+.user-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+
+.auth-link {
+  color: #666;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
 .header {
-  padding: 48px 24px 24px;
+  padding: 24px 24px 16px;
   text-align: center;
 }
 
@@ -162,7 +196,7 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
   letter-spacing: 8px;
   position: relative;
@@ -199,7 +233,7 @@ onMounted(() => {
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   padding: 0 24px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .nav-item {
@@ -223,19 +257,6 @@ onMounted(() => {
   transform: translate(2px, 2px);
 }
 
-.nav-item::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  opacity: 0.3;
-  pointer-events: none;
-}
-
 .nav-icon {
   font-size: 24px;
   margin-bottom: 4px;
@@ -248,7 +269,7 @@ onMounted(() => {
 
 .content-area {
   flex: 1;
-  padding: 0 24px 32px;
+  padding: 0 24px 24px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -303,7 +324,7 @@ onMounted(() => {
 }
 
 .status-overview {
-  margin-top: 32px;
+  margin-top: 24px;
   padding: 16px;
   background: #000;
   color: #fff;
