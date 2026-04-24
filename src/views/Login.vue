@@ -8,12 +8,12 @@
 
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
-          <label for="loginId">昵称/用户ID</label>
+          <label for="loginId">用户ID</label>
           <input
             type="text"
             id="loginId"
             v-model="loginId"
-            placeholder="请输入你的昵称或用户ID"
+            placeholder="请输入你的用户ID"
             required
           />
         </div>

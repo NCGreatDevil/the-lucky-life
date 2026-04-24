@@ -107,15 +107,9 @@
             type="text"
             id="occupation"
             v-model="form.occupation"
-            list="occupationOptions"
             placeholder="请输入工作岗位"
             required
           />
-          <datalist id="occupationOptions">
-            <option v-for="job in occupationOptions" :key="job" :value="job">
-              {{ job }}
-            </option>
-          </datalist>
           <span class="hint">例如：你是教师，可以填写"学校教职工"</span>
         </div>
 
