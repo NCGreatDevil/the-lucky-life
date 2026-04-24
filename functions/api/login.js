@@ -33,9 +33,9 @@ export async function onRequest(context) {
 
         if (!user) {
             await db.prepare(`
-                INSERT INTO login_logs (id, user_id, session_id, event_type, ip_address, user_agent, created_at)
-                VALUES (?, NULL, NULL, 'login_failed', ?, ?, ?)
-            `).bind(generateGUID(), ipAddress, userAgent, now).run();
+                INSERT INTO login_logs (user_id, session_id, event_type, ip_address, user_agent, created_at)
+                VALUES (NULL, NULL, 'login_failed', ?, ?, ?)
+            `).bind(ipAddress, userAgent, now).run();
 
             return new Response(JSON.stringify({ error: '昵称或密码错误' }), {
                 status: 401,
@@ -47,9 +47,9 @@ export async function onRequest(context) {
 
         if (passwordHash !== user.password_hash) {
             await db.prepare(`
-                INSERT INTO login_logs (id, user_id, session_id, event_type, ip_address, user_agent, created_at)
-                VALUES (?, ?, NULL, 'login_failed', ?, ?, ?)
-            `).bind(generateGUID(), user.id, ipAddress, userAgent, now).run();
+                INSERT INTO login_logs (user_id, session_id, event_type, ip_address, user_agent, created_at)
+                VALUES (?, NULL, 'login_failed', ?, ?, ?)
+            `).bind(user.id, ipAddress, userAgent, now).run();
 
             return new Response(JSON.stringify({ error: '昵称或密码错误' }), {
                 status: 401,
@@ -68,9 +68,9 @@ export async function onRequest(context) {
         `).bind(sessionId, user.id, tokenHash, expiresAt, now, userAgent, ipAddress).run();
 
         await db.prepare(`
-            INSERT INTO login_logs (id, user_id, session_id, event_type, ip_address, user_agent, created_at)
-            VALUES (?, ?, ?, 'login_success', ?, ?, ?)
-        `).bind(generateGUID(), user.id, sessionId, ipAddress, userAgent, now).run();
+            INSERT INTO login_logs (user_id, session_id, event_type, ip_address, user_agent, created_at)
+            VALUES (?, ?, 'login_success', ?, ?, ?)
+        `).bind(user.id, sessionId, ipAddress, userAgent, now).run();
 
         const { password_hash, salt, ...userWithoutSensitive } = user;
 
