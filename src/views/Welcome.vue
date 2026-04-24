@@ -1,23 +1,8 @@
 <template>
   <div class="welcome-container">
-    <!-- 字符艺术 -->
-    <div class="ascii-art">
-      <pre>
-  ______   ______   ______   ______   ______
- /\  __ \ /\  == \ /\  __ \ /\  ___\ /\  ___\
- \ \  __ \\ \  __< \ \  __ \ \ \  __\ \ \___  \
-  \ \_\ \_\\ \_____\\ \_\ \_\\ \_____\\/\_____\
-   \/_/\/_/ \/_____/ \/_/\/_/ \/_____/ \/_____/
-                                            
-  ______   ______   ______   ______   ______
- /\  __ \ /\  __ \ /\  __ \ /\  __ \ /\  __ \
- \ \  __ \\ \  __ \\ \  __ \\ \  __ \\ \  __ \
-  \ \_\ \_\\ \_\ \_\\ \_\ \_\\ \_\ \_\\ \_\ \_\
-   \/_/\/_/ \/_/\/_/ \/_/\/_/ \/_/\/_/ \/_/\/_/
-      </pre>
-    </div>
+    <div class="fortune-symbol">🍀</div>
     
-    <h1 class="welcome-title">FORTUNE LIFE</h1>
+    <h1 class="welcome-title">欢迎来到好运人生</h1>
     
     <div class="buttons-container">
       <button class="btn btn-register" @click="goToRegister">
@@ -57,20 +42,27 @@ function goToLogin() {
   color: white;
 }
 
-.ascii-art {
-  margin-bottom: 30px;
-  font-family: 'Courier New', monospace;
-  font-size: 8px;
-  line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  white-space: pre;
+.fortune-symbol {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .welcome-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   margin-bottom: 40px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-align: center;
 }
 
 .buttons-container {

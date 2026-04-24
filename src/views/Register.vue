@@ -16,6 +16,21 @@
 
       <form @submit.prevent="handleRegister" class="register-form">
         <div class="form-group">
+          <label for="userId">用户ID <span class="required">*</span></label>
+          <input
+            type="text"
+            id="userId"
+            v-model="form.userId"
+            @input="validateUserId"
+            placeholder="字母、数字、下划线，最多16字符"
+            required
+            maxlength="16"
+            pattern="[A-Za-z0-9_]+"
+          />
+          <span class="hint">用于登录的唯一标识，如：Player_01</span>
+        </div>
+
+        <div class="form-group">
           <label for="nickname">昵称 <span class="required">*</span></label>
           <input
             type="text"
@@ -87,53 +102,18 @@
         </div>
 
         <div class="form-group">
-          <label for="occupation">工作岗位 <span class="required">*</span></label>
-          <div class="occupation-input-wrapper">
-            <input
-              type="text"
-              id="occupation"
-              v-model="form.occupation"
-              @focus="showOccupationList = true"
-              @blur="hideOccupationList"
-              placeholder="请选择或输入工作岗位"
-              required
-              list="occupation-list"
-              autocomplete="off"
-            />
-            <datalist id="occupation-list">
-              <option value="教师" />
-              <option value="医生" />
-              <option value="工程师" />
-              <option value="设计师" />
-              <option value="销售" />
-              <option value="公务员" />
-              <option value="学生" />
-              <option value="管理者" />
-              <option value="自由职业" />
-              <option value="企业家" />
-              <option value="艺术家" />
-              <option value="金融从业者" />
-              <option value="媒体从业者" />
-              <option value="医护人员" />
-              <option value="教育工作者" />
-              <option value="技术工人" />
-              <option value="服务员" />
-              <option value="创业者" />
-            </datalist>
-            <div v-if="showOccupationList" class="occupation-dropdown">
-              <div class="occupation-grid">
-                <button
-                  v-for="job in occupationOptions"
-                  :key="job"
-                  type="button"
-                  class="occupation-item"
-                  :class="{ selected: form.occupation === job }"
-                  @click="selectOccupation(job)"
-                >
-                  {{ job }}
-                </button>
-              </div>
-            </div>
+          <label>工作岗位 <span class="required">*</span></label>
+          <div class="occupation-grid">
+            <button
+              v-for="job in occupationOptions"
+              :key="job"
+              type="button"
+              class="occupation-item"
+              :class="{ selected: form.occupation === job }"
+              @click="selectOccupation(job)"
+            >
+              {{ job }}
+            </button>
           </div>
           <span class="hint">例如：你是教师，可以填写"学校教职工"</span>
         </div>
@@ -182,6 +162,7 @@ const occupationOptions = [
 ]
 
 const form = ref({
+  userId: '',
   nickname: '',
   password: '',
   confirmPassword: '',
@@ -194,7 +175,6 @@ const form = ref({
   bio: ''
 })
 
-const showOccupationList = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
@@ -250,20 +230,30 @@ watch(() => form.value.birthMonth, () => {
 
 function selectOccupation(job) {
   form.value.occupation = job
-  showOccupationList.value = false
 }
 
-function hideOccupationList() {
-  setTimeout(() => {
-    showOccupationList.value = false
-  }, 200)
+function validateUserId() {
+  form.value.userId = form.value.userId.replace(/[^A-Za-z0-9_]/g, '')
 }
-
-const occupation = computed(() => form.value.occupation)
 
 async function handleRegister() {
   errorMessage.value = ''
   successMessage.value = ''
+
+  if (!form.value.userId) {
+    errorMessage.value = '请输入用户ID'
+    return
+  }
+
+  if (!/^[A-Za-z0-9_]+$/.test(form.value.userId)) {
+    errorMessage.value = '用户ID只能包含字母、数字和下划线'
+    return
+  }
+
+  if (form.value.userId.length > 16) {
+    errorMessage.value = '用户ID不能超过16个字符'
+    return
+  }
 
   if (form.value.password !== form.value.confirmPassword) {
     errorMessage.value = '两次输入的密码不一致'
@@ -286,7 +276,7 @@ async function handleRegister() {
   }
 
   if (!form.value.occupation) {
-    errorMessage.value = '请选择或填写工作岗位'
+    errorMessage.value = '请选择工作岗位'
     return
   }
 
@@ -294,11 +284,12 @@ async function handleRegister() {
 
   try {
     const result = await userStore.register({
+      userId: form.value.userId,
       nickname: form.value.nickname,
       password: form.value.password,
       birthday: form.value.birthday,
       gender: form.value.gender,
-      occupation: occupation.value,
+      occupation: form.value.occupation,
       bio: form.value.bio
     })
 
@@ -432,42 +423,21 @@ async function handleRegister() {
   border-color: #666;
 }
 
-.occupation-input-wrapper {
-  position: relative;
-}
-
-.occupation-input-wrapper input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.occupation-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 2px solid #000;
-  border-radius: 4px;
-  margin-top: 4px;
-  z-index: 100;
-  max-height: 200px;
-  overflow-y: auto;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
 .occupation-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   padding: 12px;
+  background: #fafafa;
+  border: 2px solid #000;
+  border-radius: 4px;
 }
 
 .occupation-item {
   padding: 8px 4px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  background: #fafafa;
+  background: #fff;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
