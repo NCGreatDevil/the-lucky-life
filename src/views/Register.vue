@@ -50,14 +50,22 @@
         </div>
 
         <div class="form-group">
-          <label for="birthday">出生日期 <span class="required">*</span></label>
-          <input
-            type="date"
-            id="birthday"
-            v-model="form.birthday"
-            required
-          />
-          <span class="hint">例如：你28岁，可以填写1999年</span>
+          <label>出生日期 <span class="required">*</span></label>
+          <div class="birthday-selects">
+            <select v-model="form.birthYear" @change="updateBirthday" class="birthday-select">
+              <option value="">年</option>
+              <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+            </select>
+            <select v-model="form.birthMonth" @change="updateBirthday" class="birthday-select">
+              <option value="">月</option>
+              <option v-for="month in 12" :key="month" :value="month">{{ month }}月</option>
+            </select>
+            <select v-model="form.birthDay" @change="updateBirthday" class="birthday-select">
+              <option value="">日</option>
+              <option v-for="day in daysInMonth" :key="day" :value="day">{{ day }}日</option>
+            </select>
+          </div>
+          <span class="hint">例如：你28岁，可以选择1999年</span>
         </div>
 
         <div class="form-group">
@@ -80,28 +88,53 @@
 
         <div class="form-group">
           <label for="occupation">工作岗位 <span class="required">*</span></label>
-          <select id="occupation" v-model="form.occupation" required>
-            <option value="">请选择或填写</option>
-            <option value="教师">教师</option>
-            <option value="医生">医生</option>
-            <option value="工程师">工程师</option>
-            <option value="设计师">设计师</option>
-            <option value="销售">销售</option>
-            <option value="公务员">公务员</option>
-            <option value="学生">学生</option>
-            <option value="管理者">管理者</option>
-            <option value="自由职业">自由职业</option>
-            <option value="企业家">企业家</option>
-            <option value="艺术家">艺术家</option>
-            <option value="其他">其他</option>
-          </select>
-          <input
-            v-if="form.occupation === '其他'"
-            type="text"
-            v-model="form.customOccupation"
-            placeholder="请输入你的岗位"
-            class="custom-input"
-          />
+          <div class="occupation-input-wrapper">
+            <input
+              type="text"
+              id="occupation"
+              v-model="form.occupation"
+              @focus="showOccupationList = true"
+              @blur="hideOccupationList"
+              placeholder="请选择或输入工作岗位"
+              required
+              list="occupation-list"
+              autocomplete="off"
+            />
+            <datalist id="occupation-list">
+              <option value="教师" />
+              <option value="医生" />
+              <option value="工程师" />
+              <option value="设计师" />
+              <option value="销售" />
+              <option value="公务员" />
+              <option value="学生" />
+              <option value="管理者" />
+              <option value="自由职业" />
+              <option value="企业家" />
+              <option value="艺术家" />
+              <option value="金融从业者" />
+              <option value="媒体从业者" />
+              <option value="医护人员" />
+              <option value="教育工作者" />
+              <option value="技术工人" />
+              <option value="服务员" />
+              <option value="创业者" />
+            </datalist>
+            <div v-if="showOccupationList" class="occupation-dropdown">
+              <div class="occupation-grid">
+                <button
+                  v-for="job in occupationOptions"
+                  :key="job"
+                  type="button"
+                  class="occupation-item"
+                  :class="{ selected: form.occupation === job }"
+                  @click="selectOccupation(job)"
+                >
+                  {{ job }}
+                </button>
+              </div>
+            </div>
+          </div>
           <span class="hint">例如：你是教师，可以填写"学校教职工"</span>
         </div>
 
@@ -131,31 +164,102 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const userStore = useUserStore()
 
+const currentYear = new Date().getFullYear()
+const years = Array.from({ length: 120 }, (_, i) => currentYear - i)
+
+const occupationOptions = [
+  '教师', '医生', '工程师', '设计师', '销售', '公务员',
+  '学生', '管理者', '自由职业', '企业家', '艺术家',
+  '金融从业者', '媒体从业者', '医护人员', '教育工作者',
+  '技术工人', '服务员', '创业者'
+]
+
 const form = ref({
   nickname: '',
   password: '',
   confirmPassword: '',
+  birthYear: '',
+  birthMonth: '',
+  birthDay: '',
   birthday: '',
   gender: '',
   occupation: '',
-  customOccupation: '',
   bio: ''
 })
 
+const showOccupationList = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-const occupation = computed(() => {
-  return form.value.occupation === '其他' ? form.value.customOccupation : form.value.occupation
+const daysInMonth = computed(() => {
+  if (!form.value.birthYear || !form.value.birthMonth) {
+    return 31
+  }
+  const year = parseInt(form.value.birthYear)
+  const month = parseInt(form.value.birthMonth)
+  
+  if (month === 2) {
+    if (isLeapYear(year)) {
+      return 29
+    }
+    return 28
+  }
+  
+  if ([4, 6, 9, 11].includes(month)) {
+    return 30
+  }
+  
+  return 31
 })
+
+function isLeapYear(year) {
+  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
+}
+
+function updateBirthday() {
+  if (form.value.birthYear && form.value.birthMonth && form.value.birthDay) {
+    const month = String(form.value.birthMonth).padStart(2, '0')
+    const day = String(form.value.birthDay).padStart(2, '0')
+    form.value.birthday = `${form.value.birthYear}-${month}-${day}`
+  } else {
+    form.value.birthday = ''
+  }
+}
+
+watch(() => form.value.birthYear, () => {
+  if (form.value.birthDay > daysInMonth.value) {
+    form.value.birthDay = ''
+  }
+  updateBirthday()
+})
+
+watch(() => form.value.birthMonth, () => {
+  if (form.value.birthDay > daysInMonth.value) {
+    form.value.birthDay = ''
+  }
+  updateBirthday()
+})
+
+function selectOccupation(job) {
+  form.value.occupation = job
+  showOccupationList.value = false
+}
+
+function hideOccupationList() {
+  setTimeout(() => {
+    showOccupationList.value = false
+  }, 200)
+}
+
+const occupation = computed(() => form.value.occupation)
 
 async function handleRegister() {
   errorMessage.value = ''
@@ -172,7 +276,7 @@ async function handleRegister() {
   }
 
   if (!form.value.birthday) {
-    errorMessage.value = '请选择出生日期'
+    errorMessage.value = '请选择完整的出生日期'
     return
   }
 
@@ -181,7 +285,7 @@ async function handleRegister() {
     return
   }
 
-  if (!form.value.occupation || (form.value.occupation === '其他' && !form.value.customOccupation)) {
+  if (!form.value.occupation) {
     errorMessage.value = '请选择或填写工作岗位'
     return
   }
@@ -287,8 +391,6 @@ async function handleRegister() {
 
 .form-group input[type="text"],
 .form-group input[type="password"],
-.form-group input[type="date"],
-.form-group select,
 .form-group textarea {
   padding: 10px;
   border: 2px solid #000;
@@ -300,7 +402,6 @@ async function handleRegister() {
 }
 
 .form-group input:focus,
-.form-group select:focus,
 .form-group textarea:focus {
   border-color: #666;
 }
@@ -310,8 +411,78 @@ async function handleRegister() {
   color: #888;
 }
 
-.custom-input {
-  margin-top: 8px;
+.birthday-selects {
+  display: flex;
+  gap: 8px;
+}
+
+.birthday-select {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #000;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  background: #fff;
+  font-family: inherit;
+}
+
+.birthday-select:focus {
+  border-color: #666;
+}
+
+.occupation-input-wrapper {
+  position: relative;
+}
+
+.occupation-input-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.occupation-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 4px;
+  margin-top: 4px;
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.occupation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+}
+
+.occupation-item {
+  padding: 8px 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fafafa;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.occupation-item:hover {
+  background: #e9ecef;
+  border-color: #667eea;
+}
+
+.occupation-item.selected {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
 }
 
 .radio-group {
