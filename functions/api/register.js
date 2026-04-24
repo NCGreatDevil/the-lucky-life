@@ -44,7 +44,7 @@ export async function onRequest(context) {
             });
         }
 
-        const db = context.env.DB;
+        const db = context.env['game-db'];
 
         const existingUser = await db.prepare('SELECT id FROM users WHERE nickname = ?').bind(nickname).first();
         if (existingUser) {

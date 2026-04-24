@@ -42,7 +42,7 @@ export async function onRequest(context) {
         });
     }
 
-    const db = context.env.DB;
+    const db = context.env['game-db'];
     const tokenHash = await hashToken(token);
 
     const session = await db.prepare('SELECT * FROM sessions WHERE token_hash = ? AND expires_at > ?').bind(tokenHash, Math.floor(Date.now() / 1000)).first();
