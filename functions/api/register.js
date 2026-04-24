@@ -1,4 +1,4 @@
-import { generateSalt, hashPassword, generateGUID, generateUserId, calculateAttributes, calculateTags, corsHeaders } from '../_utils.js';
+import { generateSalt, hashPassword, generateGUID, calculateAttributes, calculateTags, corsHeaders } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -14,10 +14,24 @@ export async function onRequest(context) {
 
     try {
         const body = await context.request.json();
-        const { nickname, birthday, gender, occupation, bio, password } = body;
+        const { userId, nickname, birthday, gender, occupation, bio, password } = body;
 
-        if (!nickname || !birthday || !gender || !occupation || !password) {
+        if (!userId || !nickname || !birthday || !gender || !occupation || !password) {
             return new Response(JSON.stringify({ error: '缺少必填字段' }), {
+                status: 400,
+                headers: corsHeaders()
+            });
+        }
+
+        if (!/^[A-Za-z0-9_]+$/.test(userId)) {
+            return new Response(JSON.stringify({ error: '用户ID只能包含字母、数字和下划线' }), {
+                status: 400,
+                headers: corsHeaders()
+            });
+        }
+
+        if (userId.length > 16) {
+            return new Response(JSON.stringify({ error: '用户ID不能超过16个字符' }), {
                 status: 400,
                 headers: corsHeaders()
             });
@@ -46,15 +60,14 @@ export async function onRequest(context) {
 
         const db = context.env['game-db'];
 
-        const existingUser = await db.prepare('SELECT id FROM users WHERE nickname = ?').bind(nickname).first();
+        const existingUser = await db.prepare('SELECT id FROM users WHERE nickname = ? OR user_id = ?').bind(nickname, userId).first();
         if (existingUser) {
-            return new Response(JSON.stringify({ error: '该昵称已被注册' }), {
+            return new Response(JSON.stringify({ error: '该昵称或用户ID已被注册' }), {
                 status: 409,
                 headers: corsHeaders()
             });
         }
 
-        const userId = generateUserId();
         const salt = generateSalt();
         const passwordHash = await hashPassword(password, salt);
         const id = generateGUID();

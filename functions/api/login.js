@@ -17,7 +17,7 @@ export async function onRequest(context) {
         const { nickname, password } = body;
 
         if (!nickname || !password) {
-            return new Response(JSON.stringify({ error: '请填写昵称和密码' }), {
+            return new Response(JSON.stringify({ error: '请填写昵称/用户ID和密码' }), {
                 status: 400,
                 headers: corsHeaders()
             });
@@ -25,7 +25,7 @@ export async function onRequest(context) {
 
         const db = context.env['game-db'];
 
-        const user = await db.prepare('SELECT * FROM users WHERE nickname = ?').bind(nickname).first();
+        const user = await db.prepare('SELECT * FROM users WHERE nickname = ? OR user_id = ?').bind(nickname, nickname).first();
 
         const ipAddress = context.request.headers.get('CF-Connecting-IP') || 'unknown';
         const userAgent = context.request.headers.get('User-Agent') || 'unknown';

@@ -107,23 +107,15 @@
             type="text"
             id="occupation"
             v-model="form.occupation"
+            list="occupationOptions"
             placeholder="请输入工作岗位"
             required
-            @focus="showOccupationGrid = true"
-            @blur="showOccupationGrid = false"
           />
-          <div v-if="showOccupationGrid" class="occupation-grid">
-            <button
-              v-for="job in occupationOptions"
-              :key="job"
-              type="button"
-              class="occupation-item"
-              :class="{ selected: form.occupation === job }"
-              @click="selectOccupation(job)"
-            >
+          <datalist id="occupationOptions">
+            <option v-for="job in occupationOptions" :key="job" :value="job">
               {{ job }}
-            </button>
-          </div>
+            </option>
+          </datalist>
           <span class="hint">例如：你是教师，可以填写"学校教职工"</span>
         </div>
 
@@ -187,7 +179,6 @@ const form = ref({
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
-const showOccupationGrid = ref(false)
 
 const daysInMonth = computed(() => {
   if (!form.value.birthYear || !form.value.birthMonth) {
@@ -237,11 +228,6 @@ watch(() => form.value.birthMonth, () => {
   }
   updateBirthday()
 })
-
-function selectOccupation(job) {
-  form.value.occupation = job
-  showOccupationGrid.value = false
-}
 
 function validateUserId() {
   form.value.userId = form.value.userId.replace(/[^A-Za-z0-9_]/g, '')
@@ -434,37 +420,6 @@ async function handleRegister() {
   border-color: #666;
 }
 
-.occupation-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 12px;
-  background: #fafafa;
-  border: none;
-  border-radius: 4px;
-}
-
-.occupation-item {
-  padding: 8px 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: #fff;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
-
-.occupation-item:hover {
-  background: #e9ecef;
-  border-color: #667eea;
-}
-
-.occupation-item.selected {
-  background: #667eea;
-  color: white;
-  border-color: #667eea;
-}
 
 .radio-group {
   display: flex;

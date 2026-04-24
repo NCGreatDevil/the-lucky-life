@@ -8,12 +8,12 @@
 
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
-          <label for="nickname">昵称</label>
+          <label for="loginId">昵称/用户ID</label>
           <input
             type="text"
-            id="nickname"
-            v-model="nickname"
-            placeholder="请输入你的昵称"
+            id="loginId"
+            v-model="loginId"
+            placeholder="请输入你的昵称或用户ID"
             required
           />
         </div>
@@ -51,7 +51,7 @@ import { useUserStore } from '@/stores/user'
 const router = useRouter()
 const userStore = useUserStore()
 
-const nickname = ref('')
+const loginId = ref('')
 const password = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
@@ -61,7 +61,7 @@ async function handleLogin() {
   loading.value = true
 
   try {
-    await userStore.login(nickname.value, password.value)
+    await userStore.login(loginId.value, password.value)
     router.push('/')
   } catch (error) {
     errorMessage.value = error.message
