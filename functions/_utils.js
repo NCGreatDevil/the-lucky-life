@@ -23,6 +23,11 @@ export async function hashPassword(password, salt) {
     return Array.from(new Uint8Array(hashValue), b => b.toString(16).padStart(2, '0')).join('');
 }
 
+export async function verifyPassword(password, salt, expectedHash) {
+    const actualHash = await hashPassword(password, salt);
+    return actualHash === expectedHash;
+}
+
 export function generateToken() {
     const array = new Uint8Array(TOKEN_LENGTH);
     crypto.getRandomValues(array);

@@ -1,4 +1,4 @@
-import { generateToken, hashToken, generateGUID, corsHeaders } from '../_utils.js';
+import { generateToken, hashToken, generateGUID, corsHeaders, verifyPassword } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -45,10 +45,9 @@ export async function onRequest(context) {
 
         const { password_hash, salt, ...userWithoutSensitive } = user;
 
-        const inputHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + password));
-        const inputHashHex = Array.from(new Uint8Array(inputHash), b => b.toString(16).padStart(2, '0')).join('');
+        const passwordMatch = await verifyPassword(password, salt, password_hash);
 
-        if (inputHashHex !== password_hash) {
+        if (!passwordMatch) {
             await db.prepare(`
                 INSERT INTO login_logs (user_id, session_id, event_type, ip_address, user_agent, created_at)
                 VALUES (?, NULL, 'login_failed', ?, ?, ?)
