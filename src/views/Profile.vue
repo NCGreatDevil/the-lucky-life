@@ -30,7 +30,7 @@
               <span class="value">{{ genderText }}</span>
             </div>
             <div class="info-item">
-              <span class="label">工作岗位</span>
+              <span class="label">职业</span>
               <span class="value">{{ user.occupation }}</span>
             </div>
             <div class="info-item">
@@ -69,7 +69,7 @@
             </div>
 
             <div class="form-group">
-              <label>工作岗位</label>
+              <label>职业</label>
               <input type="text" v-model="editForm.occupation" required />
             </div>
 

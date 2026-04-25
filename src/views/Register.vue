@@ -102,12 +102,12 @@
         </div>
 
         <div class="form-group">
-          <label for="occupation">工作岗位 <span class="required">*</span></label>
+          <label for="occupation">职业 <span class="required">*</span></label>
           <input
             type="text"
             id="occupation"
             v-model="form.occupation"
-            placeholder="请输入工作岗位"
+            placeholder="请输入职业"
             required
           />
           <span class="hint">例如：你是教师，可以填写"学校教职工"</span>
@@ -180,18 +180,18 @@ const daysInMonth = computed(() => {
   }
   const year = parseInt(form.value.birthYear)
   const month = parseInt(form.value.birthMonth)
-  
+
   if (month === 2) {
     if (isLeapYear(year)) {
       return 29
     }
     return 28
   }
-  
+
   if ([4, 6, 9, 11].includes(month)) {
     return 30
   }
-  
+
   return 31
 })
 
@@ -267,7 +267,7 @@ async function handleRegister() {
   }
 
   if (!form.value.occupation) {
-    errorMessage.value = '请选择工作岗位'
+    errorMessage.value = '请输入职业'
     return
   }
 

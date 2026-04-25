@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS users (
     -- 性别 (male=男, female=女, other=其他)
     gender TEXT NOT NULL CHECK (gender IN ('male', 'female', 'other')),
 
-    -- 工作岗位 (如：教师、医生、工程师等)
+    -- 职业 (如：教师、医生、工程师等)
     occupation TEXT NOT NULL,
 
     -- 个人简介 (选填)
@@ -239,7 +239,7 @@ INSERT INTO luck_levels (level, label, min_value, max_value, description) VALUES
 -- | users              | nickname       | TEXT    | 用户昵称                                |
 -- | users              | birthday       | TEXT    | 出生日期 YYYY-MM-DD                     |
 -- | users              | gender         | TEXT    | 性别 male/female/other                  |
--- | users              | occupation     | TEXT    | 工作岗位                                |
+-- | users              | occupation     | TEXT    | 职业                                    |
 -- | users              | bio            | TEXT    | 个人简介                                |
 -- | users              | password_hash  | TEXT    | 密码哈希值                              |
 -- | users              | salt           | TEXT    | 密码盐值                                |
