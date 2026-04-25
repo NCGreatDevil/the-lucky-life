@@ -1,4 +1,4 @@
-import { generateSalt, hashPassword, generateGUID, calculateAttributes, calculateTags, corsHeaders } from '../_utils.js';
+import { generateSalt, hashPassword, generateGUID, calculateLuckLevel, corsHeaders } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -73,19 +73,21 @@ export async function onRequest(context) {
         const id = generateGUID();
         const now = Math.floor(Date.now() / 1000);
 
-        const attributes = calculateAttributes(birthday, gender, occupation);
-        const tags = calculateTags(birthday, gender, occupation);
+        const luck = Math.floor(Math.random() * 101);
+        const luckLevel = calculateLuckLevel(luck);
 
         await db.prepare(`
-            INSERT INTO users (id, user_id, nickname, birthday, gender, occupation, bio, password_hash, salt, luckiness, charm, wisdom, courage, wealth, health, tags, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO users (id, user_id, nickname, birthday, gender, occupation, bio, password_hash, salt, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `).bind(
             id, userId, nickname, birthday, gender, occupation, bio || '',
-            passwordHash, salt,
-            attributes.luckiness, attributes.charm, attributes.wisdom,
-            attributes.courage, attributes.wealth, attributes.health,
-            JSON.stringify(tags), now, now
+            passwordHash, salt, now, now
         ).run();
+
+        await db.prepare(`
+            INSERT INTO user_attributes (user_id, energy, vitality, morality, intelligence, constitution, charm, willpower, emotion, popularity, money, luck, luck_level, updated_at)
+            VALUES (?, 80, 60, 0, 0, 0, 0, 0, 0, 0, 0, ?, ?, ?)
+        `).bind(id, luck, luckLevel, now).run();
 
         return new Response(JSON.stringify({
             success: true,

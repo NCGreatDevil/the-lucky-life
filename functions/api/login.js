@@ -1,4 +1,4 @@
-import { generateSalt, hashPassword, generateToken, hashToken, generateGUID, corsHeaders } from '../_utils.js';
+import { generateToken, hashToken, generateGUID, corsHeaders } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -17,7 +17,7 @@ export async function onRequest(context) {
         const { nickname, password } = body;
 
         if (!nickname || !password) {
-            return new Response(JSON.stringify({ error: '请填写昵称/用户ID和密码' }), {
+            return new Response(JSON.stringify({ error: '请填写用户ID和密码' }), {
                 status: 400,
                 headers: corsHeaders()
             });
@@ -37,28 +37,32 @@ export async function onRequest(context) {
                 VALUES (NULL, NULL, 'login_failed', ?, ?, ?)
             `).bind(ipAddress, userAgent, now).run();
 
-            return new Response(JSON.stringify({ error: '昵称或密码错误' }), {
+            return new Response(JSON.stringify({ error: '用户ID或密码错误' }), {
                 status: 401,
                 headers: corsHeaders()
             });
         }
 
-        const passwordHash = await hashPassword(password, user.salt);
+        const { password_hash, salt, ...userWithoutSensitive } = user;
 
-        if (passwordHash !== user.password_hash) {
+        const inputHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salt + password));
+        const inputHashHex = Array.from(new Uint8Array(inputHash), b => b.toString(16).padStart(2, '0')).join('');
+
+        if (inputHashHex !== password_hash) {
             await db.prepare(`
                 INSERT INTO login_logs (user_id, session_id, event_type, ip_address, user_agent, created_at)
                 VALUES (?, NULL, 'login_failed', ?, ?, ?)
             `).bind(user.id, ipAddress, userAgent, now).run();
 
-            return new Response(JSON.stringify({ error: '昵称或密码错误' }), {
+            return new Response(JSON.stringify({ error: '用户ID或密码错误' }), {
                 status: 401,
                 headers: corsHeaders()
             });
         }
 
         const token = generateToken();
-        const tokenHash = await hashToken(token);
+        const tokenHashArray = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+        const tokenHash = Array.from(new Uint8Array(tokenHashArray), b => b.toString(16).padStart(2, '0')).join('');
         const sessionId = generateGUID();
         const expiresAt = now + (7 * 24 * 60 * 60);
 
@@ -72,8 +76,6 @@ export async function onRequest(context) {
             VALUES (?, ?, 'login_success', ?, ?, ?)
         `).bind(user.id, sessionId, ipAddress, userAgent, now).run();
 
-        const { password_hash, salt, ...userWithoutSensitive } = user;
-
         return new Response(JSON.stringify({
             success: true,
             message: '登录成功',
@@ -86,13 +88,6 @@ export async function onRequest(context) {
                 gender: user.gender,
                 occupation: user.occupation,
                 bio: user.bio,
-                luckiness: user.luckiness,
-                charm: user.charm,
-                wisdom: user.wisdom,
-                courage: user.courage,
-                wealth: user.wealth,
-                health: user.health,
-                tags: JSON.parse(user.tags || '[]'),
                 createdAt: user.created_at
             }
         }), {

@@ -1,25 +1,5 @@
 import { hashToken, corsHeaders } from '../_utils.js';
 
-function getUserPublicData(user) {
-    return {
-        id: user.user_id,
-        nickname: user.nickname,
-        birthday: user.birthday,
-        gender: user.gender,
-        occupation: user.occupation,
-        bio: user.bio,
-        luckiness: user.luckiness,
-        charm: user.charm,
-        wisdom: user.wisdom,
-        courage: user.courage,
-        wealth: user.wealth,
-        health: user.health,
-        tags: JSON.parse(user.tags || '[]'),
-        createdAt: user.created_at,
-        updatedAt: user.updated_at
-    };
-}
-
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
         return new Response(null, { headers: corsHeaders() });
@@ -43,7 +23,8 @@ export async function onRequest(context) {
     }
 
     const db = context.env['game-db'];
-    const tokenHash = await hashToken(token);
+    const tokenHashArray = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+    const tokenHash = Array.from(new Uint8Array(tokenHashArray), b => b.toString(16).padStart(2, '0')).join('');
 
     const session = await db.prepare('SELECT * FROM sessions WHERE token_hash = ? AND expires_at > ?').bind(tokenHash, Math.floor(Date.now() / 1000)).first();
 
@@ -65,9 +46,33 @@ export async function onRequest(context) {
                 });
             }
 
+            const attrs = await db.prepare('SELECT * FROM user_attributes WHERE user_id = ?').bind(session.user_id).first();
+
             return new Response(JSON.stringify({
                 success: true,
-                user: getUserPublicData(user)
+                user: {
+                    id: user.user_id,
+                    nickname: user.nickname,
+                    birthday: user.birthday,
+                    gender: user.gender,
+                    occupation: user.occupation,
+                    bio: user.bio,
+                    createdAt: user.created_at,
+                    attributes: attrs ? {
+                        energy: attrs.energy,
+                        vitality: attrs.vitality,
+                        morality: attrs.morality,
+                        intelligence: attrs.intelligence,
+                        constitution: attrs.constitution,
+                        charm: attrs.charm,
+                        willpower: attrs.willpower,
+                        emotion: attrs.emotion,
+                        popularity: attrs.popularity,
+                        money: attrs.money,
+                        luckLevel: attrs.luck_level,
+                        luckLabel: getLuckLabel(attrs.luck_level)
+                    } : null
+                }
             }), {
                 headers: corsHeaders()
             });
@@ -128,25 +133,43 @@ export async function onRequest(context) {
                 bindings.push(bio);
             }
 
-            if (updates.length === 0) {
-                return new Response(JSON.stringify({ error: '没有要更新的字段' }), {
-                    status: 400,
-                    headers: corsHeaders()
-                });
+            if (updates.length > 0) {
+                updates.push('updated_at = ?');
+                bindings.push(now);
+                bindings.push(session.user_id);
+
+                await db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).bind(...bindings).run();
             }
 
-            updates.push('updated_at = ?');
-            bindings.push(now);
-            bindings.push(session.user_id);
-
-            await db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).bind(...bindings).run();
-
             const user = await db.prepare('SELECT * FROM users WHERE id = ?').bind(session.user_id).first();
+            const attrs = await db.prepare('SELECT * FROM user_attributes WHERE user_id = ?').bind(session.user_id).first();
 
             return new Response(JSON.stringify({
                 success: true,
                 message: '更新成功',
-                user: getUserPublicData(user)
+                user: {
+                    id: user.user_id,
+                    nickname: user.nickname,
+                    birthday: user.birthday,
+                    gender: user.gender,
+                    occupation: user.occupation,
+                    bio: user.bio,
+                    createdAt: user.created_at,
+                    attributes: attrs ? {
+                        energy: attrs.energy,
+                        vitality: attrs.vitality,
+                        morality: attrs.morality,
+                        intelligence: attrs.intelligence,
+                        constitution: attrs.constitution,
+                        charm: attrs.charm,
+                        willpower: attrs.willpower,
+                        emotion: attrs.emotion,
+                        popularity: attrs.popularity,
+                        money: attrs.money,
+                        luckLevel: attrs.luck_level,
+                        luckLabel: getLuckLabel(attrs.luck_level)
+                    } : null
+                }
             }), {
                 headers: corsHeaders()
             });
@@ -164,4 +187,16 @@ export async function onRequest(context) {
         status: 405,
         headers: corsHeaders()
     });
+}
+
+function getLuckLabel(level) {
+    const labels = {
+        1: '倒霉',
+        2: '不顺',
+        3: '平常',
+        4: '顺遂',
+        5: '好运',
+        6: '爆棚'
+    };
+    return labels[level] || '平常';
 }

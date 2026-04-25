@@ -12,8 +12,8 @@
         <div class="user-card hand-drawn-border">
           <div class="user-id">ID: {{ user.id }}</div>
           <div class="user-nickname">{{ user.nickname }}</div>
-          <div class="user-tags">
-            <span v-for="tag in user.tags" :key="tag" class="tag">{{ tag }}</span>
+          <div v-if="user.attributes" class="user-luck">
+            <span class="luck-label">{{ user.attributes.luckLabel }}</span>
           </div>
         </div>
 
@@ -70,27 +70,7 @@
 
             <div class="form-group">
               <label>工作岗位</label>
-              <select v-model="editForm.occupation" required>
-                <option value="">请选择</option>
-                <option value="教师">教师</option>
-                <option value="医生">医生</option>
-                <option value="工程师">工程师</option>
-                <option value="设计师">设计师</option>
-                <option value="销售">销售</option>
-                <option value="公务员">公务员</option>
-                <option value="学生">学生</option>
-                <option value="自由职业">自由职业</option>
-                <option value="企业家">企业家</option>
-                <option value="艺术家">艺术家</option>
-                <option value="其他">其他</option>
-              </select>
-              <input
-                v-if="editForm.occupation === '其他'"
-                type="text"
-                v-model="editForm.customOccupation"
-                placeholder="请输入岗位"
-                class="custom-input"
-              />
+              <input type="text" v-model="editForm.occupation" required />
             </div>
 
             <div class="form-group">
@@ -111,50 +91,70 @@
           <button v-if="!isEditing" @click="startEdit" class="btn-edit">编辑资料</button>
         </div>
 
-        <div class="attr-section hand-drawn-border">
-          <h2>角色属性</h2>
+        <div class="attr-section hand-drawn-border" v-if="user.attributes">
+          <h2>日常属性</h2>
           <div class="attr-grid">
             <div class="attr-item">
-              <span class="attr-name">运势</span>
+              <span class="attr-name">能量</span>
               <div class="attr-bar">
-                <div class="attr-fill" :style="{ width: user.luckiness + '%' }"></div>
+                <div class="attr-fill energy" :style="{ width: user.attributes.energy + '%' }"></div>
               </div>
-              <span class="attr-value">{{ user.luckiness }}</span>
+              <span class="attr-value">{{ user.attributes.energy }} / 100</span>
+            </div>
+            <div class="attr-item">
+              <span class="attr-name">活力</span>
+              <div class="attr-bar">
+                <div class="attr-fill vitality" :style="{ width: user.attributes.vitality + '%' }"></div>
+              </div>
+              <span class="attr-value">{{ user.attributes.vitality }} / 100</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="attr-section hand-drawn-border" v-if="user.attributes">
+          <h2>长期属性</h2>
+          <div class="attr-grid">
+            <div class="attr-item">
+              <span class="attr-name">道德</span>
+              <span class="attr-value-simple">{{ user.attributes.morality }}</span>
+            </div>
+            <div class="attr-item">
+              <span class="attr-name">智力</span>
+              <span class="attr-value-simple">{{ user.attributes.intelligence }}</span>
+            </div>
+            <div class="attr-item">
+              <span class="attr-name">体质</span>
+              <span class="attr-value-simple">{{ user.attributes.constitution }}</span>
             </div>
             <div class="attr-item">
               <span class="attr-name">魅力</span>
-              <div class="attr-bar">
-                <div class="attr-fill" :style="{ width: user.charm + '%' }"></div>
-              </div>
-              <span class="attr-value">{{ user.charm }}</span>
+              <span class="attr-value-simple">{{ user.attributes.charm }}</span>
             </div>
             <div class="attr-item">
-              <span class="attr-name">智慧</span>
-              <div class="attr-bar">
-                <div class="attr-fill" :style="{ width: user.wisdom + '%' }"></div>
-              </div>
-              <span class="attr-value">{{ user.wisdom }}</span>
+              <span class="attr-name">意志</span>
+              <span class="attr-value-simple">{{ user.attributes.willpower }}</span>
             </div>
             <div class="attr-item">
-              <span class="attr-name">勇气</span>
-              <div class="attr-bar">
-                <div class="attr-fill" :style="{ width: user.courage + '%' }"></div>
-              </div>
-              <span class="attr-value">{{ user.courage }}</span>
+              <span class="attr-name">情绪</span>
+              <span class="attr-value-simple">{{ user.attributes.emotion }}</span>
             </div>
             <div class="attr-item">
-              <span class="attr-name">财富</span>
-              <div class="attr-bar">
-                <div class="attr-fill" :style="{ width: user.wealth + '%' }"></div>
-              </div>
-              <span class="attr-value">{{ user.wealth }}</span>
+              <span class="attr-name">人缘</span>
+              <span class="attr-value-simple">{{ user.attributes.popularity }}</span>
             </div>
             <div class="attr-item">
-              <span class="attr-name">健康</span>
-              <div class="attr-bar">
-                <div class="attr-fill" :style="{ width: user.health + '%' }"></div>
-              </div>
-              <span class="attr-value">{{ user.health }}</span>
+              <span class="attr-name">金钱</span>
+              <span class="attr-value-simple">{{ user.attributes.money }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="attr-section hand-drawn-border" v-if="user.attributes">
+          <h2>隐藏属性</h2>
+          <div class="attr-grid">
+            <div class="attr-item luck-item">
+              <span class="attr-name">运气</span>
+              <span class="luck-tag">{{ user.attributes.luckLabel }}</span>
             </div>
           </div>
         </div>
@@ -186,7 +186,6 @@ const editForm = ref({
   birthday: '',
   gender: '',
   occupation: '',
-  customOccupation: '',
   bio: ''
 })
 
@@ -214,7 +213,6 @@ function startEdit() {
     birthday: user.value.birthday,
     gender: user.value.gender,
     occupation: user.value.occupation,
-    customOccupation: '',
     bio: user.value.bio || ''
   }
   isEditing.value = true
@@ -230,15 +228,11 @@ async function handleUpdate() {
   saving.value = true
 
   try {
-    const occupation = editForm.value.occupation === '其他'
-      ? editForm.value.customOccupation
-      : editForm.value.occupation
-
     await userStore.updateProfile({
       nickname: editForm.value.nickname,
       birthday: editForm.value.birthday,
       gender: editForm.value.gender,
-      occupation,
+      occupation: editForm.value.occupation,
       bio: editForm.value.bio
     })
     isEditing.value = false
@@ -317,16 +311,14 @@ async function handleLogout() {
   margin-bottom: 12px;
 }
 
-.user-tags {
+.user-luck {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
   justify-content: center;
 }
 
-.tag {
-  font-size: 11px;
-  padding: 4px 8px;
+.luck-label {
+  font-size: 14px;
+  padding: 4px 12px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
@@ -404,10 +396,6 @@ async function handleLogout() {
   font-family: inherit;
 }
 
-.custom-input {
-  margin-top: 8px;
-}
-
 .radio-group {
   display: flex;
   gap: 16px;
@@ -419,6 +407,12 @@ async function handleLogout() {
   gap: 6px;
   cursor: pointer;
   font-weight: normal;
+}
+
+.radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 .btn-group {
@@ -484,13 +478,40 @@ async function handleLogout() {
 
 .attr-fill {
   height: 100%;
-  background: #000;
   transition: width 0.3s ease;
+}
+
+.attr-fill.energy {
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+}
+
+.attr-fill.vitality {
+  background: linear-gradient(90deg, #FF9800, #FFC107);
 }
 
 .attr-value {
   font-size: 14px;
   font-weight: bold;
+}
+
+.attr-value-simple {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.luck-item {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.luck-tag {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 4px;
 }
 
 .not-logged-in {
