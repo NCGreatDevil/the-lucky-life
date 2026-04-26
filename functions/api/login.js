@@ -1,4 +1,4 @@
-import { generateToken, hashToken, generateGUID, corsHeaders, verifyPassword } from '../_utils.js';
+import { generateToken, hashToken, generateGUID, corsHeaders, verifyPassword, getNowISO, addSecondsToISO, isISOExpired } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -29,7 +29,7 @@ export async function onRequest(context) {
 
         const ipAddress = context.request.headers.get('CF-Connecting-IP') || 'unknown';
         const userAgent = context.request.headers.get('User-Agent') || 'unknown';
-        const now = Math.floor(Date.now() / 1000);
+        const now = getNowISO();
 
         if (!user) {
             await db.prepare(`
@@ -63,7 +63,7 @@ export async function onRequest(context) {
         const tokenHashArray = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
         const tokenHash = Array.from(new Uint8Array(tokenHashArray), b => b.toString(16).padStart(2, '0')).join('');
         const sessionId = generateGUID();
-        const expiresAt = now + (7 * 24 * 60 * 60);
+        const expiresAt = addSecondsToISO(now, 7 * 24 * 60 * 60);
 
         await db.prepare(`
             INSERT INTO sessions (id, user_id, token_hash, expires_at, created_at, user_agent, ip_address)

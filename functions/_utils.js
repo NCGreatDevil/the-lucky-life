@@ -87,3 +87,48 @@ export function corsHeaders() {
         'Content-Type': 'application/json'
     };
 }
+
+export function getNowISO() {
+    return new Date().toISOString();
+}
+
+export function getNowTimestamp() {
+    return Math.floor(Date.now() / 1000);
+}
+
+export function isoToTimestamp(isoString) {
+    if (!isoString) return 0;
+    return Math.floor(new Date(isoString).getTime() / 1000);
+}
+
+export function timestampToISO(timestamp) {
+    if (!timestamp) return getNowISO();
+    return new Date(timestamp * 1000).toISOString();
+}
+
+export function addSecondsToISO(isoString, seconds) {
+    const date = new Date(isoString);
+    date.setSeconds(date.getSeconds() + seconds);
+    return date.toISOString();
+}
+
+export function isISOExpired(isoString) {
+    if (!isoString) return true;
+    const expiryTime = new Date(isoString).getTime();
+    const now = Date.now();
+    return now > expiryTime;
+}
+
+export function formatTimestamp(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleString('zh-CN', {
+        timeZone: 'Asia/Shanghai',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}

@@ -1,4 +1,4 @@
-import { generateSalt, hashPassword, generateGUID, calculateLuckLevel, corsHeaders } from '../_utils.js';
+import { generateSalt, hashPassword, generateGUID, calculateLuckLevel, corsHeaders, getNowISO } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -71,7 +71,7 @@ export async function onRequest(context) {
         const salt = generateSalt();
         const passwordHash = await hashPassword(password, salt);
         const id = generateGUID();
-        const now = Math.floor(Date.now() / 1000);
+        const now = getNowISO();
 
         const luck = Math.floor(Math.random() * 101);
         const luckLevel = calculateLuckLevel(luck);

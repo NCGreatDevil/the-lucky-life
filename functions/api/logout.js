@@ -1,4 +1,4 @@
-import { hashToken, corsHeaders } from '../_utils.js';
+import { hashToken, corsHeaders, isISOExpired } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -33,7 +33,14 @@ export async function onRequest(context) {
         const db = context.env['game-db'];
         const tokenHash = await hashToken(token);
 
-        const session = await db.prepare('SELECT * FROM sessions WHERE token_hash = ? AND expires_at > ?').bind(tokenHash, Math.floor(Date.now() / 1000)).first();
+        const session = await db.prepare('SELECT * FROM sessions WHERE token_hash = ?').bind(tokenHash).first();
+        if (session && isISOExpired(session.expires_at)) {
+            await db.prepare('DELETE FROM sessions WHERE id = ?').bind(session.id).run();
+            return new Response(JSON.stringify({ error: '会话已过期，请重新登录' }), {
+                status: 401,
+                headers: corsHeaders()
+            });
+        }
 
         if (session) {
             await db.prepare('DELETE FROM sessions WHERE id = ?').bind(session.id).run();

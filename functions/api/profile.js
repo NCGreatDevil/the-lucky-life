@@ -1,4 +1,4 @@
-import { hashToken, corsHeaders } from '../_utils.js';
+import { hashToken, corsHeaders, getNowISO, isISOExpired } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
@@ -26,9 +26,8 @@ export async function onRequest(context) {
     const tokenHashArray = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
     const tokenHash = Array.from(new Uint8Array(tokenHashArray), b => b.toString(16).padStart(2, '0')).join('');
 
-    const session = await db.prepare('SELECT * FROM sessions WHERE token_hash = ? AND expires_at > ?').bind(tokenHash, Math.floor(Date.now() / 1000)).first();
-
-    if (!session) {
+    const session = await db.prepare('SELECT * FROM sessions WHERE token_hash = ?').bind(tokenHash).first();
+    if (!session || isISOExpired(session.expires_at)) {
         return new Response(JSON.stringify({ error: '会话已过期，请重新登录' }), {
             status: 401,
             headers: corsHeaders()
@@ -58,6 +57,7 @@ export async function onRequest(context) {
                     occupation: user.occupation,
                     bio: user.bio,
                     createdAt: user.created_at,
+                    updatedAt: user.updated_at,
                     attributes: attrs ? {
                         energy: attrs.energy,
                         vitality: attrs.vitality,
@@ -70,7 +70,8 @@ export async function onRequest(context) {
                         popularity: attrs.popularity,
                         money: attrs.money,
                         luckLevel: attrs.luck_level,
-                        luckLabel: getLuckLabel(attrs.luck_level)
+                        luckLabel: getLuckLabel(attrs.luck_level),
+                        updatedAt: attrs.updated_at
                     } : null
                 }
             }), {
@@ -91,7 +92,7 @@ export async function onRequest(context) {
             const body = await context.request.json();
             const { nickname, birthday, gender, occupation, bio } = body;
 
-            const now = Math.floor(Date.now() / 1000);
+            const now = getNowISO();
             const updates = [];
             const bindings = [];
 
@@ -155,6 +156,7 @@ export async function onRequest(context) {
                     occupation: user.occupation,
                     bio: user.bio,
                     createdAt: user.created_at,
+                    updatedAt: user.updated_at,
                     attributes: attrs ? {
                         energy: attrs.energy,
                         vitality: attrs.vitality,
@@ -167,7 +169,8 @@ export async function onRequest(context) {
                         popularity: attrs.popularity,
                         money: attrs.money,
                         luckLevel: attrs.luck_level,
-                        luckLabel: getLuckLabel(attrs.luck_level)
+                        luckLabel: getLuckLabel(attrs.luck_level),
+                        updatedAt: attrs.updated_at
                     } : null
                 }
             }), {

@@ -38,11 +38,11 @@ CREATE TABLE IF NOT EXISTS users (
     -- 密码盐值 (用于密码哈希的随机字符串)
     salt TEXT NOT NULL,
 
-    -- 创建时间 (Unix时间戳，单位：秒)
-    created_at INTEGER NOT NULL,
+    -- 创建时间 (ISO 8601 格式，如：2026-04-27T14:30:45.123Z)
+    created_at TEXT NOT NULL,
 
-    -- 更新时间 (Unix时间戳，单位：秒)
-    updated_at INTEGER NOT NULL
+    -- 更新时间 (ISO 8601 格式，如：2026-04-27T14:30:45.123Z)
+    updated_at TEXT NOT NULL
 );
 
 -- -----------------------------------------------------------------------------
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS user_attributes (
     -- 运气等级：关联 luck_levels 表的 level 字段
     luck_level INTEGER DEFAULT 3 CHECK (luck_level >= 1 AND luck_level <= 6),
 
-    -- 更新时间 (Unix时间戳，单位：秒)
-    updated_at INTEGER NOT NULL,
+    -- 更新时间 (ISO 8601 格式，如：2026-04-27T14:30:45.123Z)
+    updated_at TEXT NOT NULL,
 
     -- 外键约束：删除用户时级联删除属性
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -143,11 +143,11 @@ CREATE TABLE IF NOT EXISTS sessions (
     -- 会话令牌哈希 (SHA-256哈希后的token，用于验证)
     token_hash TEXT NOT NULL,
 
-    -- 会话过期时间 (Unix时间戳，单位：秒)
-    expires_at INTEGER NOT NULL,
+    -- 会话过期时间 (ISO 8601 格式，如：2026-05-04T14:30:45.123Z)
+    expires_at TEXT NOT NULL,
 
-    -- 会话创建时间 (Unix时间戳，单位：秒)
-    created_at INTEGER NOT NULL,
+    -- 会话创建时间 (ISO 8601 格式，如：2026-04-27T14:30:45.123Z)
+    created_at TEXT NOT NULL,
 
     -- 用户浏览器信息
     user_agent TEXT,
@@ -185,8 +185,8 @@ CREATE TABLE IF NOT EXISTS login_logs (
     -- 用户浏览器信息
     user_agent TEXT,
 
-    -- 登录时间 (Unix时间戳，单位：秒)
-    created_at INTEGER NOT NULL
+    -- 登录时间 (ISO 8601 格式，如：2026-04-27T14:30:45.123Z)
+    created_at TEXT NOT NULL
 );
 
 -- =============================================================================
@@ -243,8 +243,8 @@ INSERT INTO luck_levels (level, label, min_value, max_value, description) VALUES
 -- | users              | bio            | TEXT    | 个人简介                                |
 -- | users              | password_hash  | TEXT    | 密码哈希值                              |
 -- | users              | salt           | TEXT    | 密码盐值                                |
--- | users              | created_at     | INT     | 创建时间戳                              |
--- | users              | updated_at     | INT     | 更新时间戳                              |
+-- | users              | created_at     | TEXT    | 创建时间 ISO 8601 格式                  |
+-- | users              | updated_at     | TEXT    | 更新时间 ISO 8601 格式                  |
 -- |--------------------|----------------|---------|----------------------------------------|
 -- | user_attributes    | user_id        | TEXT    | 关联的用户ID（主键）                    |
 -- | user_attributes    | energy         | INT     | 能量 0-100，默认80，每天重置            |
@@ -259,7 +259,7 @@ INSERT INTO luck_levels (level, label, min_value, max_value, description) VALUES
 -- | user_attributes    | money          | INT     | 金钱，无上限，默认0                     |
 -- | user_attributes    | luck           | INT     | 运气 0-100，隐藏数值                    |
 -- | user_attributes    | luck_level     | INT     | 运气等级 1-6，默认3                     |
--- | user_attributes    | updated_at     | INT     | 更新时间戳                              |
+-- | user_attributes    | updated_at     | TEXT    | 更新时间 ISO 8601 格式                  |
 -- |--------------------|----------------|---------|----------------------------------------|
 -- | luck_levels        | level          | INT     | 运气等级 (1-6)                         |
 -- | luck_levels        | label          | TEXT    | 等级名称                                |
@@ -270,8 +270,8 @@ INSERT INTO luck_levels (level, label, min_value, max_value, description) VALUES
 -- | sessions           | id             | TEXT    | 会话唯一标识 (UUID)                     |
 -- | sessions           | user_id        | TEXT    | 关联的用户ID                            |
 -- | sessions           | token_hash     | TEXT    | 会话令牌哈希                            |
--- | sessions           | expires_at     | INT     | 过期时间戳                              |
--- | sessions           | created_at     | INT     | 创建时间戳                              |
+-- | sessions           | expires_at     | TEXT    | 过期时间 ISO 8601 格式                  |
+-- | sessions           | created_at     | TEXT    | 创建时间 ISO 8601 格式                  |
 -- | sessions           | user_agent     | TEXT    | 浏览器User-Agent                       |
 -- | sessions           | ip_address     | TEXT    | 用户IP地址                              |
 -- |--------------------|----------------|---------|----------------------------------------|
@@ -281,5 +281,5 @@ INSERT INTO luck_levels (level, label, min_value, max_value, description) VALUES
 -- | login_logs         | event_type     | TEXT    | 事件类型                                |
 -- | login_logs         | ip_address     | TEXT    | 用户IP地址                              |
 -- | login_logs         | user_agent     | TEXT    | 浏览器User-Agent                       |
--- | login_logs         | created_at     | INT     | 事件发生时间戳                          |
+-- | login_logs         | created_at     | TEXT    | 事件发生时间 ISO 8601 格式              |
 -- =============================================================================
