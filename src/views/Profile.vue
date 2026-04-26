@@ -44,6 +44,10 @@
               <span class="label">个人简介</span>
               <span class="value">{{ user.bio || '暂无' }}</span>
             </div>
+            <div class="info-item">
+              <span class="label">创建时间</span>
+              <span class="value">{{ formatDate(user.createdAt) }}</span>
+            </div>
           </div>
 
           <form v-else @submit.prevent="handleUpdate" class="edit-form">
@@ -203,6 +207,17 @@ const genderText = computed(() => {
   return map[user.value?.gender] || '未知'
 })
 
+function formatDate(timestamp) {
+  if (!timestamp) return '暂无'
+  const date = new Date(timestamp * 1000) // 转换为毫秒
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}`
+}
+
 onMounted(async () => {
   if (userStore.isLoggedIn) {
     try {
@@ -261,6 +276,7 @@ async function handleLogout() {
   min-height: 100vh;
   /* padding: 24px;
   padding-top: 48px; */
+  padding-bottom: 24px;
   background: #fafafa;
   overflow-y: auto;
 }
@@ -329,7 +345,7 @@ async function handleLogout() {
 
 .user-card {
   padding: 20px;
-  background: #000;
+  background: #0B0500;
   color: #fff;
   text-align: center;
 }
