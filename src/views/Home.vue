@@ -60,20 +60,22 @@
       </div>
 
       <!-- 底部状态概览 -->
-      <div class="status-overview hand-drawn-border">
-        <div class="status-header">
-          <span class="status-label">Current Status</span>
-          <span class="status-level">Lv.{{ roleStore.roleLevel }} {{ roleStore.roleTitle }}</span>
-        </div>
-        <div class="status-bars">
-          <div class="status-item" v-for="(attr, name) in visibleAttrs" :key="name">
-            <div class="status-info">
-              <span>{{ name }}</span>
-              <span>{{ attr }}%</span>
+      <div class="attr-section" v-if="userStore.user?.attributes">
+        <h2>日常属性</h2>
+        <div class="attr-grid">
+          <div class="attr-item">
+            <span class="attr-name">能量</span>
+            <div class="attr-bar">
+              <div class="attr-fill energy" :style="{ width: userStore.user.attributes.energy + '%' }"></div>
             </div>
-            <div class="progress-bar">
-              <div class="fill" :style="{ width: attr + '%' }"></div>
+            <span class="attr-value">{{ userStore.user.attributes.energy }} / 100</span>
+          </div>
+          <div class="attr-item">
+            <span class="attr-name">活力</span>
+            <div class="attr-bar">
+              <div class="attr-fill vitality" :style="{ width: userStore.user.attributes.vitality + '%' }"></div>
             </div>
+            <span class="attr-value">{{ userStore.user.attributes.vitality }} / 100</span>
           </div>
         </div>
       </div>
@@ -88,18 +90,14 @@
 
 <script setup>
 import { computed, onMounted } from 'vue'
-import { useRoleStore } from '@/stores/role'
 import { useUserStore } from '@/stores/user'
 
-const roleStore = useRoleStore()
 const userStore = useUserStore()
 
 onMounted(() => {
-  roleStore.checkDailyReset()
-})
-
-const visibleAttrs = computed(() => {
-  return roleStore.visibleAttributes
+  if (userStore.isLoggedIn) {
+    userStore.fetchProfile()
+  }
 })
 
 const currentDate = computed(() => {
@@ -323,58 +321,61 @@ const luckLevel = computed(() => {
   opacity: 0.5;
 }
 
-.status-overview {
+.attr-section {
   margin-top: 24px;
-  padding: 16px;
-  background: #000;
-  color: #fff;
+  padding: 20px;
+  background: #fff;
+  border: 2.5px solid #000;
+  border-radius: 4px;
 }
 
-.status-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+.attr-section h2 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
 }
 
-.status-label {
-  font-size: 10px;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.status-level {
-  font-size: 10px;
-  opacity: 0.7;
-}
-
-.status-bars {
-  display: flex;
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
-.status-item {
-  flex: 1;
-}
-
-.status-info {
+.attr-item {
   display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  margin-bottom: 4px;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.progress-bar {
-  height: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.attr-name {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.attr-bar {
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
   overflow: hidden;
 }
 
-.progress-bar .fill {
+.attr-fill {
   height: 100%;
-  background: #fff;
   transition: width 0.3s ease;
+}
+
+.attr-fill.energy {
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+}
+
+.attr-fill.vitality {
+  background: linear-gradient(90deg, #FF9800, #FFC107);
+}
+
+.attr-value {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .footer {
