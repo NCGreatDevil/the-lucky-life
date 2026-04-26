@@ -5,12 +5,13 @@
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的角色</h1>
       <div class="placeholder"></div>
+      <button @click="handleLogout" class="btn-logout">退出</button>
     </header>
     <div class="profile-container">
-      <div class="profile-header">
+      <!-- <div class="profile-header">
         <h1 class="sketch-font">我的角色</h1>
         <button @click="handleLogout" class="btn-logout">退出登录</button>
-      </div>
+      </div> -->
 
       <div v-if="loading" class="loading">加载中...</div>
 
@@ -285,7 +286,6 @@ async function handleLogout() {
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 48px 24px 24px;
 }
@@ -295,15 +295,19 @@ async function handleLogout() {
   text-decoration: none;
   color: inherit;
   width: 40px;
+  flex-shrink: 0;
 }
 
 .title {
   font-size: 24px;
   font-weight: bold;
+  flex: 1;
+  text-align: center;
+  margin: 0;
 }
 
 .placeholder {
-  width: 40px;
+  display: none;
 }
 
 .btn-logout {
@@ -314,6 +318,7 @@ async function handleLogout() {
   border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .loading {
