@@ -1,5 +1,11 @@
 <template>
   <div class="profile-page">
+        <!-- 顶部标题 -->
+    <header class="header">
+      <router-link to="/" class="back-btn">←</router-link>
+      <h1 class="title sketch-font">我的角色</h1>
+      <div class="placeholder"></div>
+    </header>
     <div class="profile-container">
       <div class="profile-header">
         <h1 class="sketch-font">我的角色</h1>
@@ -274,6 +280,30 @@ async function handleLogout() {
 
 .profile-header h1 {
   font-size: 24px;
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 48px 24px 24px;
+}
+
+.back-btn {
+  font-size: 24px;
+  text-decoration: none;
+  color: inherit;
+  width: 40px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.placeholder {
+  width: 40px;
 }
 
 .btn-logout {

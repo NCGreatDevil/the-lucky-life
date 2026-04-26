@@ -163,7 +163,7 @@ const luckLevel = computed(() => {
   justify-content: flex-end;
   gap: 12px;
   padding: 12px 16px;
-  background: #f5f5f5;
+  /* background: #f5f5f5; */
   font-size: 12px;
 }
 
