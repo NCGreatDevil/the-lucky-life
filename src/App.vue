@@ -43,4 +43,25 @@
   opacity: 0.3;
   z-index: 0;
 }
+
+@media (max-width: 768px) {
+  .app-container {
+    background-color: #ffffff;
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .phone-frame {
+    width: 100%;
+    height: 100vh;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    position: static;
+  }
+
+  .phone-frame::before {
+    display: none;
+  }
+}
 </style>
