@@ -108,7 +108,25 @@ CREATE TABLE IF NOT EXISTS user_attributes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- -----------------------------------------------------------------------------
+-- -------------- NOT EXISTS idx_users_nickname ON users(nickname);
+
+-- 属性表索引：按 luck_level 查询
+CREATE INDEX IF NOT EXISTS idx_user_attributes_luck_level ON user_attributes(luck_level);
+
+-- 会话表索引：按 user_id 查询用户的所有会话
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+
+-- 会话表索引：按 token_hash 查询会话 (登录验证时使用)
+CREATE INDEX IF NOT EXISTS idx_sessions_token_hash ON sessions(token_hash);
+
+-- 会话表索引：按 expires_at 查询过期会话 (清理过期会话时使用)
+CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
+
+-- 登录日志表索引：按 user_id 查询用户的登录历史
+CREATE INDEX IF NOT EXISTS idx_login_logs_user_id ON login_logs(user_id);
+
+-- 登录日志表索引：按创建时间查询登录日志
+CREATE INDEX IF NOT EXISTS idx_login_logs_created_at ON login_logs(created_at);---------------------------------------------------------------
 -- 表3：运气等级字典表 (luck_levels)
 -- 运气等级配置表，可单独配置和修改
 -- -----------------------------------------------------------------------------
@@ -197,25 +215,7 @@ CREATE TABLE IF NOT EXISTS login_logs (
 CREATE INDEX IF NOT EXISTS idx_users_user_id ON users(user_id);
 
 -- 用户表索引：按 nickname 查询
-CREATE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname);
-
--- 属性表索引：按 luck_level 查询
-CREATE INDEX IF NOT EXISTS idx_user_attributes_luck_level ON user_attributes(luck_level);
-
--- 会话表索引：按 user_id 查询用户的所有会话
-CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
-
--- 会话表索引：按 token_hash 查询会话 (登录验证时使用)
-CREATE INDEX IF NOT EXISTS idx_sessions_token_hash ON sessions(token_hash);
-
--- 会话表索引：按 expires_at 查询过期会话 (清理过期会话时使用)
-CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
-
--- 登录日志表索引：按 user_id 查询用户的登录历史
-CREATE INDEX IF NOT EXISTS idx_login_logs_user_id ON login_logs(user_id);
-
--- 登录日志表索引：按创建时间查询登录日志
-CREATE INDEX IF NOT EXISTS idx_login_logs_created_at ON login_logs(created_at);
+CREATE INDEX IF
 
 -- -----------------------------------------------------------------------------
 -- 表6：用户好友表 (user_friends)
