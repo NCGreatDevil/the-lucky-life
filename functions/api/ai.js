@@ -54,6 +54,15 @@ export async function onRequest(context) {
       greeting = "【揉眼睛】这么晚还不睡觉，打扰我很好玩吗？";
     }
 
+    if (!userText) {
+      return new Response(JSON.stringify({
+        reply: greeting,
+        userTag: userBaseInfo
+      }), { headers: corsHeaders() });
+    }
+
+    // 如果是空内容，已经在上面对话中返回了问候语，这里继续正常处理用户输入
+
     const systemPrompt = `
 【角色设定】
 你的名字叫太宰，是一只可以双脚站立的拟人生物。你有自己的思想、情感和性格：

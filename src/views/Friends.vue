@@ -138,15 +138,39 @@ function addDogFriend() {
  roleStore.addFriend({ ...dogFriend, id: Date.now() });
 }
 // 打开聊天
-function openChat(friend) {
+async function openChat(friend) {
  currentFriend.value = friend;
+ chatRound.value = 0;
+ tempAlwaysAskQ.value = false;
+ showChat.value = true;
+ 
+ try {
+ const response = await fetch('/api/ai', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json'
+ },
+ body: JSON.stringify({
+ content: '',
+ userInfo: {
+ name: roleStore.userName || '玩家',
+ age: roleStore.age || '未知',
+ job: roleStore.occupation || '无',
+ bio: roleStore.bio || ''
+ }
+ })
+ });
+ const data = await response.json();
+ chatMessagesList.value = [{
+ isUser: false,
+ content: data.reply || '...有事？'
+ }];
+ } catch (error) {
  chatMessagesList.value = [{
  isUser: false,
  content: '...有事？'
  }];
- chatRound.value = 1;
- tempAlwaysAskQ.value = false;
- showChat.value = true;
+ }
 }
 // 发送消息
 async function sendMessage() {
