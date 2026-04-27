@@ -9,35 +9,26 @@
 
     <!-- 好友列表区域 -->
     <div class="content-area">
-      <!-- 好友匹配触发 -->
-      <div class="match-section">
-        <button class="match-btn hand-drawn-border" @click="triggerMatch">
-          <span class="match-icon">🔗</span>
-          <span class="match-text">触发好友匹配</span>
-        </button>
-        <p class="match-tip">通过随机事件认识新朋友</p>
-      </div>
-
-      <!-- 匹配弹窗 -->
-      <div v-if="showMatchResult" class="match-modal modal-overlay" @click.self="closeMatch">
-        <div class="match-card modal-content hand-drawn-border">
-          <h3 class="match-title">发现新好友</h3>
-          <div class="potential-friend">
-            <div class="friend-avatar">
-              <span class="avatar-emoji">{{ matchedFriend.avatar }}</span>
+      <!-- NPC 小狗添加区域 -->
+      <div class="npc-section">
+        <div class="npc-card hand-drawn-border" v-if="!hasDogFriend">
+          <div class="npc-header">
+            <div class="npc-avatar">
+              <span class="avatar-emoji">🐕</span>
             </div>
-            <div class="friend-info">
-              <p class="friend-name">{{ matchedFriend.name }}</p>
-              <p class="friend-level">Lv.{{ matchedFriend.level }} {{ matchedFriend.title }}</p>
+            <div class="npc-info">
+              <div class="npc-name-row">
+                <p class="npc-name">太宰</p>
+                <span class="npc-tag">NPC</span>
+              </div>
+              <p class="npc-title">高冷小狗</p>
+              <p class="npc-desc">一只可以双脚站立、会说人话的高冷小狗。性格孤僻冷淡，非常不爱搭理人类。</p>
             </div>
           </div>
-          <div class="friend-tags" v-if="matchedFriend.tags.length">
-            <span v-for="tag in matchedFriend.tags" :key="tag" class="tag">{{ tag }}</span>
-          </div>
-          <div class="match-actions">
-            <button class="btn-secondary" @click="rejectMatch">拒绝</button>
-            <button class="btn-primary" @click="acceptMatch">添加</button>
-          </div>
+          <button class="add-npc-btn" @click="addDogFriend">
+            <span>🐾</span>
+            <span>添加为好友</span>
+          </button>
         </div>
       </div>
 
@@ -53,17 +44,50 @@
               <div class="friend-header">
                 <p class="friend-name">{{ friend.name }}</p>
                 <span class="friend-level">Lv.{{ friend.level }}</span>
+                <span v-if="friend.isNpc" class="npc-tag-small">NPC</span>
               </div>
               <p class="friend-title">{{ friend.title }}</p>
               <div class="friend-tags" v-if="friend.tags.length">
                 <span v-for="tag in friend.tags.slice(0, 3)" :key="tag" class="tag">{{ tag }}</span>
               </div>
             </div>
-            <button class="remove-btn" @click="removeFriend(friend.id)">×</button>
+            <div class="friend-actions">
+              <button v-if="friend.isNpc" class="chat-btn" @click="openChat(friend)">
+                💬
+              </button>
+              <button class="remove-btn" @click="removeFriend(friend.id)">×</button>
+            </div>
           </div>
         </div>
         <div v-else class="empty-tip">
-          还没有好友，通过随机事件认识新朋友吧！
+          还没有好友，先添加高冷小狗太宰吧！
+        </div>
+      </div>
+
+      <!-- 聊天弹窗 -->
+      <div v-if="showChat" class="chat-modal modal-overlay" @click.self="closeChat">
+        <div class="chat-window hand-drawn-border">
+          <div class="chat-header">
+            <div class="chat-avatar">
+              <span>{{ currentFriend?.avatar }}</span>
+            </div>
+            <div class="chat-info">
+              <p class="chat-name">{{ currentFriend?.name }}</p>
+              <div class="chat-npc-tag" v-if="currentFriend?.isNpc">NPC</div>
+            </div>
+            <button class="close-chat-btn" @click="closeChat">×</button>
+          </div>
+          <div class="chat-messages" ref="chatMessages">
+            <div v-for="(msg, index) in chatMessagesList" :key="index" :class="['message', msg.isUser ? 'user-message' : 'bot-message']">
+              <div class="message-content hand-drawn-border">
+                {{ msg.content }}
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" v-model="chatInput" class="chat-input" placeholder="说点什么..." @keyup.enter="sendMessage">
+            <button class="send-btn" @click="sendMessage">发送</button>
+          </div>
         </div>
       </div>
 
@@ -73,9 +97,9 @@
           <p class="info-icon">💡</p>
           <p class="info-text">好友功能说明</p>
           <ul class="info-list">
-            <li>好友通过随机事件匹配添加</li>
-            <li>可以查看好友的角色信息</li>
-            <li>不支持站内私信功能</li>
+            <li>点击 NPC 小狗可以添加为好友</li>
+            <li>添加后可以点击 💬 图标和小狗聊天</li>
+            <li>小狗性格高冷，回复简短</li>
           </ul>
         </div>
       </div>
@@ -83,56 +107,111 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import { useRoleStore } from '@/stores/role'
-
-const roleStore = useRoleStore()
-
-const showMatchResult = ref(false)
-const matchedFriend = ref(null)
-
-// 虚拟好友池（用于匹配）
-const friendPool = [
-  { name: '小明', avatar: '🌱', title: '好运萌新', tags: ['人缘不错'], level: 3 },
-  { name: '小红', avatar: '🌿', title: '小财神', tags: ['小财神', '开心果'], level: 8 },
-  { name: '阿强', avatar: '🌳', title: '事业有成', tags: ['职场新人', '精力充沛'], level: 12 },
-  { name: '小美', avatar: '🌸', title: '万人迷', tags: ['万人迷', '情绪稳定'], level: 15 },
-  { name: '老王', avatar: '🌲', title: '行业精英', tags: ['行业精英', '学富五车'], level: 25 },
-  { name: '小雪', avatar: '❄️', title: '桃花泛滥', tags: ['桃花泛滥', '好学宝宝'], level: 18 },
-  { name: '石头', avatar: '🪨', title: '财运亨通', tags: ['财运亨通', '精力充沛'], level: 22 },
-  { name: '云朵', avatar: '☁️', title: '博古通今', tags: ['博古通今', '情绪稳定'], level: 30 }
-]
-
-let friendIdCounter = 1
-
-function triggerMatch() {
-  const randomFriend = friendPool[Math.floor(Math.random() * friendPool.length)]
-  matchedFriend.value = {
-    ...randomFriend,
-    id: friendIdCounter++
-  }
-  showMatchResult.value = true
+<script setup>import { ref, computed } from 'vue';
+import { useRoleStore } from '@/stores/role';
+const roleStore = useRoleStore();
+// 聊天相关
+const showChat = ref(false);
+const currentFriend = ref(null);
+const chatMessagesList = ref([]);
+const chatInput = ref('');
+const chatRound = ref(0);
+const tempAlwaysAskQ = ref(false);
+// 检查是否已有小狗好友
+const hasDogFriend = computed(() => {
+ return roleStore.friends.some(f => f.isNpc);
+});
+// 小狗太宰的信息
+const dogFriend = {
+ name: '太宰',
+ avatar: '🐕',
+ title: '高冷小狗',
+ tags: ['高冷', '傲娇', '话少'],
+ level: 1,
+ isNpc: true
+};
+// 添加小狗好友
+function addDogFriend() {
+ roleStore.addFriend({ ...dogFriend, id: Date.now() });
 }
-
-function acceptMatch() {
-  if (matchedFriend.value) {
-    roleStore.addFriend(matchedFriend.value)
-  }
-  closeMatch()
+// 打开聊天
+function openChat(friend) {
+ currentFriend.value = friend;
+ chatMessagesList.value = [{
+ isUser: false,
+ content: '...有事？'
+ }];
+ chatRound.value = 1;
+ tempAlwaysAskQ.value = false;
+ showChat.value = true;
 }
-
-function rejectMatch() {
-  closeMatch()
+// 发送消息
+async function sendMessage() {
+ if (!chatInput.value.trim())
+ return;
+ // 添加用户消息
+ chatMessagesList.value.push({
+ isUser: true,
+ content: chatInput.value.trim()
+ });
+ chatRound.value++;
+ // 检查是否需要标记爱提问
+ if (!tempAlwaysAskQ.value && chatRound.value >= 6 && chatRound.value <= 10) {
+ if (Math.random() > 0.5) {
+ tempAlwaysAskQ.value = true;
+ }
+ }
+ // 调用 AI
+ try {
+ const response = await fetch('/api/ai', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json'
+ },
+ body: JSON.stringify({
+ content: chatInput.value.trim(),
+ userInfo: {
+ name: roleStore.userName || '玩家',
+ age: roleStore.age || '未知',
+ job: roleStore.occupation || '无',
+ bio: roleStore.bio || ''
+ }
+ })
+ });
+ const data = await response.json();
+ // 添加 AI 回复
+ chatMessagesList.value.push({
+ isUser: false,
+ content: data.reply || '懒得多说。'
+ });
+ }
+ catch (error) {
+ chatMessagesList.value.push({
+ isUser: false,
+ content: '网络出错了...'
+ });
+ }
+ chatInput.value = '';
+ // 滚动到底部
+ setTimeout(() => {
+ const chatMessages = document.querySelector('.chat-messages');
+ if (chatMessages) {
+ chatMessages.scrollTop = chatMessages.scrollHeight;
+ }
+ }, 100);
 }
-
-function closeMatch() {
-  showMatchResult.value = false
-  matchedFriend.value = null
+// 关闭聊天
+function closeChat() {
+ showChat.value = false;
+ currentFriend.value = null;
+ chatMessagesList.value = [];
+ chatInput.value = '';
+ chatRound.value = 0;
+ tempAlwaysAskQ.value = false;
 }
-
+// 删除好友
 function removeFriend(friendId) {
-  roleStore.removeFriend(friendId)
+ roleStore.removeFriend(friendId);
 }
 </script>
 
@@ -172,133 +251,96 @@ function removeFriend(friendId) {
   overflow-y: auto;
 }
 
-.match-section {
-  text-align: center;
+/* NPC 小狗卡片 */
+.npc-section {
   margin-bottom: 24px;
 }
 
-.match-btn {
-  width: 100%;
+.npc-card {
+  background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
   padding: 16px;
-  background: #fff;
+}
+
+.npc-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.npc-avatar {
+  width: 64px;
+  height: 64px;
   border: 2px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.npc-avatar .avatar-emoji {
+  font-size: 32px;
+}
+
+.npc-info {
+  flex: 1;
+}
+
+.npc-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.npc-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.npc-tag {
+  padding: 2px 6px;
+  background: #e0e0e0;
+  color: #666;
+  border-radius: 3px;
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.npc-title {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 2px 0 4px 0;
+}
+
+.npc-desc {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.add-npc-btn {
+  width: 100%;
+  padding: 12px;
+  background: #000;
+  color: #fff;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-weight: bold;
   transition: transform 0.1s ease;
 }
 
-.match-btn:active {
-  transform: translate(4px, 4px);
+.add-npc-btn:active {
+  transform: translate(2px, 2px);
 }
 
-.match-icon {
-  font-size: 24px;
-}
-
-.match-text {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.match-tip {
-  margin-top: 8px;
-  font-size: 12px;
-  opacity: 0.5;
-}
-
-.match-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.match-card {
-  background: #fff;
-  padding: 24px;
-  max-width: 300px;
-  width: 90%;
-  text-align: center;
-}
-
-.match-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.potential-friend {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.friend-avatar {
-  width: 56px;
-  height: 56px;
-  border: 2px solid #000;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fafafa;
-}
-
-.avatar-emoji {
-  font-size: 28px;
-}
-
-.friend-info {
-  flex: 1;
-  text-align: left;
-}
-
-.friend-name {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.friend-level {
-  font-size: 12px;
-  opacity: 0.6;
-}
-
-.friend-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.tag {
-  padding: 4px 8px;
-  background: #f5f5f5;
-  border-radius: 2px;
-  font-size: 10px;
-}
-
-.match-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.match-actions button {
-  flex: 1;
-}
-
+/* 好友列表 */
 .friends-section {
   margin-bottom: 24px;
 }
@@ -325,6 +367,21 @@ function removeFriend(friendId) {
   background: #fff;
 }
 
+.friend-avatar {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+}
+
+.avatar-emoji {
+  font-size: 24px;
+}
+
 .friend-details {
   flex: 1;
 }
@@ -332,13 +389,14 @@ function removeFriend(friendId) {
 .friend-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 2px;
 }
 
 .friend-header .friend-name {
   font-size: 14px;
   font-weight: bold;
+  margin: 0;
 }
 
 .friend-header .friend-level {
@@ -349,15 +407,55 @@ function removeFriend(friendId) {
   border-radius: 2px;
 }
 
+.npc-tag-small {
+  padding: 1px 4px;
+  background: #e0e0e0;
+  color: #666;
+  border-radius: 2px;
+  font-size: 9px;
+  opacity: 0.5;
+}
+
 .friend-title {
   font-size: 11px;
   opacity: 0.6;
-  margin-bottom: 6px;
+  margin: 2px 0 4px 0;
 }
 
-.friend-item .friend-tags {
-  justify-content: flex-start;
-  margin-bottom: 0;
+.friend-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  padding: 2px 6px;
+  background: #f5f5f5;
+  border-radius: 2px;
+  font-size: 10px;
+}
+
+.friend-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+}
+
+.chat-btn:hover {
+  background: #f0f0f0;
 }
 
 .remove-btn {
@@ -388,6 +486,147 @@ function removeFriend(friendId) {
   font-size: 14px;
 }
 
+/* 聊天弹窗 */
+.chat-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+}
+
+.chat-window {
+  width: 100%;
+  max-height: 70vh;
+  background: #fff;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 2px solid #000;
+  background: #fafafa;
+}
+
+.chat-avatar {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 12px;
+}
+
+.chat-info {
+  flex: 1;
+}
+
+.chat-name {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.chat-npc-tag {
+  font-size: 9px;
+  opacity: 0.5;
+  color: #666;
+}
+
+.close-chat-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.close-chat-btn:hover {
+  opacity: 1;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  min-height: 200px;
+}
+
+.message {
+  margin-bottom: 12px;
+  display: flex;
+}
+
+.user-message {
+  justify-content: flex-end;
+}
+
+.bot-message {
+  justify-content: flex-start;
+}
+
+.message-content {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  position: relative;
+}
+
+.user-message .message-content {
+  background: #000;
+  color: #fff;
+  border-radius: 16px 16px 4px 16px;
+}
+
+.bot-message .message-content {
+  background: #f5f5f5;
+  color: #000;
+  border-radius: 16px 16px 16px 4px;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 12px 16px;
+  border-top: 2px solid #000;
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #000;
+  border-radius: 20px;
+  font-size: 13px;
+  outline: none;
+}
+
+.send-btn {
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 互动说明 */
 .info-section {
   margin-top: auto;
 }
@@ -422,24 +661,11 @@ function removeFriend(friendId) {
   margin-bottom: 4px;
 }
 
-.btn-primary {
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 12px;
+/* 手绘边框样式 */
+.hand-drawn-border {
+  border: 2.5px solid #000;
   border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-secondary {
-  background: #fff;
-  color: #000;
-  border: 2px solid #000;
-  padding: 12px;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
 .modal-overlay {

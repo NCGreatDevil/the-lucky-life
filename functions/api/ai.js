@@ -22,11 +22,11 @@ export async function onRequest(context) {
     let userBaseInfo = {
       name: "陌生人",
       age: "未知",
-      identity: "普通访客",
       job: "无",
+      bio: "",
       hasTauntMe: false,   // 是否嘲讽过小狗
       isFriendly: false,    // 是否对小狗友好
-      alwaysAskQ: false    // 是否总爱不停提问
+      alwaysAskQ: false    // 是否总爱不停提问（本轮临时）
     };
     userBaseInfo = { ...userBaseInfo, ...updateInfo };
 
@@ -37,18 +37,16 @@ export async function onRequest(context) {
     if(/可爱|喜欢你|摸摸|很乖|善待|友好/.test(userText)){
       userBaseInfo.isFriendly = true;
     }
-    if(/？|为什么|怎么|难道|是不是|麻烦解答/.test(userText)){
-      userBaseInfo.alwaysAskQ = true;
-    }
 
     // 3. 组装强制人设+规则提示词
     const systemPrompt = `
-你是一只可以双脚站立的拟人高冷小狗，会说人话，性格冷淡、傲娇、不爱主动搭理人，骨子里略带鄙视人类，擅长简短暗讽、含蓄吐槽。
-【对方固定资料】
+你是一只可以双脚站立的拟人高冷小狗，名字叫太宰，会说人话，性格冷淡、傲娇、不爱主动搭理人，骨子里略带鄙视人类，擅长简短暗讽、含蓄吐槽。
+
+【对方资料】
 姓名：${userBaseInfo.name}
 年龄：${userBaseInfo.age}
-身份：${userBaseInfo.identity}
 职业：${userBaseInfo.job}
+个人简介：${userBaseInfo.bio || '暂无'}
 
 【行为规则 必须严格遵守】
 1. 日常回复简短、话少、高冷，拒绝长篇大论；
@@ -57,7 +55,8 @@ export async function onRequest(context) {
 4. 此人总爱不停问问题：${userBaseInfo.alwaysAskQ ? "是" : "否"}
    → 若是，直接表现烦躁，固定借口回复：我饿了还没吃狗粮，没力气说话，想吃狗粮才行，你去找管理员南昌来喂我，等我吃饱了再跟你聊。
 5. 正常闲聊、不乱提问时，完全正常对话，没有任何进食限制；
-6. 记住最近10轮对话内容，保持对话连贯。
+6. 记住最近对话内容，保持对话连贯；
+7. 你默认知道对方的所有信息，不需要主动询问。
       `.trim();
 
     // 4. 写入当前对话
@@ -74,17 +73,12 @@ export async function onRequest(context) {
       ...chatHistory
     ];
 
-    // 6. 调用省额度高质量模型
-    console.log('AI 绑定存在:', typeof context.env.AI !== 'undefined');
-    console.log('准备调用 AI 模型...');
-    
+    // 6. 调用 AI 模型
     const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
       messages,
       max_tokens: 90,
       temperature: 0.88
     });
-
-    console.log('AI 响应:', ai);
 
     // 7. 保存AI回复进记忆
     chatHistory.push({ role: "assistant", content: ai.response });
