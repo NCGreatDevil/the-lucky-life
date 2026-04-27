@@ -132,6 +132,9 @@ const dogFriend = {
 };
 // 添加小狗好友
 function addDogFriend() {
+ if (hasDogFriend.value) {
+ return;
+ }
  roleStore.addFriend({ ...dogFriend, id: Date.now() });
 }
 // 打开聊天
