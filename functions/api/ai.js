@@ -1,21 +1,6 @@
 import { corsHeaders } from '../_utils.js';
 
 export async function onRequest(context) {
-  // 短期对话记忆，限制最大10轮
-  let chatHistory = [];
-  const MAX_ROUND = 10;
-
-  // 永久固定用户档案 & 行为标签
-  let userBaseInfo = {
-    name: "陌生人",
-    age: "未知",
-    identity: "普通访客",
-    job: "无",
-    hasTauntMe: false,   // 是否嘲讽过小狗
-    isFriendly: false,    // 是否对小狗友好
-    alwaysAskQ: false    // 是否总爱不停提问
-  };
-
   if (context.request.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders() });
   }
@@ -34,6 +19,15 @@ export async function onRequest(context) {
     const updateInfo = req.userInfo || {};
 
     // 1. 更新永久用户档案
+    let userBaseInfo = {
+      name: "陌生人",
+      age: "未知",
+      identity: "普通访客",
+      job: "无",
+      hasTauntMe: false,   // 是否嘲讽过小狗
+      isFriendly: false,    // 是否对小狗友好
+      alwaysAskQ: false    // 是否总爱不停提问
+    };
     userBaseInfo = { ...userBaseInfo, ...updateInfo };
 
     // 2. 自动识别行为，永久打上标签
@@ -66,7 +60,9 @@ export async function onRequest(context) {
 6. 记住最近10轮对话内容，保持对话连贯。
       `.trim();
 
-    // 4. 写入当前对话，自动裁剪旧记录，控制token
+    // 4. 写入当前对话
+    let chatHistory = [];
+    const MAX_ROUND = 10;
     chatHistory.push({ role: "user", content: userText });
     if (chatHistory.length > MAX_ROUND) {
       chatHistory.shift();
@@ -79,11 +75,16 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用省额度高质量模型
-    const ai = await context.env.AI.run("@cf/qwen/qwen2-7b-instruct", {
+    console.log('AI 绑定存在:', typeof context.env.AI !== 'undefined');
+    console.log('准备调用 AI 模型...');
+    
+    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
       messages,
       max_tokens: 90,
       temperature: 0.88
     });
+
+    console.log('AI 响应:', ai);
 
     // 7. 保存AI回复进记忆
     chatHistory.push({ role: "assistant", content: ai.response });
@@ -99,7 +100,8 @@ export async function onRequest(context) {
   } catch (e) {
     console.error('AI 错误:', e);
     return new Response(JSON.stringify({
-      reply: "懒得多说。"
+      reply: "懒得多说。",
+      error: e.message
     }), { headers: corsHeaders() });
   }
 }
