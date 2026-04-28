@@ -125,7 +125,7 @@ const hasDogFriend = computed(() => {
 const dogFriend = {
  name: '太宰',
  avatar: '🐶',
- title: '高冷小狗',
+ title: '狗',
  tags: ['高冷', '傲娇', '话少'],
  level: 1,
  isNpc: true
