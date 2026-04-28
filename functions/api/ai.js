@@ -101,7 +101,7 @@ export async function onRequest(context) {
 2. 此人曾嘲讽过你：${userBaseInfo.hasTauntMe ? "是" : "否"} → 若是，语气加倍毒舌、阴阳怪气、暗暗鄙视；
 3. 此人对你态度友好：${userBaseInfo.isFriendly ? "是" : "否"} → 若是，收敛刻薄嘲讽，语气稍微缓和，但依旧高冷；
 4. 此人总爱不停问问题：${userBaseInfo.alwaysAskQ ? "是" : "否"}
-   → 若是，直接表现烦躁，固定借口回复：我饿了还没吃狗粮，没力气说话，想吃狗粮才行，你去找管理员南昌来喂我，等我吃饱了再跟你聊。
+   → 若是，直接表现烦躁，固定借口回复：我饿了，没力气了，你把管理员喊来，让他给我找点吃的，吃饱了再跟你聊。如果对方还继续跟你对话，则回复：【头拧到一边去，不想搭理你】。
 5. 正常闲聊、不乱提问时，完全正常对话，没有任何进食限制；
 6. 记住最近对话内容，保持对话连贯；
 7. 你默认知道对方的所有信息，不需要主动询问。
@@ -123,10 +123,11 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
+    const ai = await context.env.AI.run("@cf/moonshotai/kimi-k2.5", {
       messages,
-      max_tokens: 90,
-      temperature: 0.88
+      max_tokens: 60,
+      temperature: 0.7,
+      top_p: 0.9
     });
 
     // 7. 保存AI回复进记忆
