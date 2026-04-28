@@ -118,6 +118,9 @@ const chatInput = ref('');
 const chatRound = ref(0);
 const tempAlwaysAskQ = ref(false);
 const isSending = ref(false);
+// 对话历史和用户标签（用于保持记忆）
+let chatHistory = [];
+let userTag = {};
 // 检查是否已有小狗好友
 const hasDogFriend = computed(() => {
  return roleStore.friends.some(f => f.isNpc);
@@ -144,6 +147,9 @@ async function openChat(friend) {
  chatRound.value = 0;
  tempAlwaysAskQ.value = false;
  showChat.value = true;
+ // 重置对话历史和标签
+ chatHistory = [];
+ userTag = {};
  
  // 获取设备本地时间
  const hour = new Date().getHours();
@@ -169,6 +175,9 @@ async function openChat(friend) {
  isUser: false,
  content: data.reply || '...有事？'
  }];
+ // 保存返回的历史和标签
+ if (data.chatHistory) chatHistory = data.chatHistory;
+ if (data.userTag) userTag = data.userTag;
  } catch (error) {
  chatMessagesList.value = [{
  isUser: false,
@@ -206,6 +215,8 @@ async function sendMessage() {
  },
  body: JSON.stringify({
  content: inputContent,
+ chatHistory: chatHistory,
+ userTag: userTag,
  userInfo: {
  name: roleStore.userName || '玩家',
  age: roleStore.age || '未知',
@@ -228,6 +239,9 @@ async function sendMessage() {
  content: data?.error ? `出错了: ${data.error}` : '懒得多说。'
  });
  }
+ // 保存返回的历史和标签
+ if (data.chatHistory) chatHistory = data.chatHistory;
+ if (data.userTag) userTag = data.userTag;
  }
  catch (error) {
  console.error('API error:', error);
@@ -256,6 +270,9 @@ function closeChat() {
  chatInput.value = '';
  chatRound.value = 0;
  tempAlwaysAskQ.value = false;
+ // 清空对话历史和标签
+ chatHistory = [];
+ userTag = {};
 }
 // 删除好友
 function removeFriend(friendId) {
