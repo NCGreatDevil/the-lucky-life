@@ -86,7 +86,7 @@
           </div>
           <div class="chat-input-area">
             <input type="text" v-model="chatInput" class="chat-input" placeholder="说点什么..." @keyup.enter="sendMessage">
-            <button class="send-btn" @click="sendMessage">发送</button>
+            <button class="send-btn" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</button>
           </div>
         </div>
       </div>
@@ -117,6 +117,7 @@ const chatMessagesList = ref([]);
 const chatInput = ref('');
 const chatRound = ref(0);
 const tempAlwaysAskQ = ref(false);
+const isSending = ref(false);
 // 检查是否已有小狗好友
 const hasDogFriend = computed(() => {
  return roleStore.friends.some(f => f.isNpc);
@@ -174,12 +175,17 @@ async function openChat(friend) {
 }
 // 发送消息
 async function sendMessage() {
- if (!chatInput.value.trim())
+ if (isSending.value || !chatInput.value.trim())
  return;
+ // 锁定按钮，防止重复点击
+ isSending.value = true;
+ const inputContent = chatInput.value.trim();
+ // 立即清空输入框
+ chatInput.value = '';
  // 添加用户消息
  chatMessagesList.value.push({
  isUser: true,
- content: chatInput.value.trim()
+ content: inputContent
  });
  chatRound.value++;
  // 检查是否需要标记爱提问
@@ -196,7 +202,7 @@ async function sendMessage() {
  'Content-Type': 'application/json'
  },
  body: JSON.stringify({
- content: chatInput.value.trim(),
+ content: inputContent,
  userInfo: {
  name: roleStore.userName || '玩家',
  age: roleStore.age || '未知',
@@ -227,7 +233,10 @@ async function sendMessage() {
  content: '网络出错了...'
  });
  }
- chatInput.value = '';
+ finally {
+ // 解锁按钮
+ isSending.value = false;
+ }
  // 滚动到底部
  setTimeout(() => {
  const chatMessages = document.querySelector('.chat-messages');
