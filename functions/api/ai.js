@@ -126,28 +126,26 @@ export async function onRequest(context) {
     // 6. 调用 AI 模型
     const ai = await context.env.AI.run("@cf/zai-org/glm-4.7-flash", {
       messages,
-      max_tokens: 500,
+      max_tokens: 1000,
       temperature: 0.7,
       top_p: 0.9
     });
 
-    // 调试：输出完整的 AI 响应
-    console.log('AI 完整响应:', JSON.stringify(ai, null, 2));
-
     // 处理 glm-4.7-flash 模型的返回格式
+    // 实际返回格式: { choices: [{ message: { content: null, reasoning: "..." } }] }
     let aiReply = '';
     
-    // glm-4.7-flash 是 reasoning 模型，返回格式为 { response: "..." }
-    if (ai && typeof ai.response === 'string') {
+    if (ai && ai.choices && ai.choices[0] && ai.choices[0].message) {
+      const msg = ai.choices[0].message;
+      // 优先读取 content，如果没有则读取 reasoning
+      aiReply = msg.content || msg.reasoning || '';
+    } else if (ai && ai.result && ai.result.choices && ai.result.choices[0] && ai.result.choices[0].message) {
+      const msg = ai.result.choices[0].message;
+      aiReply = msg.content || msg.reasoning || '';
+    } else if (ai && typeof ai.response === 'string') {
       aiReply = ai.response;
     } else if (ai && typeof ai.result === 'string') {
       aiReply = ai.result;
-    } else if (ai && ai.message && typeof ai.message.content === 'string') {
-      aiReply = ai.message.content;
-    } else if (ai && ai.choices && ai.choices[0] && ai.choices[0].message && typeof ai.choices[0].message.content === 'string') {
-      aiReply = ai.choices[0].message.content;
-    } else if (ai && typeof ai.content === 'string') {
-      aiReply = ai.content;
     }
     
     // 如果内容为空，返回默认回复
@@ -157,8 +155,7 @@ export async function onRequest(context) {
 
     return new Response(JSON.stringify({
       reply: aiReply,
-      userTag: userBaseInfo,
-      debug: { rawResponse: ai }
+      userTag: userBaseInfo
     }), { headers: corsHeaders() });
 
   } catch (e) {
