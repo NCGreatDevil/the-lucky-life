@@ -124,9 +124,9 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
+    const ai = await context.env.AI.run("@cf/zai-org/glm-4.7-flash", {
       messages,
-      max_tokens: 150,
+      max_tokens: 500,
       temperature: 0.7,
       top_p: 0.9
     });
@@ -134,22 +134,17 @@ export async function onRequest(context) {
     // 处理 glm-4.7-flash 模型的返回格式
     let aiReply = '';
     
-    // Cloudflare AI glm-4.7-flash 返回格式: { response: "..." }
+    // glm-4.7-flash 是 reasoning 模型，返回格式为 { response: "..." }
     if (ai && typeof ai.response === 'string') {
       aiReply = ai.response;
     } else if (ai && typeof ai.result === 'string') {
       aiReply = ai.result;
-    } else if (ai && typeof ai.message === 'string') {
-      aiReply = ai.message;
-    } else if (ai && typeof ai === 'object') {
-      // 检查是否有嵌套的 message.content
-      if (ai.message && typeof ai.message.content === 'string') {
-        aiReply = ai.message.content;
-      } else if (ai.choices && ai.choices[0] && ai.choices[0].message && typeof ai.choices[0].message.content === 'string') {
-        aiReply = ai.choices[0].message.content;
-      } else if (ai.content && typeof ai.content === 'string') {
-        aiReply = ai.content;
-      }
+    } else if (ai && ai.message && typeof ai.message.content === 'string') {
+      aiReply = ai.message.content;
+    } else if (ai && ai.choices && ai.choices[0] && ai.choices[0].message && typeof ai.choices[0].message.content === 'string') {
+      aiReply = ai.choices[0].message.content;
+    } else if (ai && typeof ai.content === 'string') {
+      aiReply = ai.content;
     }
     
     // 如果内容为空，返回默认回复
