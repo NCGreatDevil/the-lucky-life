@@ -145,14 +145,14 @@ async function openChat(friend) {
  tempAlwaysAskQ.value = false;
  showChat.value = true;
  
+ // 获取北京时间的小时
+ const hour = new Date().getHours();
  try {
  const response = await fetch('/api/ai', {
  method: 'POST',
  headers: {
  'Content-Type': 'application/json'
  },
- // 获取北京时间的小时
- const hour = new Date().getHours();
  body: JSON.stringify({
  content: '',
  hour: hour,
