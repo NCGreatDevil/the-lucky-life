@@ -1,7 +1,8 @@
 export const SALT_LENGTH = 16;
 export const TOKEN_LENGTH = 32;
 export const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
-export const HASH_ITERATIONS = 100000;
+export const PBKDF2_ITERATIONS = 100000;
+export const PBKDF2_KEY_LENGTH = 256;
 
 export function generateSalt() {
     const array = new Uint8Array(SALT_LENGTH);
@@ -11,16 +12,24 @@ export function generateSalt() {
 
 export async function hashPassword(password, salt) {
     const encoder = new TextEncoder();
-    const data = encoder.encode(salt + password);
-    let hashValue = await crypto.subtle.digest('SHA-256', data);
-    for (let i = 0; i < HASH_ITERATIONS; i++) {
-        const iterationData = new Uint8Array(hashValue);
-        const combined = new Uint8Array(iterationData.length + 1);
-        combined.set(iterationData);
-        combined[iterationData.length] = i & 0xff;
-        hashValue = await crypto.subtle.digest('SHA-256', combined);
-    }
-    return Array.from(new Uint8Array(hashValue), b => b.toString(16).padStart(2, '0')).join('');
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(password),
+        'PBKDF2',
+        false,
+        ['deriveBits']
+    );
+    const derivedBits = await crypto.subtle.deriveBits(
+        {
+            name: 'PBKDF2',
+            salt: encoder.encode(salt),
+            iterations: PBKDF2_ITERATIONS,
+            hash: 'SHA-256'
+        },
+        keyMaterial,
+        PBKDF2_KEY_LENGTH
+    );
+    return Array.from(new Uint8Array(derivedBits), b => b.toString(16).padStart(2, '0')).join('');
 }
 
 export async function verifyPassword(password, salt, expectedHash) {
@@ -79,11 +88,26 @@ export function getLuckLabel(level) {
     return labels[level] || '平常';
 }
 
-export function corsHeaders() {
+export function corsHeaders(context) {
+    const allowedOrigins = context?.env?.ALLOWED_ORIGINS?.split(',') || ['*'];
+    const requestOrigin = context?.request?.headers?.get('Origin');
+    
+    let origin = '*';
+    if (allowedOrigins.length > 0 && allowedOrigins[0] !== '*') {
+        if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+            origin = requestOrigin;
+        } else if (!requestOrigin) {
+            origin = allowedOrigins[0];
+        } else {
+            origin = allowedOrigins[0];
+        }
+    }
+    
     return {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': origin,
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
         'Content-Type': 'application/json'
     };
 }

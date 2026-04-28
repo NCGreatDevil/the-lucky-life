@@ -4,14 +4,14 @@ import { ref, computed } from 'vue'
 const API_BASE = '/api'
 
 export const useUserStore = defineStore('user', () => {
-  const token = ref(localStorage.getItem('session_token') || '')
-  const user = ref(JSON.parse(localStorage.getItem('user_data') || 'null'))
-  const isLoggedIn = computed(() => !!token.value && !!user.value)
+  const user = ref(JSON.parse(sessionStorage.getItem('user_data') || 'null'))
+  const isLoggedIn = computed(() => !!user.value)
 
   async function register(data) {
     const res = await fetch(`${API_BASE}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(data)
     })
     const json = await res.json()
@@ -25,17 +25,15 @@ export const useUserStore = defineStore('user', () => {
     const res = await fetch(`${API_BASE}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nickname, password }),
-      credentials: 'include'
+      credentials: 'include',
+      body: JSON.stringify({ nickname, password })
     })
     const json = await res.json()
     if (!res.ok) {
       throw new Error(json.error || '登录失败')
     }
-    token.value = json.token
     user.value = json.user
-    localStorage.setItem('session_token', json.token)
-    localStorage.setItem('user_data', JSON.stringify(json.user))
+    sessionStorage.setItem('user_data', JSON.stringify(json.user))
     return json
   }
 
@@ -48,10 +46,8 @@ export const useUserStore = defineStore('user', () => {
     } catch (e) {
       console.error('登出请求失败:', e)
     }
-    token.value = ''
     user.value = null
-    localStorage.removeItem('session_token')
-    localStorage.removeItem('user_data')
+    sessionStorage.removeItem('user_data')
   }
 
   async function fetchProfile() {
@@ -67,7 +63,7 @@ export const useUserStore = defineStore('user', () => {
       throw new Error(json.error || '获取用户信息失败')
     }
     user.value = json.user
-    localStorage.setItem('user_data', JSON.stringify(json.user))
+    sessionStorage.setItem('user_data', JSON.stringify(json.user))
     return json.user
   }
 
@@ -83,12 +79,11 @@ export const useUserStore = defineStore('user', () => {
       throw new Error(json.error || '更新失败')
     }
     user.value = json.user
-    localStorage.setItem('user_data', JSON.stringify(json.user))
+    sessionStorage.setItem('user_data', JSON.stringify(json.user))
     return json
   }
 
   return {
-    token,
     user,
     isLoggedIn,
     register,

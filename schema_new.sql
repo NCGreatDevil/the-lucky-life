@@ -108,10 +108,13 @@ CREATE TABLE IF NOT EXISTS user_attributes (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- -------------- NOT EXISTS idx_users_nickname ON users(nickname);
+-- 用户表索引：按 nickname 查询
+CREATE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname);
 
 -- 属性表索引：按 luck_level 查询
 CREATE INDEX IF NOT EXISTS idx_user_attributes_luck_level ON user_attributes(luck_level);
+
+-- 属性表索引：按 user_id 查询（主键自动创建索引）
 
 -- 会话表索引：按 user_id 查询用户的所有会话
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);

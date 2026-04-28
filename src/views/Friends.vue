@@ -107,10 +107,14 @@
   </div>
 </template>
 
-<script setup>import { ref, computed } from 'vue';
+<script setup>
+import { ref, computed, onUnmounted } from 'vue';
 import { useRoleStore } from '@/stores/role';
+import { useUserStore } from '@/stores/user';
+
 const roleStore = useRoleStore();
-// 聊天相关
+const userStore = useUserStore();
+
 const showChat = ref(false);
 const currentFriend = ref(null);
 const chatMessagesList = ref([]);
@@ -118,14 +122,14 @@ const chatInput = ref('');
 const chatRound = ref(0);
 const tempAlwaysAskQ = ref(false);
 const isSending = ref(false);
-// 对话历史和用户标签（用于保持记忆）
-let chatHistory = [];
-let userTag = {};
-// 检查是否已有小狗好友
+
+const chatHistory = ref([]);
+const userTag = ref({});
+
 const hasDogFriend = computed(() => {
  return roleStore.friends.some(f => f.isNpc);
 });
-// 小狗太宰的信息
+
 const dogFriend = {
  name: '太宰',
  avatar: '🐶',
@@ -134,24 +138,22 @@ const dogFriend = {
  level: 1,
  isNpc: true
 };
-// 添加小狗好友
+
 function addDogFriend() {
  if (hasDogFriend.value) {
  return;
  }
  roleStore.addFriend({ ...dogFriend, id: Date.now() });
 }
-// 打开聊天
+
 async function openChat(friend) {
  currentFriend.value = friend;
  chatRound.value = 0;
  tempAlwaysAskQ.value = false;
  showChat.value = true;
- // 重置对话历史和标签
- chatHistory = [];
- userTag = {};
+ chatHistory.value = [];
+ userTag.value = {};
  
- // 获取设备本地时间
  const hour = new Date().getHours();
  try {
  const response = await fetch('/api/ai', {
@@ -159,75 +161,97 @@ async function openChat(friend) {
  headers: {
  'Content-Type': 'application/json'
  },
+ credentials: 'include',
  body: JSON.stringify({
  content: '',
  hour: hour,
  userInfo: {
- name: roleStore.userName || '玩家',
- age: roleStore.age || '未知',
- job: roleStore.occupation || '无',
- bio: roleStore.bio || ''
+ name: userStore.user?.nickname || '玩家',
+ age: '未知',
+ job: userStore.user?.occupation || '无',
+ bio: userStore.user?.bio || ''
  }
  })
  });
+ 
+ if (!response.ok) {
+ if (response.status === 401) {
+ await userStore.logout();
+ window.location.href = '/login';
+ return;
+ }
+ throw new Error('AI 服务异常');
+ }
+ 
  const data = await response.json();
  chatMessagesList.value = [{
  isUser: false,
  content: data.reply || '...有事？'
  }];
- // 保存返回的历史和标签
- if (data.chatHistory) chatHistory = data.chatHistory;
- if (data.userTag) userTag = data.userTag;
+ 
+ if (data.chatHistory) chatHistory.value = data.chatHistory;
+ if (data.userTag) userTag.value = data.userTag;
  } catch (error) {
+ console.error('AI 请求失败:', error);
  chatMessagesList.value = [{
  isUser: false,
  content: '...有事？'
  }];
  }
 }
-// 发送消息
+
 async function sendMessage() {
- if (isSending.value || !chatInput.value.trim())
+ if (isSending.value || !chatInput.value.trim()) {
  return;
- // 锁定按钮，防止重复点击
+ }
+ 
  isSending.value = true;
  const inputContent = chatInput.value.trim();
- // 立即清空输入框
  chatInput.value = '';
- // 添加用户消息
+ 
  chatMessagesList.value.push({
  isUser: true,
  content: inputContent
  });
  chatRound.value++;
- // 检查是否需要标记爱提问
+ 
  if (!tempAlwaysAskQ.value && chatRound.value >= 6 && chatRound.value <= 10) {
  if (Math.random() > 0.5) {
  tempAlwaysAskQ.value = true;
  }
  }
- // 调用 AI
+ 
  try {
  const response = await fetch('/api/ai', {
  method: 'POST',
  headers: {
  'Content-Type': 'application/json'
  },
+ credentials: 'include',
  body: JSON.stringify({
  content: inputContent,
- chatHistory: chatHistory,
- userTag: userTag,
+ chatHistory: chatHistory.value,
+ userTag: userTag.value,
  userInfo: {
- name: roleStore.userName || '玩家',
- age: roleStore.age || '未知',
- job: roleStore.occupation || '无',
- bio: roleStore.bio || ''
+ name: userStore.user?.nickname || '玩家',
+ age: '未知',
+ job: userStore.user?.occupation || '无',
+ bio: userStore.user?.bio || ''
  }
  })
  });
+ 
+ if (!response.ok) {
+ if (response.status === 401) {
+ await userStore.logout();
+ window.location.href = '/login';
+ return;
+ }
+ throw new Error('AI 服务异常');
+ }
+ 
  const data = await response.json();
- console.log('AI response:', data);
- // 添加 AI 回复
+ 
  if (data && data.reply && data.reply.trim()) {
  chatMessagesList.value.push({
  isUser: false,
@@ -236,25 +260,22 @@ async function sendMessage() {
  } else {
  chatMessagesList.value.push({
  isUser: false,
- content: data?.error ? `出错了: ${data.error}` : '懒得多说。'
+ content: '懒得多说。'
  });
  }
- // 保存返回的历史和标签
- if (data.chatHistory) chatHistory = data.chatHistory;
- if (data.userTag) userTag = data.userTag;
- }
- catch (error) {
+ 
+ if (data.chatHistory) chatHistory.value = data.chatHistory;
+ if (data.userTag) userTag.value = data.userTag;
+ } catch (error) {
  console.error('API error:', error);
  chatMessagesList.value.push({
  isUser: false,
  content: '网络出错了...'
  });
- }
- finally {
- // 解锁按钮
+ } finally {
  isSending.value = false;
  }
- // 滚动到底部
+ 
  setTimeout(() => {
  const chatMessages = document.querySelector('.chat-messages');
  if (chatMessages) {
@@ -262,7 +283,7 @@ async function sendMessage() {
  }
  }, 100);
 }
-// 关闭聊天
+
 function closeChat() {
  showChat.value = false;
  currentFriend.value = null;
@@ -270,14 +291,18 @@ function closeChat() {
  chatInput.value = '';
  chatRound.value = 0;
  tempAlwaysAskQ.value = false;
- // 清空对话历史和标签
- chatHistory = [];
- userTag = {};
+ chatHistory.value = [];
+ userTag.value = {};
 }
-// 删除好友
+
 function removeFriend(friendId) {
  roleStore.removeFriend(friendId);
 }
+
+onUnmounted(() => {
+ chatHistory.value = [];
+ userTag.value = [];
+});
 </script>
 
 <style scoped>

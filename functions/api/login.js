@@ -2,13 +2,13 @@ import { generateToken, hashToken, generateGUID, corsHeaders, verifyPassword, ge
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
-        return new Response(null, { headers: corsHeaders() });
+        return new Response(null, { headers: corsHeaders(context) });
     }
 
     if (context.request.method !== 'POST') {
         return new Response(JSON.stringify({ error: 'Method not allowed' }), {
             status: 405,
-            headers: corsHeaders()
+            headers: corsHeaders(context)
         });
     }
 
@@ -19,7 +19,7 @@ export async function onRequest(context) {
         if (!nickname || !password) {
             return new Response(JSON.stringify({ error: '请填写用户ID和密码' }), {
                 status: 400,
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
         }
 
@@ -39,7 +39,7 @@ export async function onRequest(context) {
 
             return new Response(JSON.stringify({ error: '用户ID或密码错误' }), {
                 status: 401,
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
         }
 
@@ -55,7 +55,7 @@ export async function onRequest(context) {
 
             return new Response(JSON.stringify({ error: '用户ID或密码错误' }), {
                 status: 401,
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
         }
 
@@ -78,8 +78,6 @@ export async function onRequest(context) {
         return new Response(JSON.stringify({
             success: true,
             message: '登录成功',
-            token,
-            expiresAt,
             user: {
                 id: user.user_id,
                 nickname: user.nickname,
@@ -91,7 +89,7 @@ export async function onRequest(context) {
             }
         }), {
             headers: {
-                ...corsHeaders(),
+                ...corsHeaders(context),
                 'Set-Cookie': `session_token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${7 * 24 * 60 * 60}`
             }
         });
@@ -100,7 +98,7 @@ export async function onRequest(context) {
         console.error('登录错误:', error);
         return new Response(JSON.stringify({ error: '服务器内部错误' }), {
             status: 500,
-            headers: corsHeaders()
+            headers: corsHeaders(context)
         });
     }
 }

@@ -2,7 +2,7 @@ import { hashToken, corsHeaders, getNowISO, isISOExpired } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
-        return new Response(null, { headers: corsHeaders() });
+        return new Response(null, { headers: corsHeaders(context) });
     }
 
     const cookieHeader = context.request.headers.get('Cookie') || '';
@@ -18,7 +18,7 @@ export async function onRequest(context) {
     if (!token) {
         return new Response(JSON.stringify({ error: '未登录' }), {
             status: 401,
-            headers: corsHeaders()
+            headers: corsHeaders(context)
         });
     }
 
@@ -30,7 +30,7 @@ export async function onRequest(context) {
     if (!session || isISOExpired(session.expires_at)) {
         return new Response(JSON.stringify({ error: '会话已过期，请重新登录' }), {
             status: 401,
-            headers: corsHeaders()
+            headers: corsHeaders(context)
         });
     }
 
@@ -41,7 +41,7 @@ export async function onRequest(context) {
             if (!user) {
                 return new Response(JSON.stringify({ error: '用户不存在' }), {
                     status: 404,
-                    headers: corsHeaders()
+                    headers: corsHeaders(context)
                 });
             }
 
@@ -75,14 +75,14 @@ export async function onRequest(context) {
                     } : null
                 }
             }), {
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
 
         } catch (error) {
             console.error('获取用户信息错误:', error);
             return new Response(JSON.stringify({ error: '服务器内部错误' }), {
                 status: 500,
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
         }
     }
@@ -101,7 +101,7 @@ export async function onRequest(context) {
                 if (existingUser) {
                     return new Response(JSON.stringify({ error: '该昵称已被使用' }), {
                         status: 409,
-                        headers: corsHeaders()
+                        headers: corsHeaders(context)
                     });
                 }
                 updates.push('nickname = ?');
@@ -112,7 +112,7 @@ export async function onRequest(context) {
                 if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday)) {
                     return new Response(JSON.stringify({ error: '出生日期格式不正确' }), {
                         status: 400,
-                        headers: corsHeaders()
+                        headers: corsHeaders(context)
                     });
                 }
                 updates.push('birthday = ?');
@@ -174,21 +174,21 @@ export async function onRequest(context) {
                     } : null
                 }
             }), {
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
 
         } catch (error) {
             console.error('更新用户信息错误:', error);
             return new Response(JSON.stringify({ error: '服务器内部错误' }), {
                 status: 500,
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
         }
     }
 
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405,
-        headers: corsHeaders()
+        headers: corsHeaders(context)
     });
 }
 

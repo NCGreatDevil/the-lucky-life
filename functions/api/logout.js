@@ -2,13 +2,13 @@ import { hashToken, corsHeaders, isISOExpired } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
-        return new Response(null, { headers: corsHeaders() });
+        return new Response(null, { headers: corsHeaders(context) });
     }
 
     if (context.request.method !== 'POST') {
         return new Response(JSON.stringify({ error: 'Method not allowed' }), {
             status: 405,
-            headers: corsHeaders()
+            headers: corsHeaders(context)
         });
     }
 
@@ -26,7 +26,7 @@ export async function onRequest(context) {
         if (!token) {
             return new Response(JSON.stringify({ error: '未登录' }), {
                 status: 401,
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
         }
 
@@ -38,7 +38,7 @@ export async function onRequest(context) {
             await db.prepare('DELETE FROM sessions WHERE id = ?').bind(session.id).run();
             return new Response(JSON.stringify({ error: '会话已过期，请重新登录' }), {
                 status: 401,
-                headers: corsHeaders()
+                headers: corsHeaders(context)
             });
         }
 
@@ -48,7 +48,7 @@ export async function onRequest(context) {
 
         return new Response(JSON.stringify({ success: true, message: '已退出登录' }), {
             headers: {
-                ...corsHeaders(),
+                ...corsHeaders(context),
                 'Set-Cookie': 'session_token=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0'
             }
         });
@@ -57,7 +57,7 @@ export async function onRequest(context) {
         console.error('退出登录错误:', error);
         return new Response(JSON.stringify({ error: '服务器内部错误' }), {
             status: 500,
-            headers: corsHeaders()
+            headers: corsHeaders(context)
         });
     }
 }
