@@ -123,7 +123,7 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/moonshotai/kimi-k2.5", {
+    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
       messages,
       max_tokens: 60,
       temperature: 0.7,
@@ -144,7 +144,7 @@ export async function onRequest(context) {
   } catch (e) {
     console.error('AI 错误:', e);
     return new Response(JSON.stringify({
-      reply: "懒得多说。",
+      reply: "有异常情况，让我先休息会，你找管理员问问什么情况",
       error: e.message
     }), { headers: corsHeaders() });
   }
