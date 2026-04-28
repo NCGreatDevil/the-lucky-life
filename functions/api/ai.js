@@ -124,7 +124,7 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/qwen/qwen3-30b-a3b-instruct", {
+    const ai = await context.env.AI.run("@cf/qwen/qwen3-30b-a3b-fp8", {
       messages,
       max_tokens: 300,
       temperature: 0.7,
