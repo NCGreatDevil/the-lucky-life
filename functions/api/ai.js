@@ -124,7 +124,7 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
+    const ai = await context.env.AI.run("@cf/zai-org/glm-4.7-flash", {
       messages,
       max_tokens: 100,
       temperature: 0.6,
