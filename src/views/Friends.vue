@@ -206,13 +206,22 @@ async function sendMessage() {
  })
  });
  const data = await response.json();
+ console.log('AI response:', data);
  // 添加 AI 回复
+ if (data && data.reply && data.reply.trim()) {
  chatMessagesList.value.push({
  isUser: false,
- content: data.reply || '懒得多说。'
+ content: data.reply.trim()
+ });
+ } else {
+ chatMessagesList.value.push({
+ isUser: false,
+ content: data?.error ? `出错了: ${data.error}` : '懒得多说。'
  });
  }
+ }
  catch (error) {
+ console.error('API error:', error);
  chatMessagesList.value.push({
  isUser: false,
  content: '网络出错了...'
