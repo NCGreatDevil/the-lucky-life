@@ -123,7 +123,7 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/moonshotai/kimi-k2.6", {
+    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
       messages,
       max_tokens: 60,
       temperature: 0.7,
