@@ -124,11 +124,11 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
+    const ai = await context.env.AI.run("@cf/qwen/qwen1.5-14b-chat-awq", {
       messages,
-      max_tokens: 60,
-      temperature: 0.7,
-      top_p: 0.9
+      max_tokens: 100,
+      temperature: 0.6,
+      top_p: 0.85
     });
 
     // 7. 保存AI回复进记忆
