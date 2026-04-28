@@ -14,7 +14,7 @@
         <div class="npc-card hand-drawn-border" v-if="!hasDogFriend">
           <div class="npc-header">
             <div class="npc-avatar">
-              <span class="avatar-emoji">🐕</span>
+              <span class="avatar-emoji">🐶</span>
             </div>
             <div class="npc-info">
               <div class="npc-name-row">
@@ -124,7 +124,7 @@ const hasDogFriend = computed(() => {
 // 小狗太宰的信息
 const dogFriend = {
  name: '太宰',
- avatar: '🐕',
+ avatar: '🐶',
  title: '高冷小狗',
  tags: ['高冷', '傲娇', '话少'],
  level: 1,
