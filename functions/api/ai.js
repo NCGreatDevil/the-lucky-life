@@ -132,7 +132,31 @@ export async function onRequest(context) {
     });
 
     // 处理不同模型的返回格式
-    const aiReply = ai.response || ai.result || ai.message || JSON.stringify(ai);
+    let aiReply = '';
+    if (ai.response) {
+      aiReply = ai.response;
+    } else if (ai.result) {
+      aiReply = ai.result;
+    } else if (ai.message) {
+      aiReply = ai.message;
+    } else if (typeof ai === 'string') {
+      // 尝试解析 JSON 格式的响应
+      try {
+        const parsed = JSON.parse(ai);
+        if (parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+          aiReply = parsed.choices[0].message.content || parsed.choices[0].message.reasoning || '';
+        } else if (parsed.content) {
+          aiReply = parsed.content;
+        }
+      } catch (e) {
+        aiReply = ai;
+      }
+    }
+    
+    // 如果内容为空，返回默认回复
+    if (!aiReply || aiReply.trim() === '') {
+      aiReply = '...';
+    }
 
     // 7. 保存AI回复进记忆
     chatHistory.push({ role: "assistant", content: aiReply });
