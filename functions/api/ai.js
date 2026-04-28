@@ -131,25 +131,24 @@ export async function onRequest(context) {
       top_p: 0.85
     });
 
-    // 处理不同模型的返回格式
+    // 处理 glm-4.7-flash 模型的返回格式
     let aiReply = '';
-    if (ai.response) {
+    
+    // Cloudflare AI glm-4.7-flash 返回格式: { response: "..." }
+    if (ai && typeof ai.response === 'string') {
       aiReply = ai.response;
-    } else if (ai.result) {
+    } else if (ai && typeof ai.result === 'string') {
       aiReply = ai.result;
-    } else if (ai.message) {
+    } else if (ai && typeof ai.message === 'string') {
       aiReply = ai.message;
-    } else if (typeof ai === 'string') {
-      // 尝试解析 JSON 格式的响应
-      try {
-        const parsed = JSON.parse(ai);
-        if (parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
-          aiReply = parsed.choices[0].message.content || parsed.choices[0].message.reasoning || '';
-        } else if (parsed.content) {
-          aiReply = parsed.content;
-        }
-      } catch (e) {
-        aiReply = ai;
+    } else if (ai && typeof ai === 'object') {
+      // 检查是否有嵌套的 message.content
+      if (ai.message && typeof ai.message.content === 'string') {
+        aiReply = ai.message.content;
+      } else if (ai.choices && ai.choices[0] && ai.choices[0].message && typeof ai.choices[0].message.content === 'string') {
+        aiReply = ai.choices[0].message.content;
+      } else if (ai.content && typeof ai.content === 'string') {
+        aiReply = ai.content;
       }
     }
     
