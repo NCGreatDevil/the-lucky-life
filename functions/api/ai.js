@@ -124,11 +124,11 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/zai-org/glm-4.7-flash", {
+    const ai = await context.env.AI.run("@cf/meta/llama-3-8b-instruct", {
       messages,
-      max_tokens: 100,
-      temperature: 0.6,
-      top_p: 0.85
+      max_tokens: 150,
+      temperature: 0.7,
+      top_p: 0.9
     });
 
     // 处理 glm-4.7-flash 模型的返回格式
