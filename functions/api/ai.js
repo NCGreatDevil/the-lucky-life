@@ -84,6 +84,7 @@ export async function onRequest(context) {
 
     // 8. 解析AI返回
     let aiReply = '';
+    console.log('Raw AI response:', JSON.stringify(ai));
     if (ai && typeof ai.response === 'string') {
       aiReply = ai.response;
     } else if (ai && ai.choices && ai.choices[0] && ai.choices[0].message) {
@@ -95,6 +96,7 @@ export async function onRequest(context) {
     } else if (ai && typeof ai.result === 'string') {
       aiReply = ai.result;
     }
+    console.log('Parsed aiReply:', aiReply);
     aiReply = aiReply.trim() || '...';
 
     // 9. 把AI回复加入历史，返回给前端保存
