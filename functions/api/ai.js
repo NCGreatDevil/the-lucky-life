@@ -124,26 +124,25 @@ export async function onRequest(context) {
     ];
 
     // 6. 调用 AI 模型
-    const ai = await context.env.AI.run("@cf/zai-org/glm-4.7-flash", {
+    const ai = await context.env.AI.run("@cf/qwen/qwen3-30b-a3b-instruct", {
       messages,
-      max_tokens: 1000,
+      max_tokens: 300,
       temperature: 0.7,
       top_p: 0.9
     });
 
-    // 处理 glm-4.7-flash 模型的返回格式
-    // 实际返回格式: { choices: [{ message: { content: null, reasoning: "..." } }] }
+    // 处理 AI 模型的返回格式
     let aiReply = '';
     
-    if (ai && ai.choices && ai.choices[0] && ai.choices[0].message) {
+    // 尝试多种可能的返回格式
+    if (ai && typeof ai.response === 'string') {
+      aiReply = ai.response;
+    } else if (ai && ai.choices && ai.choices[0] && ai.choices[0].message) {
       const msg = ai.choices[0].message;
-      // 优先读取 content，如果没有则读取 reasoning
       aiReply = msg.content || msg.reasoning || '';
     } else if (ai && ai.result && ai.result.choices && ai.result.choices[0] && ai.result.choices[0].message) {
       const msg = ai.result.choices[0].message;
       aiReply = msg.content || msg.reasoning || '';
-    } else if (ai && typeof ai.response === 'string') {
-      aiReply = ai.response;
     } else if (ai && typeof ai.result === 'string') {
       aiReply = ai.result;
     }
