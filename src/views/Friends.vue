@@ -64,25 +64,12 @@
         </div>
       </div>
 
-      <!-- 聊天弹窗 - 全屏 -->
-      <div v-if="showChat" class="chat-modal">
-        <div class="chat-window-fullscreen">
+      <!-- 聊天弹窗 -->
+      <div v-if="showChat" class="chat-modal modal-overlay" @click.self="closeChat">
+        <div class="chat-window hand-drawn-border">
           <div class="chat-header">
             <div class="chat-avatar">
-              <svg v-if="currentFriend?.isNpc" viewBox="0 0 40 40" class="dog-icon">
-                <circle cx="20" cy="20" r="18" fill="none" stroke="#000" stroke-width="1.5"/>
-                <ellipse cx="14" cy="15" rx="3" ry="4" fill="none" stroke="#000" stroke-width="1.5"/>
-                <ellipse cx="26" cy="15" rx="3" ry="4" fill="none" stroke="#000" stroke-width="1.5"/>
-                <circle cx="14" cy="15" r="1.5" fill="#000"/>
-                <circle cx="26" cy="15" r="1.5" fill="#000"/>
-                <path d="M 16 22 Q 20 25 24 22" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
-                <ellipse cx="20" cy="28" rx="4" ry="3" fill="none" stroke="#000" stroke-width="1.5"/>
-                <line x1="6" y1="18" x2="11" y2="16" stroke="#000" stroke-width="1.5"/>
-                <line x1="6" y1="22" x2="11" y2="21" stroke="#000" stroke-width="1.5"/>
-                <line x1="29" y1="16" x2="34" y2="18" stroke="#000" stroke-width="1.5"/>
-                <line x1="29" y1="21" x2="34" y2="22" stroke="#000" stroke-width="1.5"/>
-              </svg>
-              <span v-else>{{ currentFriend?.avatar }}</span>
+              <span>{{ currentFriend?.isNpc ? '🐶' : currentFriend?.avatar }}</span>
             </div>
             <div class="chat-info">
               <p class="chat-name">{{ currentFriend?.name }}</p>
@@ -526,27 +513,28 @@ function removeFriend(friendId) {
   font-size: 14px;
 }
 
-/* 聊天弹窗 - 全屏 */
+/* 聊天弹窗 */
 .chat-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 100;
 }
 
-.chat-window-fullscreen {
+.chat-window {
   width: 100%;
-  height: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-}
-
-.dog-icon {
-  width: 100%;
-  height: 100%;
 }
 
 .chat-header {
