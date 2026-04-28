@@ -131,14 +131,17 @@ export async function onRequest(context) {
       top_p: 0.85
     });
 
+    // 处理不同模型的返回格式
+    const aiReply = ai.response || ai.result || ai.message || JSON.stringify(ai);
+
     // 7. 保存AI回复进记忆
-    chatHistory.push({ role: "assistant", content: ai.response });
+    chatHistory.push({ role: "assistant", content: aiReply });
     if (chatHistory.length > MAX_ROUND) {
       chatHistory.shift();
     }
 
     return new Response(JSON.stringify({
-      reply: ai.response,
+      reply: aiReply,
       userTag: userBaseInfo
     }), { headers: corsHeaders() });
 
