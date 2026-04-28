@@ -151,8 +151,11 @@ async function openChat(friend) {
  headers: {
  'Content-Type': 'application/json'
  },
+ // 获取北京时间的小时
+ const hour = new Date().getHours();
  body: JSON.stringify({
  content: '',
+ hour: hour,
  userInfo: {
  name: roleStore.userName || '玩家',
  age: roleStore.age || '未知',
