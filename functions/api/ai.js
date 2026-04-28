@@ -131,6 +131,9 @@ export async function onRequest(context) {
       top_p: 0.9
     });
 
+    // 调试：输出完整的 AI 响应
+    console.log('AI 完整响应:', JSON.stringify(ai, null, 2));
+
     // 处理 glm-4.7-flash 模型的返回格式
     let aiReply = '';
     
@@ -152,15 +155,10 @@ export async function onRequest(context) {
       aiReply = '...';
     }
 
-    // 7. 保存AI回复进记忆
-    chatHistory.push({ role: "assistant", content: aiReply });
-    if (chatHistory.length > MAX_ROUND) {
-      chatHistory.shift();
-    }
-
     return new Response(JSON.stringify({
       reply: aiReply,
-      userTag: userBaseInfo
+      userTag: userBaseInfo,
+      debug: { rawResponse: ai }
     }), { headers: corsHeaders() });
 
   } catch (e) {
