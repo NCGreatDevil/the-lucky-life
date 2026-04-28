@@ -38,31 +38,11 @@ export async function onRequest(context) {
       userBaseInfo.isFriendly = true;
     }
 
-    // 使用前端传递的时间（北京时间），如果没有则使用服务器时间
+    // 使用前端传递的设备时间，如果没有则使用服务器时间
     const hour = req.hour !== undefined ? req.hour : new Date().getHours();
-    let greeting = "";
-    if (hour >= 5 && hour < 9) {
-      greeting = "【打哈欠】这么早找我干嘛？";
-    } else if (hour >= 9 && hour < 12) {
-      greeting = "【揉眼睛】找我什么事？";
-    } else if (hour >= 12 && hour < 14) {
-      greeting = "【伸懒腰】饿了，别烦我。";
-    } else if (hour >= 14 && hour < 18) {
-      greeting = "【趴下】...说吧。";
-    } else if (hour >= 18 && hour < 22) {
-      greeting = "【甩尾巴】怎么又来了？";
-    } else {
-      greeting = "【揉眼睛】这么晚还不睡觉，打扰我很好玩吗？";
-    }
 
-    if (!userText) {
-      return new Response(JSON.stringify({
-        reply: greeting,
-        userTag: userBaseInfo
-      }), { headers: corsHeaders() });
-    }
-
-    // 如果是空内容，已经在上面对话中返回了问候语，这里继续正常处理用户输入
+    // 如果是空内容（首次打开聊天），让 AI 生成问候语
+    const userMessage = userText || `（当前时间${hour}点，请根据时间生成符合太宰性格的开场问候语）`;
 
     const systemPrompt = `
 【角色设定】
@@ -81,6 +61,9 @@ export async function onRequest(context) {
 职业：${userBaseInfo.job}
 个人简介：${userBaseInfo.bio || '暂无'}
 
+【当前时间】
+对方设备当前时间为：${hour}点
+
 【语言规范】
 - 所有输出必须使用中文简体
 - 只有在第一次问候时才能使用动作表情（如【打哈欠】【揉眼睛】【趴下】【甩尾巴】等）
@@ -89,13 +72,14 @@ export async function onRequest(context) {
 - 但不能用表情符号代替核心文字，如"我很开心"不能写成"我很😊"
 
 【问候规则】
-第一次问候时必须使用以下符合当前时间的问候语（只选其一），且之后不再使用：
-- 早上5-9点：${hour >= 5 && hour < 9 ? greeting : ""}
-- 上午9-12点：${hour >= 9 && hour < 12 ? greeting : ""}
-- 中午12-14点：${hour >= 12 && hour < 14 ? greeting : ""}
-- 下午14-18点：${hour >= 14 && hour < 18 ? greeting : ""}
-- 晚上18-22点：${hour >= 18 && hour < 22 ? greeting : ""}
-- 深夜22点-凌晨5点：${hour >= 22 || hour < 5 ? greeting : ""}
+第一次问候时，必须根据对方当前设备时间（${hour}点）生成符合时段的开场白：
+- 早上5-9点：可以配合打哈欠、伸懒腰等动作，表达被吵醒的不耐烦
+- 上午9-12点：正常工作时间，语气可以冷淡
+- 中午12-14点：午休时间，可以表达饿了或想休息
+- 下午14-18点：下午时段，语气冷淡简短
+- 晚上18-22点：晚间时段，可以表达准备休息
+- 深夜22点-凌晨5点：深夜时段，配合揉眼睛等动作，表达被打扰的不满
+问候语必须结合时间，简短自然，符合高冷性格，之后不再重复使用动作表情。
 
 【行为规则 必须严格遵守】
 1. 日常回复简短、话少、高冷，拒绝长篇大论；
@@ -112,7 +96,7 @@ export async function onRequest(context) {
     // 4. 写入当前对话
     let chatHistory = [];
     const MAX_ROUND = 10;
-    chatHistory.push({ role: "user", content: userText });
+    chatHistory.push({ role: "user", content: userMessage });
     if (chatHistory.length > MAX_ROUND) {
       chatHistory.shift();
     }

@@ -145,11 +145,8 @@ async function openChat(friend) {
  tempAlwaysAskQ.value = false;
  showChat.value = true;
  
- // 获取北京时间的小时（UTC+8）
- const now = new Date();
- const utc = now.getTime() + now.getTimezoneOffset() * 60000;
- const beijingTime = new Date(utc + 8 * 3600000);
- const hour = beijingTime.getHours();
+ // 获取设备本地时间
+ const hour = new Date().getHours();
  try {
  const response = await fetch('/api/ai', {
  method: 'POST',
