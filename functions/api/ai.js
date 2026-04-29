@@ -109,15 +109,7 @@ export async function onRequest(context) {
       ...chatHistory
     ];
 
-    const ai = await context.env.AI.run("@cf/qwen/qwen3-30b-a3b-fp8", {
-      messages,
-      max_tokens: 200,
-      temperature: 0.5,
-      top_p: 0.9
-    });
-
-    let aiReply = parseAIResponse(ai);
-    aiReply = aiReply.trim() || '...';
+    const aiReply = await callDeepSeek(messages, context.env.DEEPSEEK_API_KEY);
 
     chatHistory.push({ role: "assistant", content: aiReply });
 
@@ -136,6 +128,36 @@ export async function onRequest(context) {
       headers: corsHeaders(context) 
     });
   }
+}
+
+async function callDeepSeek(messages, apiKey) {
+  if (!apiKey) {
+    throw new Error('未配置 DEEPSEEK_API_KEY');
+  }
+
+  const response = await fetch('https://api.deepseek.com/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages,
+      max_tokens: 200,
+      temperature: 0.5,
+      top_p: 0.9
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error('DeepSeek API 错误:', error);
+    throw new Error('DeepSeek API 调用失败');
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content?.trim() || '...';
 }
 
 function parseAIResponse(ai) {
