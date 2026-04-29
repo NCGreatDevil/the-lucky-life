@@ -59,14 +59,21 @@ export class TaizaiNPC extends NPCBase {
     });
   }
 
-  getSystemPrompt(userInfo, chatHistory) {
+  getStaticPrompt() {
+    return `
+${this.personality}
+
+【对话规则】
+${this.rules.join('\n')}
+`.trim();
+  }
+
+  getDynamicContext(userInfo, chatHistory) {
     const hour = new Date().getHours();
     const timeContext = this.getTimeContext(hour);
     const isFirstChat = chatHistory.length === 0;
 
     return `
-${this.personality}
-
 【对话对象】
 - 姓名：${userInfo.name || '未知'}
 - 年龄：${userInfo.age || '未知'}
@@ -80,11 +87,12 @@ ${this.personality}
 
 【当前时间】${hour}点（${timeContext}）
 
-【对话规则】
-${this.rules.join('\n')}
-
 ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContext}）和太宰性格的简短问候，不超过15字。` : ''}
 `.trim();
+  }
+
+  getSystemPrompt(userInfo, chatHistory) {
+    return `${this.getStaticPrompt()}\n\n${this.getDynamicContext(userInfo, chatHistory)}`;
   }
 
   getRefusalMessage() {

@@ -9,13 +9,20 @@ export class NPCBase {
     this.greetingHours = config.greetingHours || {};
   }
 
-  getSystemPrompt(userInfo, chatHistory) {
+  getStaticPrompt() {
+    return `
+${this.personality}
+
+【对话规则】
+${this.rules.join('\n')}
+`.trim();
+  }
+
+  getDynamicContext(userInfo, chatHistory) {
     const hour = new Date().getHours();
     const timeContext = this.getTimeContext(hour);
 
     return `
-${this.personality}
-
 【对话对象】
 - 姓名：${userInfo.name || '未知'}
 - 年龄：${userInfo.age || '未知'}
@@ -23,10 +30,11 @@ ${this.personality}
 - 简介：${userInfo.bio || '暂无'}
 
 【当前时间】${hour}点（${timeContext}）
-
-【对话规则】
-${this.rules.join('\n')}
 `.trim();
+  }
+
+  getSystemPrompt(userInfo, chatHistory) {
+    return `${this.getStaticPrompt()}\n\n${this.getDynamicContext(userInfo, chatHistory)}`;
   }
 
   getTimeContext(hour) {

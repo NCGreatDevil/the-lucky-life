@@ -111,10 +111,12 @@ export async function onRequest(context) {
       }), { headers: corsHeaders(context) });
     }
 
-    const systemPrompt = npc.getSystemPrompt(userInfo, chatHistory);
+    const staticPrompt = npc.getStaticPrompt();
+    const dynamicContext = npc.getDynamicContext(userInfo, chatHistory);
 
     const messages = [
-      { role: "system", content: systemPrompt },
+      { role: "system", content: staticPrompt },
+      { role: "system", content: dynamicContext },
       ...chatHistory
     ];
 
@@ -153,10 +155,11 @@ async function callDeepSeek(messages, apiKey) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      'Authorization': `Bearer ${apiKey}`,
+      'OpenAI-Beta': 'prompt-caching=v1'
     },
     body: JSON.stringify({
-      model: 'deepseek-chat',
+      model: 'deepseek-v4-flash',
       messages,
       max_tokens: 150,
       temperature: 0.7,
@@ -173,6 +176,16 @@ async function callDeepSeek(messages, apiKey) {
   }
 
   const data = await response.json();
+  
+  if (data.usage) {
+    console.log('DeepSeek Token 用量:', {
+      prompt_tokens: data.usage.prompt_tokens,
+      completion_tokens: data.usage.completion_tokens,
+      total_tokens: data.usage.total_tokens,
+      prompt_cache_hit_tokens: data.usage.prompt_tokens_details?.cached_tokens || 0,
+      prompt_cache_miss_tokens: data.usage.prompt_tokens_details?.uncached_tokens || 0
+    });
+  }
   
   if (!data.choices || data.choices.length === 0) {
     console.error('DeepSeek 返回空响应:', JSON.stringify(data));
