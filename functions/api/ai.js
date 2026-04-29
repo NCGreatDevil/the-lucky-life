@@ -74,7 +74,8 @@ export async function onRequest(context) {
       hasTauntMe: userState.hasTauntMe || false,
       isFriendly: userState.isFriendly || false,
       alwaysAskQ: userState.alwaysAskQ || false,
-      askCount: userState.askCount || 0
+      askCount: userState.askCount || 0,
+      isRefused: userState.isRefused || false
     };
 
     if (req.userInfo) {
@@ -82,6 +83,19 @@ export async function onRequest(context) {
     }
 
     const npc = getNPC(npcId);
+
+    if (userInfo.isRefused) {
+      const refusal = npc.getRefusalMessage();
+      chatHistory.push({ role: "user", content: userText });
+      chatHistory.push({ role: "assistant", content: refusal });
+      
+      return new Response(JSON.stringify({
+        reply: refusal,
+        userTag: userInfo,
+        chatHistory: chatHistory,
+        isRefused: true
+      }), { headers: corsHeaders(context) });
+    }
 
     if (userText) {
       const newState = npc.processUserInput(userText, userInfo);
@@ -100,14 +114,17 @@ export async function onRequest(context) {
       chatHistory = chatHistory.slice(-MAX_HISTORY);
     }
 
-    if (npc.shouldRefuseReply(userInfo)) {
+    if (npc.shouldRefuseReply(userInfo, chatHistory)) {
       const refusal = npc.getRefusalMessage();
       chatHistory.push({ role: "assistant", content: refusal });
+      
+      userInfo.isRefused = true;
       
       return new Response(JSON.stringify({
         reply: refusal,
         userTag: userInfo,
-        chatHistory: chatHistory
+        chatHistory: chatHistory,
+        isRefused: true
       }), { headers: corsHeaders(context) });
     }
 

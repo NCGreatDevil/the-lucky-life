@@ -84,9 +84,12 @@
               </div>
             </div>
           </div>
-          <div class="chat-input-area">
+          <div class="chat-input-area" v-if="!isRefused">
             <input type="text" v-model="chatInput" class="chat-input" placeholder="说点什么..." @keyup.enter="sendMessage">
             <button class="send-btn" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</button>
+          </div>
+          <div class="chat-refused-tip" v-else>
+            <p>太宰不想说话了，下次再来吧 😴</p>
           </div>
         </div>
       </div>
@@ -122,6 +125,7 @@ const chatInput = ref('');
 const chatRound = ref(0);
 const tempAlwaysAskQ = ref(false);
 const isSending = ref(false);
+const isRefused = ref(false);
 
 const chatHistory = ref([]);
 const userTag = ref({});
@@ -191,6 +195,7 @@ async function openChat(friend) {
  
  if (data.chatHistory) chatHistory.value = data.chatHistory;
  if (data.userTag) userTag.value = data.userTag;
+ if (data.isRefused) isRefused.value = true;
  } catch (error) {
  console.error('AI 请求失败:', error);
  chatMessagesList.value = [{
@@ -201,6 +206,14 @@ async function openChat(friend) {
 }
 
 async function sendMessage() {
+ if (isRefused.value) {
+ chatMessagesList.value.push({
+ isUser: false,
+ content: '太宰已经不想说话了...'
+ });
+ return;
+ }
+ 
  if (isSending.value || !chatInput.value.trim()) {
  return;
  }
@@ -266,6 +279,7 @@ async function sendMessage() {
  
  if (data.chatHistory) chatHistory.value = data.chatHistory;
  if (data.userTag) userTag.value = data.userTag;
+ if (data.isRefused) isRefused.value = true;
  } catch (error) {
  console.error('API error:', error);
  chatMessagesList.value.push({
@@ -291,6 +305,7 @@ function closeChat() {
  chatInput.value = '';
  chatRound.value = 0;
  tempAlwaysAskQ.value = false;
+ isRefused.value = false;
  chatHistory.value = [];
  userTag.value = {};
 }
@@ -715,6 +730,19 @@ onUnmounted(() => {
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.chat-refused-tip {
+  padding: 16px;
+  text-align: center;
+  border-top: 2px solid #000;
+  background: #f5f5f5;
+}
+
+.chat-refused-tip p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.6;
 }
 
 /* 互动说明 */

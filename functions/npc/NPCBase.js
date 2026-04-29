@@ -66,8 +66,9 @@ ${this.rules.join('\n')}
     return newState;
   }
 
-  shouldRefuseReply(userState) {
-    return userState.askCount >= 10;
+  shouldRefuseReply(userState, chatHistory) {
+    const totalRounds = chatHistory.filter(m => m.role === 'user').length;
+    return totalRounds >= 20 || userState.askCount >= 10;
   }
 
   getRefusalMessage() {

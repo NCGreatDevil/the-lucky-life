@@ -96,6 +96,6 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
   }
 
   getRefusalMessage() {
-    return '我饿了，没力气了。你喊管理员给我找点吃的，吃饱了再聊。';
+    return '我饿了，没力气了。你喊管理员南昌给我找点吃的，吃饱了再聊。';
   }
 }
