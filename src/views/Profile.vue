@@ -204,7 +204,16 @@ const editForm = ref({
   bio: ''
 })
 
-const user = computed(() => userStore.user)
+const user = computed(() => {
+  const u = userStore.user
+  if (!u) return null
+  
+  if (!u.attributes) {
+    u.attributes = getDemoAttributes()
+  }
+  
+  return u
+})
 
 const genderText = computed(() => {
   const map = { male: '男', female: '女', other: '其他' }
@@ -232,6 +241,23 @@ onMounted(async () => {
   }
   loading.value = false
 })
+
+function getDemoAttributes() {
+  return {
+    energy: 80,
+    vitality: 60,
+    morality: 10,
+    intelligence: 15,
+    constitution: 8,
+    charm: 12,
+    willpower: 20,
+    emotion: 5,
+    popularity: 18,
+    money: 100,
+    luckLevel: 3,
+    luckLabel: '平常'
+  }
+}
 
 function startEdit() {
   editForm.value = {

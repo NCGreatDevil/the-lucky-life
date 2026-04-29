@@ -28,7 +28,7 @@
         <h3 class="section-title">角色属性</h3>
         <div class="attributes-grid">
           <div
-            v-for="(attr, name) in roleStore.attributes"
+            v-for="(attr, name) in displayAttributes"
             :key="name"
             class="attribute-item hand-drawn-border"
             :class="{ visible: attr.visible && attr.unlocked, hidden: !attr.visible || !attr.unlocked }"
@@ -83,15 +83,49 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoleStore } from '@/stores/role'
+import { useUserStore } from '@/stores/user'
 
 const roleStore = useRoleStore()
+const userStore = useUserStore()
 
 const showEditName = ref(false)
 const newName = ref('')
 
-// 根据等级选择头像emoji
+const dbAttributes = ref(null)
+
+onMounted(async () => {
+  if (userStore.isLoggedIn) {
+    try {
+      await userStore.fetchProfile()
+      if (userStore.user?.attributes) {
+        dbAttributes.value = userStore.user.attributes
+      }
+    } catch (e) {
+      console.error('获取用户属性失败:', e)
+    }
+  }
+})
+
+const displayAttributes = computed(() => {
+  if (dbAttributes.value) {
+    return {
+      体力: { value: dbAttributes.value.energy, visible: true, unlocked: true },
+      活力: { value: dbAttributes.value.vitality, visible: true, unlocked: true },
+      道德: { value: dbAttributes.value.morality, visible: true, unlocked: true },
+      智力: { value: dbAttributes.value.intelligence, visible: true, unlocked: true },
+      体质: { value: dbAttributes.value.constitution, visible: true, unlocked: true },
+      魅力: { value: dbAttributes.value.charm, visible: true, unlocked: true },
+      意志: { value: dbAttributes.value.willpower, visible: true, unlocked: true },
+      情绪: { value: dbAttributes.value.emotion, visible: true, unlocked: true },
+      人缘: { value: dbAttributes.value.popularity, visible: true, unlocked: true },
+      金钱: { value: dbAttributes.value.money, visible: true, unlocked: true }
+    }
+  }
+  return roleStore.attributes
+})
+
 const avatarEmoji = computed(() => {
   const level = roleStore.roleLevel
   if (level < 5) return '🌱'

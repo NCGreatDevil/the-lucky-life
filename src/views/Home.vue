@@ -60,22 +60,22 @@
       </div>
 
       <!-- 底部状态概览 -->
-      <div class="attr-section" v-if="userStore.user?.attributes">
+      <div class="attr-section" v-if="userStore.isLoggedIn">
         <h2>日常属性</h2>
         <div class="attr-grid">
           <div class="attr-item">
             <span class="attr-name">能量</span>
             <div class="attr-bar">
-              <div class="attr-fill energy" :style="{ width: userStore.user.attributes.energy + '%' }"></div>
+              <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
             </div>
-            <span class="attr-value">{{ userStore.user.attributes.energy }} / 100</span>
+            <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }} / 100</span>
           </div>
           <div class="attr-item">
             <span class="attr-name">活力</span>
             <div class="attr-bar">
-              <div class="attr-fill vitality" :style="{ width: userStore.user.attributes.vitality + '%' }"></div>
+              <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
             </div>
-            <span class="attr-value">{{ userStore.user.attributes.vitality }} / 100</span>
+            <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }} / 100</span>
           </div>
         </div>
       </div>
