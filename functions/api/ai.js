@@ -1,4 +1,8 @@
 import { corsHeaders, hashToken, isISOExpired } from '../_utils.js';
+import { getNPC } from '../npc/index.js';
+
+const MAX_HISTORY = 20;
+const MAX_REPLY_LENGTH = 30;
 
 async function verifySession(context) {
   const cookieHeader = context.request.headers.get('Cookie') || '';
@@ -49,7 +53,8 @@ export async function onRequest(context) {
     const req = await context.request.json();
     const userText = req.content?.trim() || "";
     const chatHistoryFromFront = req.chatHistory || [];
-    const lastUserTag = req.userTag || {};
+    const userState = req.userTag || {};
+    const npcId = req.npcId || 'dog_npc';
 
     const db = context.env['game-db'];
     const user = await db.prepare('SELECT * FROM users WHERE id = ?').bind(session.user_id).first();
@@ -61,61 +66,70 @@ export async function onRequest(context) {
       });
     }
 
-    let userBaseInfo = {
-      name: lastUserTag.name || user.nickname,
-      age: lastUserTag.age || "未知",
-      job: lastUserTag.job || user.occupation,
-      bio: lastUserTag.bio || user.bio || "",
-      hasTauntMe: lastUserTag.hasTauntMe || false,
-      isFriendly: lastUserTag.isFriendly || false,
-      alwaysAskQ: lastUserTag.alwaysAskQ || false
+    const userInfo = {
+      name: userState.name || user.nickname,
+      age: userState.age || "未知",
+      job: userState.job || user.occupation,
+      bio: userState.bio || user.bio || "",
+      hasTauntMe: userState.hasTauntMe || false,
+      isFriendly: userState.isFriendly || false,
+      alwaysAskQ: userState.alwaysAskQ || false,
+      askCount: userState.askCount || 0
     };
 
     if (req.userInfo) {
-      userBaseInfo = { ...userBaseInfo, ...req.userInfo };
+      Object.assign(userInfo, req.userInfo);
     }
 
-    if (/嘲讽|骂|嫌弃|看不起|嫌弃你/.test(userText)) {
-      userBaseInfo.hasTauntMe = true;
-    }
-    if (/可爱|喜欢你|摸摸|很乖|善待|友好/.test(userText)) {
-      userBaseInfo.isFriendly = true;
+    const npc = getNPC(npcId);
+
+    if (userText) {
+      const newState = npc.processUserInput(userText, userInfo);
+      Object.assign(userInfo, newState);
     }
 
     const hour = req.hour !== undefined ? req.hour : new Date().getHours();
-    const userMessage = userText || `（当前时间${hour}点，生成符合太宰性格的开场问候）`;
-
-    const MAX_ROUND = 10;
+    
     let chatHistory = [...chatHistoryFromFront];
-    chatHistory.push({ role: "user", content: userMessage });
-    if (chatHistory.length > MAX_ROUND * 2) {
-      chatHistory = chatHistory.slice(-MAX_ROUND * 2);
+    
+    if (userText) {
+      chatHistory.push({ role: "user", content: userText });
+    }
+    
+    if (chatHistory.length > MAX_HISTORY) {
+      chatHistory = chatHistory.slice(-MAX_HISTORY);
     }
 
-    const systemPrompt = `
-【角色】太宰，性格冷淡傲娇，话少简短，偶尔暗讽，绝不自称小狗或提及物种。
-【对方】姓名${userBaseInfo.name}，年龄${userBaseInfo.age}，职业${userBaseInfo.job}，简介${userBaseInfo.bio || '暂无'}。
-【对方态度】曾嘲讽你：${userBaseInfo.hasTauntMe ? "是（加倍毒舌）" : "否"}；对你友好：${userBaseInfo.isFriendly ? "是（稍微缓和）" : "否"}；爱提问：${userBaseInfo.alwaysAskQ ? "是（表现烦躁）" : "否"}。
-【规则】
-1. 回复必须简短，不超过30字；
-2. 首次问候可加【动作】，之后禁用动作表情；
-3. 用中文简体，可加简单emoji；
-4. 记住前面的对话内容，保持连贯；
-5. 如果对方爱提问，回复：我饿了，没力气了，你把管理员喊来，让他给我找点吃的，吃饱了再跟你聊。
-`.trim();
+    if (npc.shouldRefuseReply(userInfo)) {
+      const refusal = npc.getRefusalMessage();
+      chatHistory.push({ role: "assistant", content: refusal });
+      
+      return new Response(JSON.stringify({
+        reply: refusal,
+        userTag: userInfo,
+        chatHistory: chatHistory
+      }), { headers: corsHeaders(context) });
+    }
+
+    const systemPrompt = npc.getSystemPrompt(userInfo, chatHistory);
 
     const messages = [
       { role: "system", content: systemPrompt },
       ...chatHistory
     ];
 
-    const aiReply = await callDeepSeek(messages, context.env.DEEPSEEK_API_KEY);
+    let aiReply = await callDeepSeek(messages, context.env.DEEPSEEK_API_KEY);
+    aiReply = npc.validateReply(aiReply);
+
+    if (aiReply.length > MAX_REPLY_LENGTH) {
+      aiReply = aiReply.substring(0, MAX_REPLY_LENGTH) + '...';
+    }
 
     chatHistory.push({ role: "assistant", content: aiReply });
 
     return new Response(JSON.stringify({
       reply: aiReply,
-      userTag: userBaseInfo,
+      userTag: userInfo,
       chatHistory: chatHistory
     }), { headers: corsHeaders(context) });
 
@@ -144,9 +158,11 @@ async function callDeepSeek(messages, apiKey) {
     body: JSON.stringify({
       model: 'deepseek-chat',
       messages,
-      max_tokens: 200,
-      temperature: 0.5,
-      top_p: 0.9
+      max_tokens: 150,
+      temperature: 0.7,
+      top_p: 0.8,
+      frequency_penalty: 0.3,
+      presence_penalty: 0.3
     })
   });
 
@@ -157,36 +173,17 @@ async function callDeepSeek(messages, apiKey) {
   }
 
   const data = await response.json();
-  return data.choices?.[0]?.message?.content?.trim() || '...';
-}
+  
+  if (!data.choices || data.choices.length === 0) {
+    console.error('DeepSeek 返回空响应:', JSON.stringify(data));
+    throw new Error('AI 返回空响应');
+  }
 
-function parseAIResponse(ai) {
-  if (!ai) return '';
-  
-  if (typeof ai === 'string') {
-    return ai;
+  const content = data.choices[0].message?.content;
+  if (!content || content.trim().length === 0) {
+    console.error('DeepSeek 返回空内容:', JSON.stringify(data));
+    return '...';
   }
-  
-  if (ai.response && typeof ai.response === 'string') {
-    return ai.response;
-  }
-  
-  if (typeof ai.result === 'string') {
-    return ai.result;
-  }
-  
-  const messageObj = ai.choices?.[0]?.message 
-    || ai.result?.choices?.[0]?.message 
-    || ai.message;
-  
-  if (messageObj) {
-    return messageObj.content || messageObj.reasoning || '';
-  }
-  
-  if (ai.content) {
-    return ai.content;
-  }
-  
-  console.warn('Unknown AI response format:', JSON.stringify(ai));
-  return '';
+
+  return content.trim();
 }
