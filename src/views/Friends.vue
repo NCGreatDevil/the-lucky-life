@@ -7,7 +7,7 @@
     </header>
 
     <div class="content-area">
-      <div class="npc-section" v-if="!allNPCsAdded">
+      <div class="npc-section" v-if="availableNPCs.length > 0">
         <h3 class="section-title">可添加的 NPC</h3>
         <div class="npc-list">
           <template v-for="npc in availableNPCs" :key="npc.id">
@@ -160,7 +160,7 @@ const allNPCsAdded = computed(() => {
 });
 
 function isFriendAdded(npcId) {
-  console.log('检查 NPC 是否已添加:', npcId, '好友列表:', roleStore.friends.map(f => ({ id: f.id, npcId: f.npcId, isNpc: f.isNpc })));
+  // console.log('检查 NPC 是否已添加:', npcId, '好友列表:', roleStore.friends.map(f => ({ id: f.id, npcId: f.npcId, isNpc: f.isNpc })));
   return roleStore.friends.some(f => f.isNpc && f.npcId === npcId);
 }
 
