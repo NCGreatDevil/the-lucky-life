@@ -56,12 +56,28 @@
               <button v-if="friend.isNpc" class="chat-btn" @click="openChat(friend)">
                 💬
               </button>
-              <button class="remove-btn" @click="removeFriend(friend.id)">×</button>
+              <div class="more-menu-wrapper">
+                <button class="more-btn" @click="toggleMoreMenu(friend.id)">⋮</button>
+                <div v-if="showMoreMenu === friend.id" class="more-menu hand-drawn-border">
+                  <button class="menu-item" @click="confirmDelete(friend.id)">删除好友</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div v-else class="empty-tip">
           还没有好友，先添加高冷小狗太宰吧！
+        </div>
+      </div>
+
+      <!-- 删除确认弹窗 -->
+      <div v-if="showDeleteConfirm" class="delete-modal modal-overlay" @click.self="cancelDelete">
+        <div class="delete-dialog hand-drawn-border">
+          <p class="delete-message">确定要删除好友「{{ deleteFriendName }}」吗？</p>
+          <div class="delete-actions">
+            <button class="cancel-btn" @click="cancelDelete">取消</button>
+            <button class="confirm-btn" @click="executeDelete">确定</button>
+          </div>
         </div>
       </div>
 
@@ -129,6 +145,10 @@ const chatRound = ref(0);
 const tempAlwaysAskQ = ref(false);
 const isSending = ref(false);
 const isRefused = ref(false);
+const showMoreMenu = ref(null);
+const showDeleteConfirm = ref(false);
+const deleteFriendId = ref(null);
+const deleteFriendName = ref('');
 
 const chatHistory = ref([]);
 const userTag = ref({});
@@ -309,8 +329,36 @@ function closeChat() {
  chatRound.value = 0;
  tempAlwaysAskQ.value = false;
  isRefused.value = false;
+ showMoreMenu.value = null;
  chatHistory.value = [];
  userTag.value = {};
+}
+
+function toggleMoreMenu(friendId) {
+ showMoreMenu.value = showMoreMenu.value === friendId ? null : friendId;
+}
+
+function confirmDelete(friendId) {
+ const friend = roleStore.friends.find(f => f.id === friendId);
+ if (friend) {
+ deleteFriendId.value = friendId;
+ deleteFriendName.value = friend.name;
+ showDeleteConfirm.value = true;
+ showMoreMenu.value = null;
+ }
+}
+
+function cancelDelete() {
+ showDeleteConfirm.value = false;
+ deleteFriendId.value = null;
+ deleteFriendName.value = '';
+}
+
+function executeDelete() {
+ if (deleteFriendId.value) {
+ roleStore.removeFriend(deleteFriendId.value);
+ cancelDelete();
+ }
 }
 
 function removeFriend(friendId) {
@@ -580,25 +628,120 @@ onUnmounted(() => {
   background: #f0f0f0;
 }
 
-.remove-btn {
-  width: 28px;
-  height: 28px;
-  border: 1px solid #ddd;
+.more-menu-wrapper {
+  position: relative;
+}
+
+.more-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #000;
   border-radius: 50%;
   background: #fff;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.5;
+  transition: all 0.1s ease;
+  line-height: 1;
 }
 
-.remove-btn:hover {
-  opacity: 1;
+.more-btn:hover {
+  background: #f0f0f0;
+}
+
+.more-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 10;
+  min-width: 100px;
+}
+
+.menu-item {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s ease;
+}
+
+.menu-item:hover {
   background: #ffebee;
-  border-color: #f44336;
   color: #f44336;
+}
+
+/* 删除确认弹窗 */
+.delete-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.delete-dialog {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+}
+
+.delete-message {
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.cancel-btn,
+.confirm-btn {
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.cancel-btn {
+  border: 2px solid #000;
+  background: #fff;
+  color: #000;
+}
+
+.cancel-btn:hover {
+  background: #f5f5f5;
+}
+
+.confirm-btn {
+  border: 2px solid #f44336;
+  background: #f44336;
+  color: #fff;
+}
+
+.confirm-btn:hover {
+  background: #d32f2f;
+  border-color: #d32f2f;
 }
 
 .empty-tip {
