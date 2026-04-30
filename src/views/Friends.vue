@@ -7,7 +7,7 @@
     </header>
 
     <div class="content-area">
-      <div class="npc-section">
+      <div class="npc-section" v-if="!allNPCsAdded">
         <h3 class="section-title">可添加的 NPC</h3>
         <div class="npc-list">
           <template v-for="npc in availableNPCs" :key="npc.id">
@@ -31,9 +31,6 @@
               </button>
             </div>
           </template>
-        </div>
-        <div v-if="allNPCsAdded" class="empty-tip">
-          所有 NPC 都已添加为好友！
         </div>
       </div>
 
