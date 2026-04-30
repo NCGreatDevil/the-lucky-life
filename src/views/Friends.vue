@@ -7,7 +7,7 @@
     </header>
 
     <div class="content-area">
-      <div class="npc-section" v-if="!allNPCsAdded">
+      <div class="npc-section" v-if="friendsLoaded && !allNPCsAdded">
         <h3 class="section-title">可添加的 NPC</h3>
         <div class="npc-list">
           <template v-for="npc in availableNPCs" :key="npc.id">
@@ -149,11 +149,13 @@ const deleteFriendId = ref(null);
 const deleteFriendName = ref('');
 const availableNPCs = ref([]);
 const loadingNPCs = ref(true);
+const friendsLoaded = ref(false);
 
 const chatHistory = ref([]);
 const userTag = ref({});
 
 const allNPCsAdded = computed(() => {
+  if (!friendsLoaded.value) return false;
   return availableNPCs.value.length > 0 && 
          availableNPCs.value.every(npc => isFriendAdded(npc.id));
 });
@@ -395,6 +397,7 @@ function removeFriend(friendId) {
 
 onMounted(async () => {
   await roleStore.loadFriendsFromBackend();
+  friendsLoaded.value = true;
   await loadNPCList();
 });
 
