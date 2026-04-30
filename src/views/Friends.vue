@@ -21,8 +21,8 @@
                 <p class="npc-name">太宰</p>
                 <span class="npc-tag">NPC</span>
               </div>
-              <p class="npc-title">高冷小狗</p>
-              <p class="npc-desc">一只可以双脚站立、会说人话的高冷小狗。性格孤僻冷淡，非常不爱搭理人类。</p>
+              <p class="npc-title">小狗</p>
+              <p class="npc-desc">一只会说人话的小狗。性格孤僻冷淡，非常不爱搭理人类。</p>
             </div>
           </div>
           <button class="add-npc-btn" @click="addDogFriend">
@@ -129,7 +129,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoleStore } from '@/stores/role';
 import { useUserStore } from '@/stores/user';
 import { getNpcAvatar } from '@/constants/npc';
@@ -364,6 +364,10 @@ function executeDelete() {
 function removeFriend(friendId) {
  roleStore.removeFriend(friendId);
 }
+
+onMounted(async () => {
+ await roleStore.loadFriendsFromBackend();
+});
 
 onUnmounted(() => {
  chatHistory.value = [];

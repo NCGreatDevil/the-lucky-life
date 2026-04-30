@@ -128,15 +128,74 @@ export const useRoleStore = defineStore('role', () => {
   }
 
   // 添加好友
-  function addFriend(friend) {
+  async function addFriend(friend) {
     if (!friends.value.find(f => f.id === friend.id)) {
       friends.value.push(friend)
+      await syncFriendsToBackend()
     }
   }
 
   // 移除好友
-  function removeFriend(friendId) {
+  async function removeFriend(friendId) {
     friends.value = friends.value.filter(f => f.id !== friendId)
+    await syncFriendsToBackend()
+  }
+
+  // 同步好友数据到后端
+  async function syncFriendsToBackend() {
+    try {
+      const response = await fetch('/api/role-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          friends: friends.value.map(f => ({
+            id: f.id,
+            isNpc: f.isNpc,
+            name: f.name,
+            avatar: f.avatar,
+            level: f.level,
+            title: f.title,
+            tags: f.tags,
+            createdAt: f.createdAt || new Date().toISOString()
+          }))
+        })
+      })
+      
+      if (!response.ok) {
+        console.error('同步好友数据失败')
+      }
+    } catch (error) {
+      console.error('同步好友数据错误:', error)
+    }
+  }
+
+  // 从后端加载好友数据
+  async function loadFriendsFromBackend() {
+    try {
+      const response = await fetch('/api/role-data', {
+        method: 'GET',
+        credentials: 'include'
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success && result.data.friends) {
+          friends.value = result.data.friends.map(f => ({
+            id: f.friend_id || f.id,
+            isNpc: Boolean(f.is_npc),
+            name: f.friend_name,
+            avatar: f.friend_avatar,
+            level: f.friend_level,
+            title: f.friend_title,
+            tags: JSON.parse(f.friend_tags || '[]'),
+            createdAt: f.created_at
+          }))
+        }
+      }
+    } catch (error) {
+      console.error('加载好友数据错误:', error)
+    }
   }
 
   // 检查每日重置
@@ -178,6 +237,7 @@ export const useRoleStore = defineStore('role', () => {
     addEventRecord,
     addFriend,
     removeFriend,
+    loadFriendsFromBackend,
     checkDailyReset,
     calculateLevel,
     initRole
