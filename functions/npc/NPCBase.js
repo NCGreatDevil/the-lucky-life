@@ -4,6 +4,7 @@ export class NPCBase {
     this.name = config.name;
     this.avatar = config.avatar;
     this.title = config.title;
+    this.description = config.description || '';
   }
 
   getTimeContext(hour) {

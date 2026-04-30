@@ -1,46 +1,48 @@
 <template>
   <div class="friends-page">
-    <!-- 顶部标题 -->
     <header class="header">
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的好友</h1>
       <div class="placeholder"></div>
     </header>
 
-    <!-- 好友列表区域 -->
     <div class="content-area">
-      <!-- NPC 小狗添加区域 -->
       <div class="npc-section">
-        <div class="npc-card hand-drawn-border" v-if="!hasDogFriend">
-          <div class="npc-header">
-            <div class="npc-avatar">
-              <img :src="getNpcAvatar('dog_npc')" alt="太宰" class="npc-avatar-img">
-            </div>
-            <div class="npc-info">
-              <div class="npc-name-row">
-                <p class="npc-name">太宰</p>
-                <span class="npc-tag">NPC</span>
+        <h3 class="section-title">可添加的 NPC</h3>
+        <div class="npc-list">
+          <div v-for="npc in availableNPCs" :key="npc.id" class="npc-card hand-drawn-border" v-if="!isFriendAdded(npc.id)">
+            <div class="npc-header">
+              <div class="npc-avatar">
+                <img :src="getNpcAvatar(npc.id)" :alt="npc.name" class="npc-avatar-img">
               </div>
-              <p class="npc-title">小狗</p>
-              <p class="npc-desc">一只会说人话的小狗。性格孤僻冷淡，非常不爱搭理人类。</p>
+              <div class="npc-info">
+                <div class="npc-name-row">
+                  <p class="npc-name">{{ npc.name }}</p>
+                  <span class="npc-tag">NPC</span>
+                </div>
+                <p class="npc-title">{{ npc.title }}</p>
+                <p class="npc-desc">{{ npc.description || '神秘的 NPC 角色。' }}</p>
+              </div>
             </div>
+            <button class="add-npc-btn" @click="addNPCFriend(npc)">
+              <span>🐾</span>
+              <span>添加为好友</span>
+            </button>
           </div>
-          <button class="add-npc-btn" @click="addDogFriend">
-            <span>🐾</span>
-            <span>添加为好友</span>
-          </button>
+        </div>
+        <div v-if="allNPCsAdded" class="empty-tip">
+          所有 NPC 都已添加为好友！
         </div>
       </div>
 
-      <!-- 好友列表 -->
       <div class="friends-section">
         <h3 class="section-title">好友列表 ({{ roleStore.friends.length }})</h3>
         <div class="friends-list" v-if="roleStore.friends.length > 0">
           <div v-for="friend in roleStore.friends" :key="friend.id" class="friend-item hand-drawn-border">
             <div class="friend-avatar">
-            <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="friend-avatar-img">
-            <span v-else class="avatar-emoji">{{ friend.avatar }}</span>
-          </div>
+              <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="friend-avatar-img">
+              <span v-else class="avatar-emoji">{{ friend.avatar }}</span>
+            </div>
             <div class="friend-details">
               <div class="friend-header">
                 <p class="friend-name">{{ friend.name }}</p>
@@ -66,11 +68,10 @@
           </div>
         </div>
         <div v-else class="empty-tip">
-          还没有好友，先添加高冷小狗太宰吧！
+          还没有好友，添加一个 NPC 开始聊天吧！
         </div>
       </div>
 
-      <!-- 删除确认弹窗 -->
       <div v-if="showDeleteConfirm" class="delete-modal modal-overlay" @click.self="cancelDelete">
         <div class="delete-dialog hand-drawn-border">
           <p class="delete-message">确定要删除好友「{{ deleteFriendName }}」吗？</p>
@@ -81,7 +82,6 @@
         </div>
       </div>
 
-      <!-- 聊天弹窗 -->
       <div v-if="showChat" class="chat-modal modal-overlay" @click.self="closeChat">
         <div class="chat-window hand-drawn-border">
           <div class="chat-header">
@@ -112,15 +112,14 @@
         </div>
       </div>
 
-      <!-- 互动说明 -->
       <div class="info-section">
         <div class="info-card">
           <p class="info-icon">💡</p>
           <p class="info-text">好友功能说明</p>
           <ul class="info-list">
-            <li>点击 NPC 小狗可以添加为好友</li>
-            <li>添加后可以点击 💬 图标和小狗聊天</li>
-            <li>小狗性格高冷，回复简短</li>
+            <li>点击 NPC 卡片可以添加为好友</li>
+            <li>添加后可以点击 💬 图标和 NPC 聊天</li>
+            <li>每个 NPC 都有独特的性格和对话风格</li>
           </ul>
         </div>
       </div>
@@ -149,229 +148,260 @@ const showMoreMenu = ref(null);
 const showDeleteConfirm = ref(false);
 const deleteFriendId = ref(null);
 const deleteFriendName = ref('');
+const availableNPCs = ref([]);
+const loadingNPCs = ref(true);
 
 const chatHistory = ref([]);
 const userTag = ref({});
 
-const hasDogFriend = computed(() => {
- return roleStore.friends.some(f => f.isNpc);
+const allNPCsAdded = computed(() => {
+  return availableNPCs.value.length > 0 && 
+         availableNPCs.value.every(npc => isFriendAdded(npc.id));
 });
 
-const dogFriend = {
- name: '太宰',
- avatar: getNpcAvatar('dog_npc'),
- title: '狗',
- tags: ['高冷', '傲娇', '话少'],
- level: 1,
- isNpc: true
-};
+function isFriendAdded(npcId) {
+  return roleStore.friends.some(f => f.isNpc && f.npcId === npcId);
+}
 
-function addDogFriend() {
- if (hasDogFriend.value) {
- return;
- }
- roleStore.addFriend({ ...dogFriend, id: Date.now() });
+async function loadNPCList() {
+  try {
+    loadingNPCs.value = true;
+    const response = await fetch('/api/npc-list', {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      if (result.success && result.data.npcs) {
+        availableNPCs.value = result.data.npcs;
+      }
+    }
+  } catch (error) {
+    console.error('加载 NPC 列表错误:', error);
+  } finally {
+    loadingNPCs.value = false;
+  }
+}
+
+function addNPCFriend(npc) {
+  if (isFriendAdded(npc.id)) {
+    return;
+  }
+  roleStore.addFriend({
+    id: Date.now(),
+    npcId: npc.id,
+    name: npc.name,
+    avatar: getNpcAvatar(npc.id),
+    title: npc.title,
+    tags: [],
+    level: 1,
+    isNpc: true
+  });
 }
 
 async function openChat(friend) {
- currentFriend.value = friend;
- chatRound.value = 0;
- tempAlwaysAskQ.value = false;
- showChat.value = true;
- chatHistory.value = [];
- userTag.value = {};
- 
- const hour = new Date().getHours();
- try {
- const response = await fetch('/api/ai', {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json'
- },
- credentials: 'include',
- body: JSON.stringify({
- content: '',
- hour: hour,
- userInfo: {
- name: userStore.user?.nickname || '玩家',
- age: '未知',
- job: userStore.user?.occupation || '无',
- bio: userStore.user?.bio || ''
- }
- })
- });
- 
- if (!response.ok) {
- if (response.status === 401) {
- await userStore.logout();
- window.location.href = '/login';
- return;
- }
- throw new Error('AI 服务异常');
- }
- 
- const data = await response.json();
- chatMessagesList.value = [{
- isUser: false,
- content: data.reply || '...有事？'
- }];
- 
- if (data.chatHistory) chatHistory.value = data.chatHistory;
- if (data.userTag) userTag.value = data.userTag;
- if (data.isRefused) isRefused.value = true;
- } catch (error) {
- console.error('AI 请求失败:', error);
- chatMessagesList.value = [{
- isUser: false,
- content: '...有事？'
- }];
- }
+  currentFriend.value = friend;
+  chatRound.value = 0;
+  tempAlwaysAskQ.value = false;
+  showChat.value = true;
+  chatHistory.value = [];
+  userTag.value = {};
+  
+  const hour = new Date().getHours();
+  try {
+    const response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        content: '',
+        hour: hour,
+        npcId: friend.npcId,
+        userInfo: {
+          name: userStore.user?.nickname || '玩家',
+          age: '未知',
+          job: userStore.user?.occupation || '无',
+          bio: userStore.user?.bio || ''
+        }
+      })
+    });
+    
+    if (!response.ok) {
+      if (response.status === 401) {
+        await userStore.logout();
+        window.location.href = '/login';
+        return;
+      }
+      throw new Error('AI 服务异常');
+    }
+    
+    const data = await response.json();
+    chatMessagesList.value = [{
+      isUser: false,
+      content: data.reply || '...有事？'
+    }];
+    
+    if (data.chatHistory) chatHistory.value = data.chatHistory;
+    if (data.userTag) userTag.value = data.userTag;
+    if (data.isRefused) isRefused.value = true;
+  } catch (error) {
+    console.error('AI 请求失败:', error);
+    chatMessagesList.value = [{
+      isUser: false,
+      content: '...有事？'
+    }];
+  }
 }
 
 async function sendMessage() {
- if (isRefused.value) {
- chatMessagesList.value.push({
- isUser: false,
- content: '太宰已经不想说话了...'
- });
- return;
- }
- 
- if (isSending.value || !chatInput.value.trim()) {
- return;
- }
- 
- isSending.value = true;
- const inputContent = chatInput.value.trim();
- chatInput.value = '';
- 
- chatMessagesList.value.push({
- isUser: true,
- content: inputContent
- });
- chatRound.value++;
- 
- if (!tempAlwaysAskQ.value && chatRound.value >= 6 && chatRound.value <= 10) {
- if (Math.random() > 0.5) {
- tempAlwaysAskQ.value = true;
- }
- }
- 
- try {
- const response = await fetch('/api/ai', {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json'
- },
- credentials: 'include',
- body: JSON.stringify({
- content: inputContent,
- chatHistory: chatHistory.value,
- userTag: userTag.value,
- userInfo: {
- name: userStore.user?.nickname || '玩家',
- age: '未知',
- job: userStore.user?.occupation || '无',
- bio: userStore.user?.bio || ''
- }
- })
- });
- 
- if (!response.ok) {
- if (response.status === 401) {
- await userStore.logout();
- window.location.href = '/login';
- return;
- }
- throw new Error('AI 服务异常');
- }
- 
- const data = await response.json();
- 
- if (data && data.reply && data.reply.trim()) {
- chatMessagesList.value.push({
- isUser: false,
- content: data.reply.trim()
- });
- } else {
- chatMessagesList.value.push({
- isUser: false,
- content: '懒得多说。'
- });
- }
- 
- if (data.chatHistory) chatHistory.value = data.chatHistory;
- if (data.userTag) userTag.value = data.userTag;
- if (data.isRefused) isRefused.value = true;
- } catch (error) {
- console.error('API error:', error);
- chatMessagesList.value.push({
- isUser: false,
- content: '网络出错了...'
- });
- } finally {
- isSending.value = false;
- }
- 
- setTimeout(() => {
- const chatMessages = document.querySelector('.chat-messages');
- if (chatMessages) {
- chatMessages.scrollTop = chatMessages.scrollHeight;
- }
- }, 100);
+  if (isRefused.value) {
+    chatMessagesList.value.push({
+      isUser: false,
+      content: '太宰已经不想说话了...'
+    });
+    return;
+  }
+  
+  if (isSending.value || !chatInput.value.trim()) {
+    return;
+  }
+  
+  isSending.value = true;
+  const inputContent = chatInput.value.trim();
+  chatInput.value = '';
+  
+  chatMessagesList.value.push({
+    isUser: true,
+    content: inputContent
+  });
+  chatRound.value++;
+  
+  if (!tempAlwaysAskQ.value && chatRound.value >= 6 && chatRound.value <= 10) {
+    if (Math.random() > 0.5) {
+      tempAlwaysAskQ.value = true;
+    }
+  }
+  
+  try {
+    const response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        content: inputContent,
+        chatHistory: chatHistory.value,
+        userTag: userTag.value,
+        npcId: currentFriend.value?.npcId,
+        userInfo: {
+          name: userStore.user?.nickname || '玩家',
+          age: '未知',
+          job: userStore.user?.occupation || '无',
+          bio: userStore.user?.bio || ''
+        }
+      })
+    });
+    
+    if (!response.ok) {
+      if (response.status === 401) {
+        await userStore.logout();
+        window.location.href = '/login';
+        return;
+      }
+      throw new Error('AI 服务异常');
+    }
+    
+    const data = await response.json();
+    
+    if (data && data.reply && data.reply.trim()) {
+      chatMessagesList.value.push({
+        isUser: false,
+        content: data.reply.trim()
+      });
+    } else {
+      chatMessagesList.value.push({
+        isUser: false,
+        content: '懒得多说。'
+      });
+    }
+    
+    if (data.chatHistory) chatHistory.value = data.chatHistory;
+    if (data.userTag) userTag.value = data.userTag;
+    if (data.isRefused) isRefused.value = true;
+  } catch (error) {
+    console.error('API error:', error);
+    chatMessagesList.value.push({
+      isUser: false,
+      content: '网络出错了...'
+    });
+  } finally {
+    isSending.value = false;
+  }
+  
+  setTimeout(() => {
+    const chatMessages = document.querySelector('.chat-messages');
+    if (chatMessages) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }, 100);
 }
 
 function closeChat() {
- showChat.value = false;
- currentFriend.value = null;
- chatMessagesList.value = [];
- chatInput.value = '';
- chatRound.value = 0;
- tempAlwaysAskQ.value = false;
- isRefused.value = false;
- showMoreMenu.value = null;
- chatHistory.value = [];
- userTag.value = {};
+  showChat.value = false;
+  currentFriend.value = null;
+  chatMessagesList.value = [];
+  chatInput.value = '';
+  chatRound.value = 0;
+  tempAlwaysAskQ.value = false;
+  isRefused.value = false;
+  showMoreMenu.value = null;
+  chatHistory.value = [];
+  userTag.value = {};
 }
 
 function toggleMoreMenu(friendId) {
- showMoreMenu.value = showMoreMenu.value === friendId ? null : friendId;
+  showMoreMenu.value = showMoreMenu.value === friendId ? null : friendId;
 }
 
 function confirmDelete(friendId) {
- const friend = roleStore.friends.find(f => f.id === friendId);
- if (friend) {
- deleteFriendId.value = friendId;
- deleteFriendName.value = friend.name;
- showDeleteConfirm.value = true;
- showMoreMenu.value = null;
- }
+  const friend = roleStore.friends.find(f => f.id === friendId);
+  if (friend) {
+    deleteFriendId.value = friendId;
+    deleteFriendName.value = friend.name;
+    showDeleteConfirm.value = true;
+    showMoreMenu.value = null;
+  }
 }
 
 function cancelDelete() {
- showDeleteConfirm.value = false;
- deleteFriendId.value = null;
- deleteFriendName.value = '';
+  showDeleteConfirm.value = false;
+  deleteFriendId.value = null;
+  deleteFriendName.value = '';
 }
 
 function executeDelete() {
- if (deleteFriendId.value) {
- roleStore.removeFriend(deleteFriendId.value);
- cancelDelete();
- }
+  if (deleteFriendId.value) {
+    roleStore.removeFriend(deleteFriendId.value);
+    cancelDelete();
+  }
 }
 
 function removeFriend(friendId) {
- roleStore.removeFriend(friendId);
+  roleStore.removeFriend(friendId);
 }
 
 onMounted(async () => {
- await roleStore.loadFriendsFromBackend();
+  await roleStore.loadFriendsFromBackend();
+  await loadNPCList();
 });
 
 onUnmounted(() => {
- chatHistory.value = [];
- userTag.value = [];
+  chatHistory.value = [];
+  userTag.value = [];
 });
 </script>
 
@@ -411,9 +441,14 @@ onUnmounted(() => {
   overflow-y: auto;
 }
 
-/* NPC 小狗卡片 */
 .npc-section {
   margin-bottom: 24px;
+}
+
+.npc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .npc-card {
@@ -437,10 +472,7 @@ onUnmounted(() => {
   justify-content: center;
   background: #fff;
   overflow: hidden;
-}
-
-.npc-avatar .avatar-emoji {
-  font-size: 32px;
+  flex-shrink: 0;
 }
 
 .npc-avatar-img {
@@ -457,6 +489,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 4px;
 }
 
 .npc-name {
@@ -466,58 +499,55 @@ onUnmounted(() => {
 }
 
 .npc-tag {
-  padding: 2px 6px;
+  padding: 2px 8px;
   background: #e0e0e0;
   color: #666;
-  border-radius: 3px;
-  font-size: 10px;
-  opacity: 0.6;
+  border-radius: 4px;
+  font-size: 11px;
 }
 
 .npc-title {
-  font-size: 12px;
-  opacity: 0.6;
-  margin: 2px 0 4px 0;
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 4px 0;
 }
 
 .npc-desc {
   font-size: 12px;
-  color: #666;
+  color: #888;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .add-npc-btn {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
+  border: 2px solid #000;
+  border-radius: 6px;
   background: #000;
   color: #fff;
-  border: none;
-  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-weight: bold;
-  transition: transform 0.1s ease;
+  transition: all 0.1s ease;
 }
 
-.add-npc-btn:active {
-  transform: translate(2px, 2px);
+.add-npc-btn:hover {
+  background: #333;
 }
 
-/* 好友列表 */
 .friends-section {
   margin-bottom: 24px;
 }
 
 .section-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 .friends-list {
@@ -544,6 +574,7 @@ onUnmounted(() => {
   justify-content: center;
   background: #fafafa;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .avatar-emoji {
@@ -591,15 +622,15 @@ onUnmounted(() => {
 }
 
 .friend-title {
-  font-size: 11px;
-  opacity: 0.6;
-  margin: 2px 0 4px 0;
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 4px 0;
 }
 
 .friend-tags {
   display: flex;
-  flex-wrap: wrap;
   gap: 4px;
+  flex-wrap: wrap;
 }
 
 .tag {
@@ -683,7 +714,6 @@ onUnmounted(() => {
   color: #f44336;
 }
 
-/* 删除确认弹窗 */
 .delete-modal {
   position: fixed;
   top: 0;
@@ -755,7 +785,6 @@ onUnmounted(() => {
   font-size: 14px;
 }
 
-/* 聊天弹窗 */
 .chat-modal {
   position: fixed;
   top: 0;
@@ -770,21 +799,22 @@ onUnmounted(() => {
 }
 
 .chat-window {
-  width: 100%;
-  max-width: 420px;
-  max-height: 90vh;
+  width: 90%;
+  max-width: 400px;
+  height: 80vh;
   background: #fff;
-  border-radius: 16px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-header {
   display: flex;
   align-items: center;
-  padding: 16px 20px;
+  gap: 12px;
+  padding: 16px;
   border-bottom: 2px solid #000;
-  background: #fafafa;
 }
 
 .chat-avatar {
@@ -795,9 +825,9 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  margin-right: 12px;
+  background: #fafafa;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .chat-avatar-img {
@@ -811,40 +841,49 @@ onUnmounted(() => {
 }
 
 .chat-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   margin: 0;
 }
 
 .chat-npc-tag {
-  font-size: 9px;
-  opacity: 0.5;
+  display: inline-block;
+  padding: 1px 6px;
+  background: #e0e0e0;
   color: #666;
+  border-radius: 3px;
+  font-size: 10px;
+  margin-top: 2px;
 }
 
 .close-chat-btn {
   width: 32px;
   height: 32px;
-  border: none;
-  background: transparent;
-  font-size: 20px;
+  border: 2px solid #000;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 18px;
   cursor: pointer;
-  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
 }
 
 .close-chat-btn:hover {
-  opacity: 1;
+  background: #f0f0f0;
 }
 
 .chat-messages {
   flex: 1;
   padding: 16px;
   overflow-y: auto;
-  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .message {
-  margin-bottom: 12px;
   display: flex;
 }
 
@@ -858,125 +897,107 @@ onUnmounted(() => {
 
 .message-content {
   max-width: 70%;
-  padding: 10px 14px;
-  border-radius: 16px;
+  padding: 8px 12px;
+  border-radius: 8px;
   font-size: 13px;
-  line-height: 1.4;
-  position: relative;
+  line-height: 1.5;
 }
 
 .user-message .message-content {
   background: #000;
   color: #fff;
-  border-radius: 16px 16px 4px 16px;
 }
 
 .bot-message .message-content {
   background: #f5f5f5;
   color: #000;
-  border-radius: 16px 16px 16px 4px;
 }
 
 .chat-input-area {
   display: flex;
-  padding: 12px 16px;
-  border-top: 2px solid #000;
   gap: 8px;
+  padding: 12px;
+  border-top: 2px solid #000;
 }
 
 .chat-input {
   flex: 1;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border: 2px solid #000;
-  border-radius: 20px;
+  border-radius: 4px;
   font-size: 13px;
   outline: none;
 }
 
+.chat-input:focus {
+  border-color: #333;
+}
+
 .send-btn {
-  padding: 10px 20px;
+  padding: 8px 16px;
+  border: 2px solid #000;
+  border-radius: 4px;
   background: #000;
   color: #fff;
-  border: none;
-  border-radius: 20px;
-  font-weight: bold;
+  font-size: 13px;
   cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: #333;
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .chat-refused-tip {
   padding: 16px;
   text-align: center;
   border-top: 2px solid #000;
-  background: #f5f5f5;
 }
 
 .chat-refused-tip p {
   margin: 0;
   font-size: 13px;
-  opacity: 0.6;
+  color: #666;
 }
 
-/* 互动说明 */
 .info-section {
-  margin-top: auto;
+  margin-top: 24px;
 }
 
 .info-card {
-  padding: 16px;
   background: #f9f9f9;
-  border-radius: 4px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 16px;
   text-align: center;
 }
 
 .info-icon {
   font-size: 24px;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
 }
 
 .info-text {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin: 0 0 12px 0;
 }
 
 .info-list {
-  list-style: none;
-  font-size: 11px;
-  opacity: 0.6;
   text-align: left;
-  padding-left: 16px;
+  padding-left: 20px;
+  margin: 0;
 }
 
 .info-list li {
+  font-size: 12px;
+  color: #666;
   margin-bottom: 4px;
-}
-
-/* 手绘边框样式 */
-.hand-drawn-border {
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal-content {
-  background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  padding: 20px;
-  max-width: 320px;
-  width: 90%;
+  line-height: 1.5;
 }
 </style>
