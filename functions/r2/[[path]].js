@@ -2,17 +2,22 @@ export async function onRequest(context) {
   const url = new URL(context.request.url);
   const pathname = url.pathname.replace('/r2/', '');
 
+  console.log('R2 请求路径:', pathname);
+
   if (!pathname) {
     return new Response('Not Found', { status: 404 });
   }
 
   const bucket = context.env['game-bucket'];
   if (!bucket) {
+    console.error('R2 bucket 未配置');
     return new Response('R2 bucket not configured', { status: 500 });
   }
 
   try {
     const object = await bucket.get(pathname);
+
+    console.log('R2 对象查找结果:', object ? '找到' : '未找到');
 
     if (!object) {
       return new Response('Not Found', { status: 404 });
