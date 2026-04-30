@@ -14,7 +14,7 @@
         <div class="npc-card hand-drawn-border" v-if="!hasDogFriend">
           <div class="npc-header">
             <div class="npc-avatar">
-              <span class="avatar-emoji">🐶</span>
+              <img :src="getNpcAvatar('dog_npc')" alt="太宰" class="npc-avatar-img">
             </div>
             <div class="npc-info">
               <div class="npc-name-row">
@@ -38,8 +38,9 @@
         <div class="friends-list" v-if="roleStore.friends.length > 0">
           <div v-for="friend in roleStore.friends" :key="friend.id" class="friend-item hand-drawn-border">
             <div class="friend-avatar">
-              <span class="avatar-emoji">{{ friend.avatar }}</span>
-            </div>
+            <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="friend-avatar-img">
+            <span v-else class="avatar-emoji">{{ friend.avatar }}</span>
+          </div>
             <div class="friend-details">
               <div class="friend-header">
                 <p class="friend-name">{{ friend.name }}</p>
@@ -69,7 +70,8 @@
         <div class="chat-window hand-drawn-border">
           <div class="chat-header">
             <div class="chat-avatar">
-              <span>{{ currentFriend?.isNpc ? '🐶' : currentFriend?.avatar }}</span>
+              <img v-if="currentFriend?.isNpc" :src="currentFriend.avatar" :alt="currentFriend.name" class="chat-avatar-img">
+              <span v-else>{{ currentFriend?.avatar }}</span>
             </div>
             <div class="chat-info">
               <p class="chat-name">{{ currentFriend?.name }}</p>
@@ -114,6 +116,7 @@
 import { ref, computed, onUnmounted } from 'vue';
 import { useRoleStore } from '@/stores/role';
 import { useUserStore } from '@/stores/user';
+import { getNpcAvatar } from '@/constants/npc';
 
 const roleStore = useRoleStore();
 const userStore = useUserStore();
@@ -136,7 +139,7 @@ const hasDogFriend = computed(() => {
 
 const dogFriend = {
  name: '太宰',
- avatar: '🐶',
+ avatar: getNpcAvatar('dog_npc'),
  title: '狗',
  tags: ['高冷', '傲娇', '话少'],
  level: 1,
@@ -381,10 +384,17 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   background: #fff;
+  overflow: hidden;
 }
 
 .npc-avatar .avatar-emoji {
   font-size: 32px;
+}
+
+.npc-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .npc-info {
@@ -481,10 +491,17 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   background: #fafafa;
+  overflow: hidden;
 }
 
 .avatar-emoji {
   font-size: 24px;
+}
+
+.friend-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .friend-details {
@@ -633,6 +650,13 @@ onUnmounted(() => {
   justify-content: center;
   font-size: 20px;
   margin-right: 12px;
+  overflow: hidden;
+}
+
+.chat-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .chat-info {

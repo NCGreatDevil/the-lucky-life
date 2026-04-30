@@ -83,7 +83,7 @@
 
     <!-- 底部提示 -->
     <footer class="footer">
-      <p class="copyright">好运人生 · 极简生活实验室 © 2026</p>
+      <p class="copyright">好运人生 · 凌晨五点工作室 © 2026</p>
     </footer>
   </div>
 </template>
