@@ -182,7 +182,8 @@ export const useRoleStore = defineStore('role', () => {
         const result = await response.json()
         if (result.success && result.data.friends) {
           friends.value = result.data.friends.map(f => ({
-            id: f.friend_id || f.id,
+            id: f.id,
+            npcId: f.is_npc ? f.friend_id : null,
             isNpc: Boolean(f.is_npc),
             name: f.friend_name,
             avatar: f.friend_avatar,
