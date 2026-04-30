@@ -10,25 +10,27 @@
       <div class="npc-section">
         <h3 class="section-title">可添加的 NPC</h3>
         <div class="npc-list">
-          <div v-for="npc in availableNPCs" :key="npc.id" class="npc-card hand-drawn-border" v-if="!isFriendAdded(npc.id)">
-            <div class="npc-header">
-              <div class="npc-avatar">
-                <img :src="getNpcAvatar(npc.id)" :alt="npc.name" class="npc-avatar-img">
-              </div>
-              <div class="npc-info">
-                <div class="npc-name-row">
-                  <p class="npc-name">{{ npc.name }}</p>
-                  <span class="npc-tag">NPC</span>
+          <template v-for="npc in availableNPCs" :key="npc.id">
+            <div v-if="!isFriendAdded(npc.id)" class="npc-card hand-drawn-border">
+              <div class="npc-header">
+                <div class="npc-avatar">
+                  <img :src="getNpcAvatar(npc.id)" :alt="npc.name" class="npc-avatar-img">
                 </div>
-                <p class="npc-title">{{ npc.title }}</p>
-                <p class="npc-desc">{{ npc.description || '神秘的 NPC 角色。' }}</p>
+                <div class="npc-info">
+                  <div class="npc-name-row">
+                    <p class="npc-name">{{ npc.name }}</p>
+                    <span class="npc-tag">NPC</span>
+                  </div>
+                  <p class="npc-title">{{ npc.title }}</p>
+                  <p class="npc-desc">{{ npc.description || '神秘的 NPC 角色。' }}</p>
+                </div>
               </div>
+              <button class="add-npc-btn" @click="addNPCFriend(npc)">
+                <span>🐾</span>
+                <span>添加为好友</span>
+              </button>
             </div>
-            <button class="add-npc-btn" @click="addNPCFriend(npc)">
-              <span>🐾</span>
-              <span>添加为好友</span>
-            </button>
-          </div>
+          </template>
         </div>
         <div v-if="allNPCsAdded" class="empty-tip">
           所有 NPC 都已添加为好友！
