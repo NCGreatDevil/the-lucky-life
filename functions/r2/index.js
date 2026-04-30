@@ -1,12 +1,13 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url);
-  const pathname = url.pathname.replace('/r2/', '');
+  const searchParams = url.searchParams;
+  const path = searchParams.get('path');
 
-  console.log('R2 请求路径:', pathname);
-
-  if (!pathname) {
-    return new Response('Not Found', { status: 404 });
+  if (!path) {
+    return new Response('Missing path parameter', { status: 400 });
   }
+
+  console.log('R2 请求路径:', path);
 
   const bucket = context.env['game-bucket'];
   if (!bucket) {
@@ -15,7 +16,7 @@ export async function onRequest(context) {
   }
 
   try {
-    const object = await bucket.get(pathname);
+    const object = await bucket.get(path);
 
     console.log('R2 对象查找结果:', object ? '找到' : '未找到');
 
