@@ -54,8 +54,6 @@ export async function onRequest(context) {
       
       const friends = await db.prepare('SELECT * FROM user_friends WHERE user_id = ?').bind(session.user_id).all();
 
-      console.log('查询到的好友数据:', JSON.stringify(friends.results));
-
       return new Response(JSON.stringify({
         success: true,
         data: {

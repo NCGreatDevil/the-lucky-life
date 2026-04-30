@@ -210,6 +210,141 @@ CREATE TABLE IF NOT EXISTS login_logs (
     created_at TEXT NOT NULL
 );
 
+-- -----------------------------------------------------------------------------
+-- 表5：用户角色状态表 (user_role_state)
+-- 存储用户角色的基础状态信息
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_role_state (
+    -- 关联的用户ID (关联 users 表的 id 字段)
+    user_id TEXT PRIMARY KEY,
+
+    -- 角色名称
+    role_name TEXT DEFAULT '好运萌新',
+
+    -- 角色等级
+    role_level INTEGER DEFAULT 1,
+
+    -- 角色称号
+    role_title TEXT DEFAULT '好运萌新',
+
+    -- 最后抽签日期
+    last_draw_date TEXT DEFAULT '',
+
+    -- 更新时间 (ISO 8601 格式)
+    updated_at TEXT NOT NULL,
+
+    -- 外键约束：删除用户时级联删除
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------------------------------
+-- 表6：用户角色属性表 (user_role_attributes)
+-- 存储用户角色的详细属性（体力、心情等）
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_role_attributes (
+    -- 记录唯一标识符 (UUID格式)
+    id TEXT PRIMARY KEY,
+
+    -- 关联的用户ID
+    user_id TEXT NOT NULL,
+
+    -- 属性名称（如：体力、心情、财运等）
+    attribute_name TEXT NOT NULL,
+
+    -- 属性值
+    attribute_value INTEGER DEFAULT 0,
+
+    -- 是否可见
+    is_visible BOOLEAN DEFAULT false,
+
+    -- 是否已解锁
+    is_unlocked BOOLEAN DEFAULT false,
+
+    -- 更新时间 (ISO 8601 格式)
+    updated_at TEXT NOT NULL,
+
+    -- 外键约束：删除用户时级联删除
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------------------------------
+-- 表7：用户标签表 (user_tags)
+-- 存储用户获得的标签
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_tags (
+    -- 记录唯一标识符 (UUID格式)
+    id TEXT PRIMARY KEY,
+
+    -- 关联的用户ID
+    user_id TEXT NOT NULL,
+
+    -- 标签名称
+    tag_name TEXT NOT NULL,
+
+    -- 创建时间 (ISO 8601 格式)
+    created_at TEXT NOT NULL,
+
+    -- 外键约束：删除用户时级联删除
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------------------------------
+-- 表8：用户抽签历史表 (user_fortune_history)
+-- 存储用户的抽签记录
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_fortune_history (
+    -- 记录唯一标识符 (UUID格式)
+    id TEXT PRIMARY KEY,
+
+    -- 关联的用户ID
+    user_id TEXT NOT NULL,
+
+    -- 抽签日期
+    fortune_date TEXT NOT NULL,
+
+    -- 抽签结果
+    result TEXT NOT NULL,
+
+    -- 属性变化 (JSON格式)
+    changes TEXT DEFAULT '{}',
+
+    -- 时间戳
+    timestamp TEXT NOT NULL,
+
+    -- 外键约束：删除用户时级联删除
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------------------------------
+-- 表9：用户事件历史表 (user_event_history)
+-- 存储用户触发的事件记录
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_event_history (
+    -- 记录唯一标识符 (UUID格式)
+    id TEXT PRIMARY KEY,
+
+    -- 关联的用户ID
+    user_id TEXT NOT NULL,
+
+    -- 事件类型
+    event_type TEXT NOT NULL,
+
+    -- 事件标题
+    event_title TEXT NOT NULL,
+
+    -- 用户选择
+    choice TEXT DEFAULT '',
+
+    -- 属性变化 (JSON格式)
+    changes TEXT DEFAULT '{}',
+
+    -- 时间戳
+    timestamp TEXT NOT NULL,
+
+    -- 外键约束：删除用户时级联删除
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- =============================================================================
 -- 索引定义 (用于优化查询性能)
 -- =============================================================================
@@ -218,10 +353,46 @@ CREATE TABLE IF NOT EXISTS login_logs (
 CREATE INDEX IF NOT EXISTS idx_users_user_id ON users(user_id);
 
 -- 用户表索引：按 nickname 查询
-CREATE INDEX IF
+CREATE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname);
+
+-- 属性表索引：按 luck_level 查询
+CREATE INDEX IF NOT EXISTS idx_user_attributes_luck_level ON user_attributes(luck_level);
+
+-- 会话表索引：按 user_id 查询用户的所有会话
+CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+
+-- 会话表索引：按 token_hash 查询会话 (登录验证时使用)
+CREATE INDEX IF NOT EXISTS idx_sessions_token_hash ON sessions(token_hash);
+
+-- 会话表索引：按 expires_at 查询过期会话 (清理过期会话时使用)
+CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
+
+-- 登录日志表索引：按 user_id 查询用户的登录历史
+CREATE INDEX IF NOT EXISTS idx_login_logs_user_id ON login_logs(user_id);
+
+-- 登录日志表索引：按创建时间查询登录日志
+CREATE INDEX IF NOT EXISTS idx_login_logs_created_at ON login_logs(created_at);
+
+-- 角色属性表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_role_attributes_user_id ON user_role_attributes(user_id);
+
+-- 用户标签表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_tags_user_id ON user_tags(user_id);
+
+-- 抽签历史表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_fortune_history_user_id ON user_fortune_history(user_id);
+
+-- 事件历史表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_event_history_user_id ON user_event_history(user_id);
+
+-- 好友表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_friends_user_id ON user_friends(user_id);
+
+-- 记忆表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_memories_user_id ON user_memories(user_id);
 
 -- -----------------------------------------------------------------------------
--- 表6：用户好友表 (user_friends)
+-- 表10：用户好友表 (user_friends)
 -- 存储用户的好友关系，支持 NPC 和真实用户好友
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS user_friends (

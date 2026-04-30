@@ -180,7 +180,6 @@ export const useRoleStore = defineStore('role', () => {
       
       if (response.ok) {
         const result = await response.json()
-        console.log('后端返回的好友数据:', JSON.stringify(result.data.friends))
         if (result.success && result.data.friends) {
           friends.value = result.data.friends.map(f => ({
             id: f.friend_id || f.id,
@@ -192,7 +191,6 @@ export const useRoleStore = defineStore('role', () => {
             tags: JSON.parse(f.friend_tags || '[]'),
             createdAt: f.created_at
           }))
-          console.log('加载后的好友列表:', JSON.stringify(friends.value))
         }
       }
     } catch (error) {
