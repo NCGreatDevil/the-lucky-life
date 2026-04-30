@@ -150,7 +150,7 @@ export const useRoleStore = defineStore('role', () => {
         credentials: 'include',
         body: JSON.stringify({
           friends: friends.value.map(f => ({
-            id: f.id,
+            id: f.isNpc ? f.npcId : f.id,
             isNpc: f.isNpc,
             name: f.name,
             avatar: f.avatar,
