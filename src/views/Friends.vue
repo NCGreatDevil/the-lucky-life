@@ -127,7 +127,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRoleStore } from '@/stores/role';
 import { useUserStore } from '@/stores/user';
 import { getNpcAvatar } from '@/constants/npc';
@@ -288,6 +288,14 @@ async function sendMessage() {
     isUser: true,
     content: inputContent
   });
+  
+  await nextTick();
+  setTimeout(() => {
+    const chatMessages = document.querySelector('.chat-messages');
+    if (chatMessages) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }, 50);
   
   try {
     const response = await fetch('/api/ai', {
