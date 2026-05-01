@@ -152,11 +152,6 @@ export const useRoleStore = defineStore('role', () => {
           friends: friends.value.map(f => ({
             id: f.isNpc ? f.npcId : f.id,
             isNpc: f.isNpc,
-            name: f.name,
-            avatar: f.avatar,
-            level: f.level,
-            title: f.title,
-            tags: f.tags,
             createdAt: f.createdAt || new Date().toISOString()
           }))
         })
@@ -185,17 +180,53 @@ export const useRoleStore = defineStore('role', () => {
             id: f.id,
             npcId: f.is_npc ? f.friend_id : null,
             isNpc: Boolean(f.is_npc),
-            name: f.friend_name,
-            avatar: f.friend_avatar,
-            level: f.friend_level,
-            title: f.friend_title,
-            tags: JSON.parse(f.friend_tags || '[]'),
+            name: '',
+            avatar: '',
+            level: 1,
+            title: '',
+            tags: [],
             createdAt: f.created_at
           }))
         }
       }
     } catch (error) {
       console.error('加载好友数据错误:', error)
+    }
+  }
+
+  // 合并 NPC 元数据到好友列表
+  async function mergeNPCMetadata() {
+    try {
+      const response = await fetch('/api/npc-list', {
+        method: 'GET',
+        credentials: 'include'
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success && result.data.npcs) {
+          const npcMap = {}
+          result.data.npcs.forEach(npc => {
+            npcMap[npc.id] = npc
+          })
+          
+          friends.value = friends.value.map(friend => {
+            if (friend.isNpc && friend.npcId && npcMap[friend.npcId]) {
+              const npc = npcMap[friend.npcId]
+              return {
+                ...friend,
+                name: npc.name,
+                avatar: npc.avatarUrl,
+                title: npc.title,
+                description: npc.description
+              }
+            }
+            return friend
+          })
+        }
+      }
+    } catch (error) {
+      console.error('合并 NPC 元数据错误:', error)
     }
   }
 

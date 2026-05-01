@@ -14,7 +14,7 @@
             <div v-if="!isFriendAdded(npc.id)" class="npc-card hand-drawn-border">
               <div class="npc-header">
                 <div class="npc-avatar">
-                  <img :src="getNpcAvatar(npc.id)" :alt="npc.name" class="npc-avatar-img">
+                  <img :src="npc.avatarUrl" :alt="npc.name" class="npc-avatar-img">
                 </div>
                 <div class="npc-info">
                   <div class="npc-name-row">
@@ -201,10 +201,8 @@ function addNPCFriend(npc) {
     id: Date.now(),
     npcId: npc.id,
     name: npc.name,
-    avatar: getNpcAvatar(npc.id),
+    avatar: npc.avatarUrl,
     title: npc.title,
-    tags: [],
-    level: 1,
     isNpc: true
   });
 }
@@ -403,6 +401,7 @@ function removeFriend(friendId) {
 onMounted(async () => {
   await roleStore.loadFriendsFromBackend();
   await loadNPCList();
+  await roleStore.mergeNPCMetadata();
 });
 
 onUnmounted(() => {
