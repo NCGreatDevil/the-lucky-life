@@ -2,8 +2,8 @@ export const R2_BASE_URL = '/r2';
 
 export const NPC_AVATARS = {
   dog_npc: `${R2_BASE_URL}?path=avatar/cooldog.png`,
-  huangshan_npc: `${R2_BASE_URL}?path=avatar/huangshan.png`,
-  xianyu_npc: `${R2_BASE_URL}?path=avatar/xianyu.png`
+  huangshan_npc: `${R2_BASE_URL}?path=avatar/fatcat.png`,
+  xianyu_npc: `${R2_BASE_URL}?path=avatar/saltfish.png`
 };
 
 export function getNpcAvatar(npcId) {
