@@ -270,6 +270,7 @@ export const useRoleStore = defineStore('role', () => {
     addFriend,
     removeFriend,
     loadFriendsFromBackend,
+    mergeNPCMetadata,
     checkDailyReset,
     calculateLevel,
     initRole
