@@ -2,7 +2,6 @@ import { corsHeaders, hashToken, isISOExpired } from '../_utils.js';
 import { getNPC } from '../npc/index.js';
 
 const MAX_HISTORY = 20;
-const MAX_REPLY_LENGTH = 30;
 
 async function verifySession(context) {
   const cookieHeader = context.request.headers.get('Cookie') || '';
@@ -139,10 +138,6 @@ export async function onRequest(context) {
 
     let aiReply = await callDeepSeek(messages, context.env.DEEPSEEK_API_KEY);
     aiReply = npc.validateReply(aiReply);
-
-    if (aiReply.length > MAX_REPLY_LENGTH) {
-      aiReply = aiReply.substring(0, MAX_REPLY_LENGTH) + '...';
-    }
 
     chatHistory.push({ role: "assistant", content: aiReply });
 
