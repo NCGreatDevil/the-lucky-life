@@ -122,8 +122,16 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
 
   validateReply(reply) {
     if (!reply || reply.trim().length === 0) {
-      return '...';
+      return this.getDefaultFallbackMessage();
     }
     return reply.trim();
+  }
+
+  getDefaultFallbackMessage() {
+    return '...有事？';
+  }
+
+  getErrorMessage() {
+    return '...不想说话。';
   }
 }

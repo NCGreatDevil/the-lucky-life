@@ -120,8 +120,16 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
 
   validateReply(reply) {
     if (!reply || reply.trim().length === 0) {
-      return '...';
+      return this.getDefaultFallbackMessage();
     }
     return reply.trim();
+  }
+
+  getDefaultFallbackMessage() {
+    return '...随便吧。';
+  }
+
+  getErrorMessage() {
+    return '...没力气说话，喝口水。';
   }
 }

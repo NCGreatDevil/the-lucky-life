@@ -30,4 +30,16 @@ export class NPCBase {
 【当前时间】${hour}点（${timeContext}）
 `.trim();
   }
+
+  getDefaultFallbackMessage() {
+    return '...';
+  }
+
+  getErrorMessage() {
+    return '...';
+  }
+
+  getGreetingMessage(hour) {
+    return this.getGreeting?.(hour) || '...';
+  }
 }

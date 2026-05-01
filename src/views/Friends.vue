@@ -148,6 +148,7 @@ const deleteFriendName = ref('');
 const availableNPCs = ref([]);
 const loadingNPCs = ref(true);
 const friendsLoaded = ref(false);
+const npcMessages = ref({});
 
 const chatHistory = ref([]);
 const userTag = ref({});
@@ -175,6 +176,13 @@ async function loadNPCList() {
       if (result.success && result.data.npcs) {
         const allNPCs = result.data.npcs;
         availableNPCs.value = allNPCs.filter(npc => !isFriendAdded(npc.id));
+        
+        allNPCs.forEach(npc => {
+          npcMessages.value[npc.id] = {
+            defaultFallbackMessage: npc.defaultFallbackMessage,
+            errorMessage: npc.errorMessage
+          };
+        });
       }
     }
   } catch (error) {
@@ -199,6 +207,13 @@ function addNPCFriend(npc) {
     level: 1,
     isNpc: true
   });
+}
+
+function getNPCMessages(npcId) {
+  return npcMessages.value[npcId] || {
+    defaultFallbackMessage: '...',
+    errorMessage: '...'
+  };
 }
 
 async function openChat(friend) {
@@ -239,9 +254,10 @@ async function openChat(friend) {
     }
     
     const data = await response.json();
+    const messages = getNPCMessages(friend.npcId);
     chatMessagesList.value = [{
       isUser: false,
-      content: data.reply || '...'
+      content: data.reply || messages.defaultFallbackMessage
     }];
     
     if (data.chatHistory) chatHistory.value = data.chatHistory;
@@ -249,9 +265,10 @@ async function openChat(friend) {
     if (data.isRefused) isRefused.value = true;
   } catch (error) {
     console.error('AI 请求失败:', error);
+    const messages = getNPCMessages(friend.npcId);
     chatMessagesList.value = [{
       isUser: false,
-      content: '...'
+      content: messages.errorMessage
     }];
   }
 }
@@ -305,6 +322,7 @@ async function sendMessage() {
     }
     
     const data = await response.json();
+    const messages = getNPCMessages(currentFriend.value?.npcId);
     
     if (data && data.reply && data.reply.trim()) {
       chatMessagesList.value.push({
@@ -314,7 +332,7 @@ async function sendMessage() {
     } else {
       chatMessagesList.value.push({
         isUser: false,
-        content: '...'
+        content: messages.defaultFallbackMessage
       });
     }
     
@@ -323,9 +341,10 @@ async function sendMessage() {
     if (data.isRefused) isRefused.value = true;
   } catch (error) {
     console.error('API error:', error);
+    const messages = getNPCMessages(currentFriend.value?.npcId);
     chatMessagesList.value.push({
       isUser: false,
-      content: '网络出错了...'
+      content: messages.errorMessage
     });
   } finally {
     isSending.value = false;

@@ -18,7 +18,9 @@ export async function onRequest(context) {
           title: npc.title,
           description: npc.description,
           personality: npc.personality,
-          greetingHours: npc.greetingHours
+          greetingHours: npc.greetingHours,
+          defaultFallbackMessage: npc.getDefaultFallbackMessage(),
+          errorMessage: npc.getErrorMessage()
         };
       });
 

@@ -138,8 +138,16 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
 
   validateReply(reply) {
     if (!reply || reply.trim().length === 0) {
-      return '本座懒得理你。';
+      return this.getDefaultFallbackMessage();
     }
     return reply.trim();
+  }
+
+  getDefaultFallbackMessage() {
+    return '本座懒得理你。';
+  }
+
+  getErrorMessage() {
+    return '本座心情不好，不想说话。';
   }
 }
