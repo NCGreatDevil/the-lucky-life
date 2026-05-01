@@ -139,8 +139,6 @@ const showChat = ref(false);
 const currentFriend = ref(null);
 const chatMessagesList = ref([]);
 const chatInput = ref('');
-const chatRound = ref(0);
-const tempAlwaysAskQ = ref(false);
 const isSending = ref(false);
 const isRefused = ref(false);
 const showMoreMenu = ref(null);
@@ -205,9 +203,8 @@ function addNPCFriend(npc) {
 
 async function openChat(friend) {
   currentFriend.value = friend;
-  chatRound.value = 0;
-  tempAlwaysAskQ.value = false;
   showChat.value = true;
+  isRefused.value = false;
   chatHistory.value = [];
   userTag.value = {};
   
@@ -244,7 +241,7 @@ async function openChat(friend) {
     const data = await response.json();
     chatMessagesList.value = [{
       isUser: false,
-      content: data.reply || '...有事？'
+      content: data.reply || '...'
     }];
     
     if (data.chatHistory) chatHistory.value = data.chatHistory;
@@ -254,17 +251,13 @@ async function openChat(friend) {
     console.error('AI 请求失败:', error);
     chatMessagesList.value = [{
       isUser: false,
-      content: '...有事？'
+      content: '...'
     }];
   }
 }
 
 async function sendMessage() {
   if (isRefused.value) {
-    chatMessagesList.value.push({
-      isUser: false,
-      content: '太宰已经不想说话了...'
-    });
     return;
   }
   
@@ -280,13 +273,6 @@ async function sendMessage() {
     isUser: true,
     content: inputContent
   });
-  chatRound.value++;
-  
-  if (!tempAlwaysAskQ.value && chatRound.value >= 6 && chatRound.value <= 10) {
-    if (Math.random() > 0.5) {
-      tempAlwaysAskQ.value = true;
-    }
-  }
   
   try {
     const response = await fetch('/api/ai', {
@@ -328,7 +314,7 @@ async function sendMessage() {
     } else {
       chatMessagesList.value.push({
         isUser: false,
-        content: '懒得多说。'
+        content: '...'
       });
     }
     
@@ -358,8 +344,6 @@ function closeChat() {
   currentFriend.value = null;
   chatMessagesList.value = [];
   chatInput.value = '';
-  chatRound.value = 0;
-  tempAlwaysAskQ.value = false;
   isRefused.value = false;
   showMoreMenu.value = null;
   chatHistory.value = [];
