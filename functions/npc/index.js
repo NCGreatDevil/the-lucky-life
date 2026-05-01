@@ -1,7 +1,11 @@
 import { TaizaiNPC } from './TaizaiNPC.js';
+import { HuangshanNPC } from './HuangshanNPC.js';
+import { XianyuNPC } from './XianyuNPC.js';
 
 const npcRegistry = {
-  'dog_npc': TaizaiNPC
+  'dog_npc': TaizaiNPC,
+  'huangshan_npc': HuangshanNPC,
+  'xianyu_npc': XianyuNPC
 };
 
 export function getNPC(npcId) {
