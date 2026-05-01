@@ -173,7 +173,7 @@ async function callDeepSeek(messages, apiKey) {
     body: JSON.stringify({
       model: 'deepseek-v4-flash',
       messages,
-      max_tokens: 150,
+      max_tokens: 300,
       temperature: 0.7,
       top_p: 0.8,
       frequency_penalty: 0.3,
