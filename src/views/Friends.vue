@@ -94,12 +94,13 @@
             </div>
             <button class="close-chat-btn" @click="closeChat">×</button>
           </div>
-          <div class="chat-messages" ref="chatMessages">
-            <div v-for="(msg, index) in chatMessagesList" :key="index" :class="['message', msg.isUser ? 'user-message' : 'bot-message']">
+          <div class="chat-messages" ref="chatMessagesRef">
+            <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['message', msg.isUser ? 'user-message' : 'bot-message']">
               <div class="message-content hand-drawn-border">
                 {{ msg.content }}
               </div>
             </div>
+            <div ref="lastMessageRef"></div>
           </div>
           <div class="chat-input-area" v-if="!isRefused">
             <input type="text" v-model="chatInput" class="chat-input" placeholder="说点什么..." @keyup.enter="sendMessage">
@@ -142,6 +143,8 @@ const chatInput = ref('');
 const isSending = ref(false);
 const isRefused = ref(false);
 const showMoreMenu = ref(null);
+const chatMessagesRef = ref(null);
+const lastMessageRef = ref(null);
 const showDeleteConfirm = ref(false);
 const deleteFriendId = ref(null);
 const deleteFriendName = ref('');
@@ -290,12 +293,12 @@ async function sendMessage() {
   });
   
   await nextTick();
+  
   setTimeout(() => {
-    const chatMessages = document.querySelector('.chat-messages');
-    if (chatMessages) {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (chatMessagesRef.value) {
+      chatMessagesRef.value.scrollTop = chatMessagesRef.value.scrollHeight;
     }
-  }, 50);
+  }, 100);
   
   try {
     const response = await fetch('/api/ai', {
