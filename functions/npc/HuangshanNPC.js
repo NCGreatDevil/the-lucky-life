@@ -5,9 +5,10 @@ export class HuangshanNPC extends NPCBase {
     super({
       id: 'huangshan_npc',
       name: '黄山',
-      avatar: '🐱',
+      avatar: '',
       title: '猫界少帅',
-      description: '一只爱装逼的大橘猫，自认为是猫界少帅，喜欢吹嘘自己过往的成功经历。'
+      description: '一只爱装逼的大橘猫，自认为是猫界少帅，喜欢吹嘘自己过往的成功经历。',
+      conversationRounds: [15, 20]
     });
 
     this.personality = `【角色身份】
@@ -115,18 +116,6 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
     }
 
     return newState;
-  }
-
-  shouldRefuseReply(userState, chatHistory) {
-    const totalRounds = chatHistory.filter(m => m.role === 'user').length;
-    
-    if (totalRounds >= 15 && totalRounds < 20) {
-      if (Math.random() < 0.3) {
-        return true;
-      }
-    }
-    
-    return totalRounds >= 20 || userState.askCount >= 10;
   }
 
   getRefusalMessage() {

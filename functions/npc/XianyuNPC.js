@@ -7,7 +7,8 @@ export class XianyuNPC extends NPCBase {
       name: '咸鱼',
       avatar: '🐟',
       title: '佛系咸鱼',
-      description: '一条无欲无求的咸鱼，淡泊名利，对很多事情都不上心，爱喝水。'
+      description: '一条无欲无求的咸鱼，淡泊名利，对很多事情都不上心，爱喝水。',
+      conversationRounds: [10, 20]
     });
 
     this.personality = `【角色身份】
@@ -109,13 +110,12 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
     return newState;
   }
 
-  shouldRefuseReply(userState, chatHistory) {
-    const totalRounds = chatHistory.filter(m => m.role === 'user').length;
-    return totalRounds >= 20 || userState.askCount >= 10;
-  }
-
   getRefusalMessage() {
     return '...没力气了，喝口水，随它去吧。';
+  }
+
+  getPersistentRefusalMessage() {
+    return '';
   }
 
   validateReply(reply) {

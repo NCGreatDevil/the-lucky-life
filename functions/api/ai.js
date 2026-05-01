@@ -114,7 +114,19 @@ export async function onRequest(context) {
     }
 
     if (npc.shouldRefuseReply(userInfo, chatHistory)) {
-      const refusal = npc.getRefusalMessage();
+      const totalRounds = chatHistory.filter(m => m.role === 'user').length;
+      const [minRounds, maxRounds] = npc.conversationRounds;
+      
+      let refusal;
+      
+      if (totalRounds >= maxRounds) {
+        // 达到最大轮数，强制中断，使用通用理由
+        refusal = npc.getRefusalReason ? npc.getRefusalReason(chatHistory) : npc.getRefusalMessage();
+      } else {
+        // 在范围内随机中断，使用 NPC 自定义的拒绝消息
+        refusal = npc.getRefusalMessage();
+      }
+      
       chatHistory.push({ role: "assistant", content: refusal });
       
       userInfo.isRefused = true;

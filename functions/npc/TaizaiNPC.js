@@ -7,7 +7,8 @@ export class TaizaiNPC extends NPCBase {
       name: '太宰',
       avatar: '🐶',
       title: '高冷酷狗',
-      description: '一只会说人话的小狗。性格孤僻冷淡，非常不爱搭理人类。'
+      description: '一只会说人话的小狗。性格孤僻冷淡，非常不爱搭理人类。',
+      conversationRounds: [8, 10]
     });
 
     this.personality = `【角色身份】
@@ -111,13 +112,12 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
     return newState;
   }
 
-  shouldRefuseReply(userState, chatHistory) {
-    const totalRounds = chatHistory.filter(m => m.role === 'user').length;
-    return totalRounds >= 20 || userState.askCount >= 10;
-  }
-
   getRefusalMessage() {
     return '我饿了，没力气了。你喊管理员南昌给我找点吃的，吃饱了再聊。';
+  }
+
+  getPersistentRefusalMessage() {
+    return '😒';
   }
 
   validateReply(reply) {
