@@ -85,7 +85,7 @@ export async function onRequest(context) {
     const npc = getNPC(npcId);
 
     if (userInfo.isRefused) {
-      const refusal = npc.getRefusalMessage();
+      const refusal = npc.getPersistentRefusalMessage ? npc.getPersistentRefusalMessage() : npc.getRefusalMessage();
       chatHistory.push({ role: "user", content: userText });
       chatHistory.push({ role: "assistant", content: refusal });
       

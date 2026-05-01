@@ -6,7 +6,7 @@ export class TaizaiNPC extends NPCBase {
       id: 'dog_npc',
       name: '太宰',
       avatar: '🐶',
-      title: '狗',
+      title: '高冷酷狗',
       description: '一只会说人话的小狗。性格孤僻冷淡，非常不爱搭理人类。'
     });
 
