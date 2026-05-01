@@ -106,7 +106,7 @@
             <button class="send-btn" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</button>
           </div>
           <div class="chat-refused-tip" v-else>
-            <p>太宰不想说话了，下次再来吧 😴</p>
+            <p>{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>
           </div>
         </div>
       </div>
