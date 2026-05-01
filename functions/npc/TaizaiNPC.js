@@ -71,13 +71,12 @@ ${this.rules.join('\n')}
 `.trim();
   }
 
-  getDynamicContext(userInfo, chatHistory) {
-    const hour = new Date().getHours();
+  getDynamicContext(userInfo, hour, chatHistory) {
     const timeContext = this.getTimeContext(hour);
     const isFirstChat = chatHistory.length === 0;
 
     return `
-${super.getDynamicContext(userInfo)}
+${super.getDynamicContext(userInfo, hour)}
 
 【对方态度】
 - 曾嘲讽你：${userInfo.hasTauntMe ? '是（加倍毒舌）' : '否'}
@@ -88,8 +87,8 @@ ${isFirstChat ? `【首次问候】生成一句符合当前时间（${timeContex
 `.trim();
   }
 
-  getSystemPrompt(userInfo, chatHistory) {
-    return `${this.getStaticPrompt()}\n\n${this.getDynamicContext(userInfo, chatHistory)}`;
+  getSystemPrompt(userInfo, chatHistory, hour) {
+    return `${this.getStaticPrompt()}\n\n${this.getDynamicContext(userInfo, hour, chatHistory)}`;
   }
 
   getGreeting(hour) {

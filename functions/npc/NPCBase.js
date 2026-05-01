@@ -20,8 +20,7 @@ export class NPCBase {
     return '深夜';
   }
 
-  getDynamicContext(userInfo) {
-    const hour = new Date().getHours();
+  getDynamicContext(userInfo, hour) {
     const timeContext = this.getTimeContext(hour);
 
     return `

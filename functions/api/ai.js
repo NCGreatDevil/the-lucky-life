@@ -140,7 +140,7 @@ export async function onRequest(context) {
     }
 
     const staticPrompt = npc.getStaticPrompt();
-    const dynamicContext = npc.getDynamicContext(userInfo, chatHistory);
+    const dynamicContext = npc.getDynamicContext(userInfo, hour, chatHistory);
 
     const messages = [
       { role: "system", content: staticPrompt },

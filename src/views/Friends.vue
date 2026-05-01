@@ -312,6 +312,7 @@ async function sendMessage() {
         chatHistory: chatHistory.value,
         userTag: userTag.value,
         npcId: currentFriend.value?.npcId,
+        hour: new Date().getHours(),
         userInfo: {
           name: userStore.user?.nickname || '玩家',
           age: '未知',
