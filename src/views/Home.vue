@@ -158,7 +158,7 @@ const luckLevel = computed(() => {
   justify-content: flex-end;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   font-size: 12px;
 }
 
@@ -232,7 +232,7 @@ const luckLevel = computed(() => {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  padding: 0 24px;
+  padding: 0 16px;
   margin-bottom: 24px;
 }
 
@@ -269,7 +269,7 @@ const luckLevel = computed(() => {
 
 .content-area {
   flex: 1;
-  padding: 0 24px 80px;
+  padding: 0 16px 80px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -338,7 +338,7 @@ const luckLevel = computed(() => {
   right: 0;
   background: #fff;
   border-top: 2.5px solid #000;
-  padding: 12px 24px;
+  padding: 8px 16px;
   display: flex;
   gap: 24px;
   z-index: 50;

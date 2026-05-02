@@ -1,14 +1,19 @@
 <template>
   <div class="friends-page">
+    <div class="user-bar">
+      <template v-if="userStore.isLoggedIn">
+        <router-link to="/profile" class="user-link">
+          <span class="user-icon"></span>
+          <span class="user-name">{{ userStore.user?.nickname }}</span>
+        </router-link>
+        <span class="notification-bell">🔔</span>
+      </template>
+    </div>
+
     <header class="header">
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的好友</h1>
-      <div class="header-right">
-        <template v-if="userStore.isLoggedIn">
-          <span class="user-name">{{ userStore.user?.nickname }}</span>
-          <span class="notification-bell">🔔</span>
-        </template>
-      </div>
+      <div class="placeholder"></div>
     </header>
 
     <div class="content-area">
@@ -422,6 +427,33 @@ onUnmounted(() => {
   height: 100%;
 }
 
+.user-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+.user-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+
+.user-icon {
+  font-size: 14px;
+}
+
+.notification-bell {
+  font-size: 16px;
+  position: relative;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -441,20 +473,8 @@ onUnmounted(() => {
   font-weight: bold;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.user-name {
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.notification-bell {
-  font-size: 16px;
-  position: relative;
+.placeholder {
+  width: 40px;
 }
 
 .content-area {
