@@ -7,7 +7,7 @@ export async function onRequestPost(context) {
 
         // 验证用户身份
         const cookie = request.headers.get('Cookie') || '';
-        const sessionMatch = cookie.match(/session=([^;]+)/);
+        const sessionMatch = cookie.match(/session_token=([^;]+)/);
         if (!sessionMatch) {
             return new Response(JSON.stringify({ error: '未登录' }), {
                 status: 401,
