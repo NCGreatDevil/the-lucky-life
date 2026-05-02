@@ -4,7 +4,12 @@
     <header class="header">
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的角色</h1>
-      <div class="placeholder"></div>
+      <div class="header-right">
+        <template v-if="userStore.isLoggedIn">
+          <span class="user-name">{{ userStore.user?.nickname }}</span>
+          <span class="notification-bell">🔔</span>
+        </template>
+      </div>
       <button @click="handleLogout" class="btn-logout">退出</button>
     </header>
     <div class="profile-container">
@@ -333,7 +338,7 @@ async function handleLogout() {
 .header {
   display: flex;
   align-items: center;
-  padding: 48px 24px 24px;
+  padding: 24px 24px 16px;
 }
 
 .back-btn {
@@ -345,11 +350,27 @@ async function handleLogout() {
 }
 
 .title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   flex: 1;
   text-align: center;
   margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.notification-bell {
+  font-size: 16px;
+  position: relative;
 }
 
 .placeholder {

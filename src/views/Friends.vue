@@ -3,7 +3,12 @@
     <header class="header">
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的好友</h1>
-      <div class="placeholder"></div>
+      <div class="header-right">
+        <template v-if="userStore.isLoggedIn">
+          <span class="user-name">{{ userStore.user?.nickname }}</span>
+          <span class="notification-bell">🔔</span>
+        </template>
+      </div>
     </header>
 
     <div class="content-area">
@@ -109,18 +114,6 @@
           <div class="chat-refused-tip" v-else>
             <p>{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>
           </div>
-        </div>
-      </div>
-
-      <div class="info-section">
-        <div class="info-card">
-          <p class="info-icon">💡</p>
-          <p class="info-text">好友功能说明</p>
-          <ul class="info-list">
-            <li>点击 NPC 卡片可以添加为好友</li>
-            <li>添加后可以点击 💬 图标和 NPC 聊天</li>
-            <li>每个 NPC 都有独特的性格和对话风格</li>
-          </ul>
         </div>
       </div>
     </div>
@@ -433,7 +426,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 48px 24px 24px;
+  padding: 24px 24px 16px;
 }
 
 .back-btn {
@@ -444,12 +437,24 @@ onUnmounted(() => {
 }
 
 .title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
 }
 
-.placeholder {
-  width: 40px;
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.notification-bell {
+  font-size: 16px;
+  position: relative;
 }
 
 .content-area {
@@ -665,7 +670,7 @@ onUnmounted(() => {
 .chat-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid #000;
+  border: 1px solid #ccc;
   border-radius: 50%;
   background: #fff;
   font-size: 16px;
@@ -687,7 +692,7 @@ onUnmounted(() => {
 .more-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid #000;
+  border: 1px solid #CCC;
   border-radius: 50%;
   background: #fff;
   font-size: 18px;

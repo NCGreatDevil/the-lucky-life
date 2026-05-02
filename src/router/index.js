@@ -20,9 +20,9 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/role',
-    name: 'Role',
-    component: () => import('@/views/Role.vue'),
+    path: '/map',
+    name: 'Map',
+    component: () => import('@/views/Map.vue'),
     meta: { requiresAuth: true }
   },
   {

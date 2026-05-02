@@ -7,6 +7,7 @@
           <span class="user-icon">👤</span>
           <span class="user-name">{{ userStore.user?.nickname }}</span>
         </router-link>
+        <span class="notification-bell">🔔</span>
       </template>
       <template v-else>
         <router-link to="/login" class="auth-link">登录</router-link>
@@ -29,20 +30,20 @@
     <!-- 导航格子 -->
     <nav class="nav-grid">
       <router-link to="/fortune" class="nav-item">
-        <span class="nav-icon">⭐</span>
-        <span class="nav-label">求神问卜</span>
-      </router-link>
-      <router-link to="/role" class="nav-item">
-        <span class="nav-icon">🎮</span>
-        <span class="nav-label">游戏角色</span>
+        <span class="nav-icon">🙏</span>
+        <span class="nav-label">求神</span>
       </router-link>
       <router-link to="/events" class="nav-item">
         <span class="nav-icon">⚡</span>
-        <span class="nav-label">随机事件</span>
+        <span class="nav-label">事件</span>
       </router-link>
       <router-link to="/friends" class="nav-item">
         <span class="nav-icon">👥</span>
-        <span class="nav-label">我的好友</span>
+        <span class="nav-label">好友</span>
+      </router-link>
+      <router-link to="/map" class="nav-item">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">地图</span>
       </router-link>
     </nav>
 
@@ -58,26 +59,22 @@
           <p class="luck-level">Luckiness: {{ luckLevel }}</p>
         </div>
       </div>
+    </div>
 
-      <!-- 底部状态概览 -->
-      <div class="attr-section" v-if="userStore.isLoggedIn">
-        <h2>日常属性</h2>
-        <div class="attr-grid">
-          <div class="attr-item">
-            <span class="attr-name">能量</span>
-            <div class="attr-bar">
-              <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
-            </div>
-            <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }} / 100</span>
-          </div>
-          <div class="attr-item">
-            <span class="attr-name">活力</span>
-            <div class="attr-bar">
-              <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
-            </div>
-            <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }} / 100</span>
-          </div>
+    <div class="attr-bar-fixed" v-if="userStore.isLoggedIn">
+      <div class="attr-item">
+        <span class="attr-name">能量</span>
+        <div class="attr-bar">
+          <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
         </div>
+        <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
+      </div>
+      <div class="attr-item">
+        <span class="attr-name">活力</span>
+        <div class="attr-bar">
+          <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
+        </div>
+        <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
       </div>
     </div>
 
@@ -159,9 +156,9 @@ const luckLevel = computed(() => {
 .user-bar {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  /* background: #f5f5f5; */
   font-size: 12px;
 }
 
@@ -172,6 +169,11 @@ const luckLevel = computed(() => {
   text-decoration: none;
   color: #000;
   font-weight: bold;
+}
+
+.notification-bell {
+  font-size: 16px;
+  position: relative;
 }
 
 .auth-link {
@@ -267,7 +269,7 @@ const luckLevel = computed(() => {
 
 .content-area {
   flex: 1;
-  padding: 0 24px 24px;
+  padding: 0 24px 80px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -329,6 +331,19 @@ const luckLevel = computed(() => {
   border-radius: 4px;
 }
 
+.attr-bar-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 2.5px solid #000;
+  padding: 12px 24px;
+  display: flex;
+  gap: 24px;
+  z-index: 50;
+}
+
 .attr-section h2 {
   font-size: 16px;
   margin-bottom: 16px;
@@ -344,16 +359,19 @@ const luckLevel = computed(() => {
 
 .attr-item {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
 }
 
 .attr-name {
   font-size: 12px;
   opacity: 0.6;
+  white-space: nowrap;
 }
 
 .attr-bar {
+  flex: 1;
   height: 8px;
   background: #eee;
   border-radius: 4px;
@@ -374,8 +392,11 @@ const luckLevel = computed(() => {
 }
 
 .attr-value {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
+  white-space: nowrap;
+  min-width: 24px;
+  text-align: right;
 }
 
 .footer {
