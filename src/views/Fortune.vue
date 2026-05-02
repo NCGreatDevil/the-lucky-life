@@ -360,7 +360,7 @@ async function restoreFullStatus() {
     if (data.success) {
       userStore.user.attributes.energy = 100
       userStore.user.attributes.vitality = 100
-      alert('已恢复满状态！')
+      console.log('已恢复满状态！')
     } else {
       alert(data.error || '恢复失败')
     }
@@ -502,7 +502,7 @@ onMounted(() => {
 /* 属性条（固定） */
 .attr-bar-fixed {
   background: #fff;
-  padding: 8px 16px;
+  padding: 4px;
   display: flex;
   gap: 24px;
 }
