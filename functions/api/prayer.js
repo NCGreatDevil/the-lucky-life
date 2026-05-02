@@ -120,30 +120,39 @@ export async function onRequest(context) {
 
             // 计算运气加成
             const currentLuck = attrs.luck;
-            const luckRange = getLuckGainRange(currentLuck);
-            let luckGain = randomInt(luckRange.min, luckRange.max);
+            let luckGain = 0;
+            let newLuck = currentLuck;
+            let luckLevelUp = false;
+            let newLuckLevel = getLuckLevel(currentLuck);
+            let oldLuckLevel = getLuckLevel(currentLuck);
+            let isMaxLuck = currentLuck >= 100;
 
-            // 确保运气至少增加1
-            if (luckGain < 1) {
-                luckGain = 1;
+            if (!isMaxLuck) {
+                const luckRange = getLuckGainRange(currentLuck);
+                luckGain = randomInt(luckRange.min, luckRange.max);
+
+                // 确保运气至少增加1
+                if (luckGain < 1) {
+                    luckGain = 1;
+                }
+
+                // 计算新运气值，确保不超过100
+                newLuck = currentLuck + luckGain;
+                if (newLuck > 100) {
+                    newLuck = 100;
+                    luckGain = 100 - currentLuck;
+                }
+
+                // 确保运气至少增加1（如果当前运气已经是100，则不增加）
+                if (luckGain < 1 && currentLuck < 100) {
+                    luckGain = 1;
+                    newLuck = currentLuck + 1;
+                }
+
+                oldLuckLevel = getLuckLevel(currentLuck);
+                newLuckLevel = getLuckLevel(newLuck);
+                luckLevelUp = newLuckLevel > oldLuckLevel;
             }
-
-            // 计算新运气值，确保不超过100
-            let newLuck = currentLuck + luckGain;
-            if (newLuck > 100) {
-                newLuck = 100;
-                luckGain = 100 - currentLuck;
-            }
-
-            // 确保运气至少增加1（如果当前运气已经是100，则不增加）
-            if (luckGain < 1 && currentLuck < 100) {
-                luckGain = 1;
-                newLuck = currentLuck + 1;
-            }
-
-            const oldLuckLevel = getLuckLevel(currentLuck);
-            const newLuckLevel = getLuckLevel(newLuck);
-            const luckLevelUp = newLuckLevel > oldLuckLevel;
 
             // 计算属性加成（如果有信仰）
             let attributeGain = 0;
@@ -273,6 +282,7 @@ export async function onRequest(context) {
                 oldLuckLevel,
                 newLuckLevel,
                 luckLevelUp,
+                isMaxLuck,
                 newLuckLabel: luckLevelUp ? getLuckLabel(newLuckLevel) : null,
                 attributeGain: attributeGain > 0 ? attributeGain : null,
                 attributeType: attributeType || null,

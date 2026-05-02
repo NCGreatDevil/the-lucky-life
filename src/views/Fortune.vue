@@ -17,6 +17,24 @@
     </header>
 
     <div class="content-area">
+      <!-- 属性条 -->
+      <div class="attr-bar-fixed">
+        <div class="attr-item">
+          <span class="attr-name">能量</span>
+          <div class="attr-bar">
+            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">活力</span>
+          <div class="attr-bar">
+            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
+        </div>
+      </div>
+
       <!-- 信仰状态 -->
       <div class="faith-status">
         <div class="faith-label">当前信仰</div>
@@ -41,6 +59,13 @@
           <span class="btn-icon">🙏</span>
           <span class="btn-text">{{ vitality < 30 ? '活力不足' : '祈求好运' }}</span>
           <span class="btn-cost">消耗30活力</span>
+        </button>
+      </div>
+
+      <!-- 测试按钮：恢复满状态 -->
+      <div class="test-section">
+        <button class="test-btn" @click="restoreFullStatus">
+          恢复满状态（测试用）
         </button>
       </div>
 
@@ -124,7 +149,10 @@
             <span class="result-icon">✨</span>
             <div class="result-info">
               <span class="result-label">运气</span>
-              <span class="result-value" v-if="prayerResult.luckLevelUp">
+              <span class="result-value" v-if="prayerResult.isMaxLuck">
+                你的运气已经到达顶峰，必定事事顺利，好运连连
+              </span>
+              <span class="result-value" v-else-if="prayerResult.luckLevelUp">
                 提升至 {{ prayerResult.newLuckLabel }}
               </span>
               <span class="result-value" v-else>
@@ -317,6 +345,29 @@ function closeResult() {
   encounteredDeity.value = null
 }
 
+// 恢复满状态（测试用）
+async function restoreFullStatus() {
+  try {
+    const response = await fetch('/api/test-restore', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json()
+    if (data.success) {
+      userStore.user.attributes.energy = 100
+      userStore.user.attributes.vitality = 100
+      alert('已恢复满状态！')
+    } else {
+      alert(data.error || '恢复失败')
+    }
+  } catch (error) {
+    console.error('恢复失败:', error)
+    alert('恢复失败，请稍后重试')
+  }
+}
+
 // 显示供奉确认
 function showWorshipConfirm(relation) {
   if (confirm(`是否供奉${relation.deityName}？`)) {
@@ -446,6 +497,58 @@ onMounted(() => {
   overflow-y: auto;
 }
 
+/* 属性条（固定） */
+.attr-bar-fixed {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fafafa;
+  border: 2px solid #000;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.attr-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attr-name {
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 30px;
+}
+
+.attr-bar {
+  flex: 1;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.attr-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.attr-fill.energy {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.attr-fill.vitality {
+  background: linear-gradient(90deg, #f093fb, #f5576c);
+}
+
+.attr-value {
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 24px;
+  text-align: right;
+}
+
 /* 信仰状态 */
 .faith-status {
   display: flex;
@@ -529,6 +632,29 @@ onMounted(() => {
 .btn-cost {
   font-size: 12px;
   opacity: 0.8;
+}
+
+/* 测试按钮 */
+.test-section {
+  margin-top: 16px;
+  margin-bottom: 32px;
+}
+
+.test-btn {
+  width: 100%;
+  padding: 12px;
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+.test-btn:active {
+  transform: scale(0.98);
 }
 
 /* 神明关系 */
