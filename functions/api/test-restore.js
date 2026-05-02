@@ -1,27 +1,42 @@
-import { hashToken, corsHeaders, getNowISO, isISOExpired } from '../_utils.js';
+import { corsHeaders, getNowISO, isISOExpired } from '../_utils.js';
 
 export async function onRequestPost(context) {
-    try {
-        const db = context.env.DB;
-        const request = context.request;
+    if (context.request.method === 'OPTIONS') {
+        return new Response(null, { headers: corsHeaders(context) });
+    }
 
-        // 验证用户身份
-        const cookie = request.headers.get('Cookie') || '';
-        const sessionMatch = cookie.match(/session_token=([^;]+)/);
-        if (!sessionMatch) {
+    if (context.request.method !== 'POST') {
+        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+            status: 405,
+            headers: corsHeaders(context)
+        });
+    }
+
+    try {
+        const cookieHeader = context.request.headers.get('Cookie') || '';
+        const cookies = Object.fromEntries(
+            cookieHeader.split(';').map(c => {
+                const [key, ...val] = c.trim().split('=');
+                return [key, val.join('=')];
+            })
+        );
+
+        const token = cookies.session_token;
+
+        if (!token) {
             return new Response(JSON.stringify({ error: '未登录' }), {
                 status: 401,
                 headers: corsHeaders(context)
             });
         }
 
-        const sessionToken = sessionMatch[1];
-        const session = await db.prepare(
-            'SELECT s.*, u.id as user_id FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token_hash = ? AND s.expires_at > ?'
-        ).bind(hashToken(sessionToken), getNowISO()).first();
+        const db = context.env['game-db'];
+        const tokenHashArray = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+        const tokenHash = Array.from(new Uint8Array(tokenHashArray), b => b.toString(16).padStart(2, '0')).join('');
 
-        if (!session) {
-            return new Response(JSON.stringify({ error: '会话无效或已过期' }), {
+        const session = await db.prepare('SELECT * FROM sessions WHERE token_hash = ?').bind(tokenHash).first();
+        if (!session || isISOExpired(session.expires_at)) {
+            return new Response(JSON.stringify({ error: '会话已过期，请重新登录' }), {
                 status: 401,
                 headers: corsHeaders(context)
             });
@@ -30,9 +45,10 @@ export async function onRequestPost(context) {
         const userId = session.user_id;
 
         // 恢复能量和活力到100
+        const now = getNowISO();
         await db.prepare(
             'UPDATE user_attributes SET energy = 100, vitality = 100, updated_at = ? WHERE user_id = ?'
-        ).bind(getNowISO(), userId).run();
+        ).bind(now, userId).run();
 
         return new Response(JSON.stringify({ success: true }), {
             headers: corsHeaders(context)
