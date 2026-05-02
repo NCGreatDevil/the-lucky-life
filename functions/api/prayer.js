@@ -123,17 +123,24 @@ export async function onRequest(context) {
             const luckRange = getLuckGainRange(currentLuck);
             let luckGain = randomInt(luckRange.min, luckRange.max);
 
-            // 确保运气不超过100
-            if (currentLuck + luckGain > 100) {
-                luckGain = 100 - currentLuck;
-            }
-
             // 确保运气至少增加1
             if (luckGain < 1) {
                 luckGain = 1;
             }
 
-            const newLuck = currentLuck + luckGain;
+            // 计算新运气值，确保不超过100
+            let newLuck = currentLuck + luckGain;
+            if (newLuck > 100) {
+                newLuck = 100;
+                luckGain = 100 - currentLuck;
+            }
+
+            // 确保运气至少增加1（如果当前运气已经是100，则不增加）
+            if (luckGain < 1 && currentLuck < 100) {
+                luckGain = 1;
+                newLuck = currentLuck + 1;
+            }
+
             const oldLuckLevel = getLuckLevel(currentLuck);
             const newLuckLevel = getLuckLevel(newLuck);
             const luckLevelUp = newLuckLevel > oldLuckLevel;

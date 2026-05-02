@@ -716,4 +716,38 @@ INSERT INTO deities (id, name, attribute_type, image_description, power_descript
 -- | user_memories      | has_taunt      | BOOLEAN | 是否嘲讽过目标角色                      |
 -- | user_memories      | is_friendly    | BOOLEAN | 是否对目标角色友好                      |
 -- | user_memories      | updated_at     | TEXT    | 更新时间 ISO 8601 格式                  |
+-- |--------------------|----------------|---------|----------------------------------------|
+-- | deities            | id             | TEXT    | 神明唯一标识符                          |
+-- | deities            | name           | TEXT    | 神明名称                                |
+-- | deities            | attribute_type | TEXT    | 对应属性类型（energy/vitality等）       |
+-- | deities            | image_description | TEXT | 形象描述（用于前端展示）              |
+-- | deities            | image_url      | TEXT    | 形象图片URL（后续替换）                 |
+-- | deities            | power_description | TEXT | 核心权能描述                          |
+-- | deities            | token          | TEXT    | 专属信物                                |
+-- | deities            | personality    | TEXT    | 性格标签（JSON数组）                    |
+-- | deities            | attribute_min  | INT     | 属性加成最小值                          |
+-- | deities            | attribute_max  | INT     | 属性加成最大值                          |
+-- | deities            | luck_min       | INT     | 运气加成最小值                          |
+-- | deities            | luck_max       | INT     | 运气加成最大值                          |
+-- | deities            | encounter_rate | INT     | 遇到概率（百分比，0-100）               |
+-- | deities            | created_at     | TEXT    | 创建时间 ISO 8601 格式                  |
+-- |--------------------|----------------|---------|----------------------------------------|
+-- | user_deities       | id             | TEXT    | 记录唯一标识符                          |
+-- | user_deities       | user_id        | TEXT    | 关联的用户ID                            |
+-- | user_deities       | deity_id       | TEXT    | 关联的神明ID                            |
+-- | user_deities       | favorability   | INT     | 好感度（0起步，LV1=100, LV2=300...）    |
+-- | user_deities       | is_worshipping | BOOLEAN | 是否正在供奉                            |
+-- | user_deities       | bound_at       | TEXT    | 绑定时间（开始供奉的时间）              |
+-- | user_deities       | created_at     | TEXT    | 创建时间 ISO 8601 格式                  |
+-- | user_deities       | updated_at     | TEXT    | 更新时间 ISO 8601 格式                  |
+-- |--------------------|----------------|---------|----------------------------------------|
+-- | prayer_records     | id             | TEXT    | 记录唯一标识符                          |
+-- | prayer_records     | user_id        | TEXT    | 关联的用户ID                            |
+-- | prayer_records     | deity_id       | TEXT    | 祈求时供奉的神明ID（无信仰时为空）      |
+-- | prayer_records     | encountered_deity_id | TEXT | 祈求时遇到的神明ID                  |
+-- | prayer_records     | luck_gained    | INT     | 获得的运气值                            |
+-- | prayer_records     | attribute_type | TEXT    | 获得的属性类型                          |
+-- | prayer_records     | attribute_gained | INT   | 获得的属性值                            |
+-- | prayer_records     | vitality_cost  | INT     | 消耗的活力值（默认30）                  |
+-- | prayer_records     | prayed_at      | TEXT    | 祈求时间 ISO 8601 格式                  |
 -- =============================================================================
