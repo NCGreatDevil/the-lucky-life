@@ -215,7 +215,7 @@ import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 
-const isAdmin = computed(() => userStore.user?.user_id === 'admin')
+const isAdmin = computed(() => userStore.user?.id === 'admin')
 const vitality = computed(() => userStore.user?.attributes?.vitality || 0)
 const worshippingDeity = ref(null)
 const deityRelations = ref([])
@@ -501,26 +501,23 @@ onMounted(() => {
 
 /* 属性条（固定） */
 .attr-bar-fixed {
+  background: #fff;
+  padding: 8px 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 16px;
-  background: #fafafa;
-  border: 2px solid #000;
-  border-radius: 4px;
-  margin-bottom: 16px;
+  gap: 24px;
 }
 
 .attr-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1;
 }
 
 .attr-name {
   font-size: 12px;
-  font-weight: bold;
-  min-width: 30px;
+  opacity: 0.6;
+  white-space: nowrap;
 }
 
 .attr-bar {
@@ -537,16 +534,17 @@ onMounted(() => {
 }
 
 .attr-fill.energy {
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
 }
 
 .attr-fill.vitality {
-  background: linear-gradient(90deg, #f093fb, #f5576c);
+  background: linear-gradient(90deg, #FF9800, #FFC107);
 }
 
 .attr-value {
   font-size: 12px;
   font-weight: bold;
+  white-space: nowrap;
   min-width: 24px;
   text-align: right;
 }
