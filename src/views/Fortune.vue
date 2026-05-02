@@ -17,24 +17,6 @@
     </header>
 
     <div class="content-area">
-      <!-- 属性条 -->
-      <div class="attr-bar-fixed">
-        <div class="attr-item">
-          <span class="attr-name">能量</span>
-          <div class="attr-bar">
-            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
-          </div>
-          <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
-        </div>
-        <div class="attr-item">
-          <span class="attr-name">活力</span>
-          <div class="attr-bar">
-            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
-          </div>
-          <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
-        </div>
-      </div>
-
       <!-- 信仰状态 -->
       <div class="faith-status">
         <div class="faith-label">当前信仰</div>
@@ -63,10 +45,28 @@
       </div>
 
       <!-- 测试按钮：恢复满状态 -->
-      <div class="test-section">
+      <div class="test-section" v-if="isAdmin">
         <button class="test-btn" @click="restoreFullStatus">
           恢复满状态（测试用）
         </button>
+      </div>
+
+      <!-- 属性条 -->
+      <div class="attr-bar-fixed" v-if="userStore.isLoggedIn">
+        <div class="attr-item">
+          <span class="attr-name">能量</span>
+          <div class="attr-bar">
+            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">活力</span>
+          <div class="attr-bar">
+            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
+        </div>
       </div>
 
       <!-- 神明关系列表 -->
@@ -215,6 +215,7 @@ import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 
+const isAdmin = computed(() => userStore.user?.user_id === 'admin')
 const vitality = computed(() => userStore.user?.attributes?.vitality || 0)
 const worshippingDeity = ref(null)
 const deityRelations = ref([])
@@ -352,7 +353,8 @@ async function restoreFullStatus() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      credentials: 'include'
     })
     const data = await response.json()
     if (data.success) {
