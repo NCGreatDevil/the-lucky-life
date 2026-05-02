@@ -274,7 +274,7 @@ function formatTime(timestamp) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 24px 16px;
+  padding: 0px 24px 8px 24px;
 }
 
 .back-btn {

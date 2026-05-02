@@ -3,7 +3,7 @@
     <div class="user-bar">
       <template v-if="userStore.isLoggedIn">
         <router-link to="/profile" class="user-link">
-          <span class="user-icon"></span>
+          <span class="user-icon">👤</span>
           <span class="user-name">{{ userStore.user?.nickname }}</span>
         </router-link>
         <span class="notification-bell">🔔</span>
@@ -102,7 +102,7 @@ function showUnderConstruction() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 24px 16px;
+  padding: 0px 24px 8px 24px;
 }
 
 .back-btn {

@@ -20,7 +20,8 @@
           <div class="user-id">ID: {{ user.id }}</div>
           <div class="user-nickname">{{ user.nickname }}</div>
           <div v-if="user.attributes" class="user-luck">
-            <span class="luck-label">{{ user.attributes.luckLabel }}</span>
+            <span class="luck-tag">{{ user.attributes.luckLabel }}</span>
+            <!-- <span class="luck-label">{{ user.attributes.luckLabel }}</span> -->
           </div>
         </div>
 
@@ -361,7 +362,7 @@ async function handleLogout() {
   font-size: 12px;
   font-weight: bold;
   background: #fff;
-  border: 2px solid #000;
+  border: 2px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
   flex-shrink: 0;
@@ -375,8 +376,8 @@ async function handleLogout() {
 
 .user-card {
   padding: 20px;
-  background: #0B0500;
-  color: #fff;
+  background: #eee;
+  color: #333;
   text-align: center;
 }
 
@@ -397,12 +398,14 @@ async function handleLogout() {
   justify-content: center;
 }
 
-.luck-label {
+/* .luck-label {
   font-size: 14px;
   padding: 4px 12px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
-}
+  color:#00A878;
+  border: 1px solid #00a878;
+} */
 
 .info-section,
 .attr-section {

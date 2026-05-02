@@ -235,7 +235,7 @@ const luckLevel = computed(() => {
 .nav-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 6px;
   padding: 0 16px;
   margin-bottom: 24px;
 }

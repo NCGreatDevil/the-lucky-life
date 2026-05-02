@@ -458,7 +458,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 24px 16px;
+  padding: 0px 24px 8px 24px;
 }
 
 .back-btn {
@@ -564,9 +564,9 @@ onUnmounted(() => {
 .add-npc-btn {
   width: 100%;
   padding: 10px;
-  border: 2px solid #000;
+  border: 2px solid #a5834f;
   border-radius: 6px;
-  background: #000;
+  background: #f3c178;
   color: #fff;
   font-size: 14px;
   font-weight: bold;
