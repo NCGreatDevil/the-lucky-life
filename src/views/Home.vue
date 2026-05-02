@@ -171,6 +171,10 @@ const luckLevel = computed(() => {
   font-weight: bold;
 }
 
+.user-icon {
+  font-size: 14px;
+}
+
 .notification-bell {
   font-size: 16px;
   position: relative;
@@ -231,7 +235,7 @@ const luckLevel = computed(() => {
 .nav-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 8px;
   padding: 0 16px;
   margin-bottom: 24px;
 }
