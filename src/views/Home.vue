@@ -76,7 +76,7 @@
         </div>
         <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
       </div>
-    </div>
+    </div>  
 
     <!-- 底部提示 -->
     <footer class="footer">
@@ -336,12 +336,12 @@ const luckLevel = computed(() => {
 }
 
 .attr-bar-fixed {
-  position: fixed;
+  /* position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  right: 0; */
   background: #fff;
-  border-top: 2.5px solid #000;
+  /* border-top: 2.5px solid #000; */
   padding: 8px 16px;
   display: flex;
   gap: 24px;

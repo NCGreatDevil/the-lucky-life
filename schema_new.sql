@@ -488,6 +488,163 @@ INSERT INTO luck_levels (level, label, min_value, max_value, description) VALUES
 (5, '好运', 86, 95, '运势极佳，福星高照'),
 (6, '爆棚', 96, 100, '运势爆棚，心想事成');
 
+-- -----------------------------------------------------------------------------
+-- 表11：神明表 (deities)
+-- 存储神明信息，包括属性加成、形象描述等
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS deities (
+    -- 神明唯一标识符
+    id TEXT PRIMARY KEY,
+
+    -- 神明名称
+    name TEXT NOT NULL,
+
+    -- 对应属性类型（energy/vitality/morality/intelligence/constitution/charm/willpower/emotion/popularity/money/luck）
+    attribute_type TEXT NOT NULL,
+
+    -- 形象描述（用于前端展示）
+    image_description TEXT DEFAULT '',
+
+    -- 形象图片URL（后续替换）
+    image_url TEXT DEFAULT '',
+
+    -- 核心权能描述
+    power_description TEXT DEFAULT '',
+
+    -- 专属信物
+    token TEXT DEFAULT '',
+
+    -- 性格标签（JSON数组格式）
+    personality TEXT DEFAULT '[]',
+
+    -- 属性加成最小值
+    attribute_min INTEGER DEFAULT 1,
+
+    -- 属性加成最大值
+    attribute_max INTEGER DEFAULT 3,
+
+    -- 运气加成最小值
+    luck_min INTEGER DEFAULT 1,
+
+    -- 运气加成最大值
+    luck_max INTEGER DEFAULT 5,
+
+    -- 遇到概率（百分比，0-100）
+    encounter_rate INTEGER DEFAULT 1,
+
+    -- 创建时间
+    created_at TEXT NOT NULL
+);
+
+-- -----------------------------------------------------------------------------
+-- 表12：用户神明关系表 (user_deities)
+-- 存储用户与神明的关系，包括好感度、供奉状态等
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS user_deities (
+    -- 记录唯一标识符
+    id TEXT PRIMARY KEY,
+
+    -- 关联的用户ID
+    user_id TEXT NOT NULL,
+
+    -- 关联的神明ID
+    deity_id TEXT NOT NULL,
+
+    -- 好感度（0起步，LV1=100, LV2=300, LV3=600...）
+    favorability INTEGER DEFAULT 0,
+
+    -- 是否正在供奉（true=当前供奉的神明，false=仅记录好感）
+    is_worshipping BOOLEAN DEFAULT false,
+
+    -- 绑定时间（开始供奉的时间）
+    bound_at TEXT DEFAULT '',
+
+    -- 创建时间
+    created_at TEXT NOT NULL,
+
+    -- 更新时间
+    updated_at TEXT NOT NULL,
+
+    -- 外键约束
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (deity_id) REFERENCES deities(id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------------------------------
+-- 表13：祈求记录表 (prayer_records)
+-- 存储用户的祈求历史记录
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS prayer_records (
+    -- 记录唯一标识符
+    id TEXT PRIMARY KEY,
+
+    -- 关联的用户ID
+    user_id TEXT NOT NULL,
+
+    -- 祈求时供奉的神明ID（无信仰时为NULL）
+    deity_id TEXT DEFAULT '',
+
+    -- 祈求时遇到的神明ID（可能遇到其他神明）
+    encountered_deity_id TEXT DEFAULT '',
+
+    -- 获得的运气值
+    luck_gained INTEGER DEFAULT 0,
+
+    -- 获得的属性类型
+    attribute_type TEXT DEFAULT '',
+
+    -- 获得的属性值
+    attribute_gained INTEGER DEFAULT 0,
+
+    -- 消耗的活力值
+    vitality_cost INTEGER DEFAULT 30,
+
+    -- 祈求时间
+    prayed_at TEXT NOT NULL,
+
+    -- 外键约束
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- =============================================================================
+-- 索引定义 (用于优化查询性能)
+-- =============================================================================
+
+-- 神明表索引：按 attribute_type 查询
+CREATE INDEX IF NOT EXISTS idx_deities_attribute_type ON deities(attribute_type);
+
+-- 用户神明关系表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_deities_user_id ON user_deities(user_id);
+
+-- 用户神明关系表索引：按 deity_id 查询
+CREATE INDEX IF NOT EXISTS idx_user_deities_deity_id ON user_deities(deity_id);
+
+-- 用户神明关系表索引：按 is_worshipping 查询当前供奉的神明
+CREATE INDEX IF NOT EXISTS idx_user_deities_worshipping ON user_deities(is_worshipping);
+
+-- 祈求记录表索引：按 user_id 查询
+CREATE INDEX IF NOT EXISTS idx_prayer_records_user_id ON prayer_records(user_id);
+
+-- 祈求记录表索引：按 prayed_at 查询
+CREATE INDEX IF NOT EXISTS idx_prayer_records_prayed_at ON prayer_records(prayed_at);
+
+-- =============================================================================
+-- 初始化神明数据
+-- =============================================================================
+
+INSERT INTO deities (id, name, attribute_type, image_description, power_description, token, personality, attribute_min, attribute_max, luck_min, luck_max, encounter_rate, created_at) VALUES
+('deity_energy', '秦本源', 'energy', '周身萦绕天地流光，身形浑厚如鸿蒙元气凝聚，气质沉稳浩瀚', '执掌天地本源能量、万物元气流转，调控生灵灵力与世间势能兴衰', '元气玉轮', '["沉稳","浩瀚","包容"]', 10, 30, 1, 5, 1, datetime('now')),
+('deity_vitality', '苏生阳', 'vitality', '身形轻盈朝气十足，衣袂沾着晨露新芽，自带草木蓬勃生机', '执掌生灵生机、身心朝气，主掌生长复苏、精神状态旺盛之力', '青芽灵佩', '["开朗","热忱","蓬勃"]', 10, 30, 1, 5, 1, datetime('now')),
+('deity_morality', '孟怀德', 'morality', '儒雅儒生模样，端方肃穆，周身萦绕清正浩然之气', '执掌世间善恶标准、德行礼法，守护人心正道与公序良俗', '浩然玉笏', '["正直","端方","悲悯"]', 1, 3, 1, 5, 1, datetime('now')),
+('deity_intelligence', '文知睿', 'intelligence', '书卷雅士装扮，眉目通透聪慧，手持简卷，静而多思', '执掌悟性学识、谋略思辨，主宰生灵智慧、洞察与推演能力', '万卷古卷', '["睿智","冷静","通透"]', 1, 3, 1, 5, 1, datetime('now')),
+('deity_constitution', '岳磐石', 'constitution', '身形魁梧挺拔，如山岳磐石般厚重稳固，筋骨浑然天成', '执掌肉身根基、筋骨体魄，主掌耐力、抗伤与先天身体素质', '玄岩古盾', '["刚毅","厚重","沉稳"]', 1, 3, 1, 5, 1, datetime('now')),
+('deity_charm', '柳清妍', 'charm', '身姿温婉雅致，气韵温润出尘，仪态端庄自带亲和气场', '执掌仪容风姿、人格感召力，主宰他人观感、吸引与亲和缘力', '流光玉簪', '["温婉","雅致","亲和"]', 1, 3, 1, 5, 1, datetime('now')),
+('deity_willpower', '石恒坚', 'willpower', '身姿挺拔孤然，神态沉稳不屈，立于风雨中亘古不动', '执掌心神信念、坚韧定力，主掌逆境坚守、本心不摧之志', '铁心令牌', '["坚毅","执着","内敛"]', 1, 3, 1, 5, 1, datetime('now')),
+('deity_emotion', '云心宁', 'emotion', '身形缥缈柔和，似流云聚散，神态淡然共情世间百态心绪', '执掌众生七情六欲、悲欢心境，调和情绪起伏与心神安稳', '静心水佩', '["共情","温柔","淡然"]', 1, 3, 1, 5, 1, datetime('now')),
+('deity_popularity', '陈睦缘', 'popularity', '谦和长者形象，气质温润随和，周身缠绕无形缘分丝线', '执掌人际相逢、人脉羁绊，主掌相处和睦、机缘相逢之缘', '结缘丝绦', '["谦和","豁达","善和"]', 1, 3, 1, 5, 1, datetime('now')),
+('deity_money', '金宝盈', 'money', '衣袍雅致带流光宝气，神态从容大气，手握财富权衡之器', '执掌世间财富聚散、物资流转，调控财源盈亏与资源气运', '聚宝灵盆', '["从容","大气","普惠"]', 1, 100, 1, 5, 1, datetime('now')),
+('deity_luck', '周吉时', 'luck', '身形若隐若现，气质淡然随性，自带吉凶流转微光', '执掌天地机缘、祸福际遇，主宰日常运势、偶遇巧合与命数转机', '流年罗盘', '["随性","玄妙","淡泊"]', 1, 5, 1, 5, 1, datetime('now'));
+
 -- =============================================================================
 -- 字段说明汇总
 -- =============================================================================
