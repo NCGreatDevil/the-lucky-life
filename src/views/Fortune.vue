@@ -81,8 +81,9 @@
           >
             <div class="relation-header">
               <span class="relation-name">{{ relation.deityName }}</span>
-              <span class="relation-level">LV{{ relation.level }}</span>
               <span v-if="relation.isWorshipping" class="worshipping-badge">供奉中</span>
+              <span class="relation-level">LV{{ relation.level }}</span>
+              
             </div>
             <div class="relation-progress">
               <div class="progress-bar">
@@ -113,7 +114,7 @@
                 class="action-btn abandon-btn"
                 @click="showAbandonConfirm(relation)"
               >
-                放弃供奉
+                放弃
               </button>
             </div>
           </div>
@@ -799,13 +800,14 @@ onMounted(() => {
   background: #000;
   color: #fff;
   border-radius: 12px;
+  margin-left: auto;
 }
 
 .worshipping-badge {
-  font-size: 10px;
+  font-size: 12px;
   padding: 2px 8px;
-  background: #f0c040;
-  color: #000;
+  background: #43b105;
+  color: #fff;
   border-radius: 12px;
   font-weight: bold;
 }
