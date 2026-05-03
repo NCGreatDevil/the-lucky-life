@@ -101,6 +101,21 @@
                 供奉
               </button>
             </div>
+            <div class="relation-actions" v-if="relation.isWorshipping">
+              <button
+                class="action-btn switch-btn"
+                @click="showSwitchConfirm(relation)"
+                v-if="deityRelations.some(r => r.level >= 1 && !r.isWorshipping)"
+              >
+                更换
+              </button>
+              <button
+                class="action-btn abandon-btn"
+                @click="showAbandonConfirm(relation)"
+              >
+                放弃供奉
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -186,6 +201,7 @@
               <span class="result-label">{{ prayerResult.favorabilityResult.deityName }} 好感</span>
               <span class="result-value">
                 +{{ prayerResult.favorabilityResult.favorabilityGain }}
+                <span v-if="prayerResult.favorabilityResult.isFirstEncounter">（首次相遇，好感翻倍！）</span>
                 <span v-if="prayerResult.favorabilityResult.levelUp">
                   (升至LV{{ prayerResult.favorabilityResult.newLevel }})
                 </span>
@@ -427,6 +443,85 @@ async function rejectWorship(deityId) {
     }
   } catch (error) {
     console.error('拒绝失败:', error)
+    alert('操作失败，请稍后重试')
+  }
+}
+
+// 显示更换神明确认
+function showSwitchConfirm(relation) {
+  const targetDeity = deityRelations.find(r => r.deityId === relation.deityId)
+  if (confirm(`是否更换供奉为${targetDeity.deityName}？更换后将扣除当前供奉神明对应属性值的10%-40%。`)) {
+    switchDeity(relation.deityId)
+  }
+}
+
+// 更换神明
+async function switchDeity(deityId) {
+  try {
+    const response = await fetch('/api/deity-action', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        deityId,
+        action: 'switch'
+      })
+    })
+
+    const data = await response.json()
+    if (data.success) {
+      let message = data.message
+      if (data.attributeLoss) {
+        message += `\n扣除${getAttributeName(data.attributeLoss.attributeType)}：${data.attributeLoss.loss}`
+      }
+      alert(message)
+      await loadDeityInfo()
+      await userStore.fetchProfile()
+    } else {
+      alert(data.error)
+    }
+  } catch (error) {
+    console.error('更换失败:', error)
+    alert('操作失败，请稍后重试')
+  }
+}
+
+// 显示放弃供奉确认
+function showAbandonConfirm(relation) {
+  if (confirm(`是否放弃供奉${relation.deityName}？放弃后将扣除该神明对应属性值的25%。`)) {
+    abandonWorship(relation.deityId)
+  }
+}
+
+// 放弃供奉
+async function abandonWorship(deityId) {
+  try {
+    const response = await fetch('/api/deity-action', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        deityId,
+        action: 'abandon'
+      })
+    })
+
+    const data = await response.json()
+    if (data.success) {
+      let message = data.message
+      if (data.attributeLoss) {
+        message += `\n扣除${getAttributeName(data.attributeLoss.attributeType)}：${data.attributeLoss.loss}`
+      }
+      alert(message)
+      await loadDeityInfo()
+      await userStore.fetchProfile()
+    } else {
+      alert(data.error)
+    }
+  } catch (error) {
+    console.error('放弃供奉失败:', error)
     alert('操作失败，请稍后重试')
   }
 }
@@ -760,6 +855,17 @@ onMounted(() => {
 .worship-btn {
   background: #667eea;
   color: #fff;
+}
+
+.switch-btn {
+  background: #ff9800;
+  color: #fff;
+}
+
+.abandon-btn {
+  background: #f44336;
+  color: #fff;
+  margin-left: 8px;
 }
 
 /* 祈求动画 */

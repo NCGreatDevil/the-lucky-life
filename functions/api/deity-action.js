@@ -137,6 +137,49 @@ export async function onRequest(context) {
                     headers: corsHeaders(context)
                 });
 
+            } else if (action === 'abandon') {
+                // 放弃供奉，回归无信仰状态
+                // 检查是否有供奉的神明
+                const currentWorshipping = await db.prepare(
+                    'SELECT ud.*, d.* FROM user_deities ud JOIN deities d ON ud.deity_id = d.id WHERE ud.user_id = ? AND ud.is_worshipping = 1'
+                ).bind(userId).first();
+
+                if (!currentWorshipping) {
+                    return new Response(JSON.stringify({ error: '当前没有供奉的神明' }), {
+                        status: 400,
+                        headers: corsHeaders(context)
+                    });
+                }
+
+                // 计算属性损失（固定25%）
+                const attributeType = currentWorshipping.attribute_type;
+                const attrs = await db.prepare('SELECT * FROM user_attributes WHERE user_id = ?').bind(userId).first();
+                const currentAttributeValue = attrs[attributeType] || 0;
+                const attributeLoss = Math.floor(currentAttributeValue * 0.25);
+
+                // 更新属性
+                const newAttributeValue = Math.max(0, currentAttributeValue - attributeLoss);
+                await db.prepare(
+                    `UPDATE user_attributes SET ${attributeType} = ?, updated_at = ? WHERE user_id = ?`
+                ).bind(newAttributeValue, now, userId).run();
+
+                // 取消供奉
+                await db.prepare(
+                    'UPDATE user_deities SET is_worshipping = 0 WHERE user_id = ? AND is_worshipping = 1'
+                ).bind(userId).run();
+
+                return new Response(JSON.stringify({
+                    success: true,
+                    message: '已放弃供奉，回归无信仰状态',
+                    attributeLoss: {
+                        attributeType,
+                        loss: attributeLoss
+                    }
+                }), {
+                    status: 200,
+                    headers: corsHeaders(context)
+                });
+
             } else if (action === 'switch') {
                 // 更换神明
                 // 检查新神明好感度是否达到LV1

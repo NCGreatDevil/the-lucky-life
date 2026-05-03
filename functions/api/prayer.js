@@ -189,14 +189,42 @@ export async function onRequest(context) {
                 }
                 // 5% 什么神都没有遇到
             } else {
-                // 无信仰：只有1%概率遇到神
+                // 无信仰：40%概率遇到神
                 const encounterRoll = Math.random() * 100;
-                if (encounterRoll < 1) {
-                    const allDeities = await db.prepare('SELECT * FROM deities').all();
-                    if (allDeities.results && allDeities.results.length > 0) {
-                        const randomIndex = Math.floor(Math.random() * allDeities.results.length);
-                        encounteredDeity = allDeities.results[randomIndex];
-                        encounteredDeityId = encounteredDeity.id;
+                if (encounterRoll < 40) {
+                    // 获取用户与所有神明的关系
+                    const relations = await db.prepare(
+                        'SELECT deity_id, favorability FROM user_deities WHERE user_id = ?'
+                    ).bind(userId).all();
+
+                    // 按好感度排序，取前3名
+                    const sortedRelations = (relations.results || [])
+                        .sort((a, b) => b.favorability - a.favorability)
+                        .slice(0, 3);
+
+                    const top3DeityIds = sortedRelations.map(r => r.deity_id);
+
+                    // 80%概率从前3名中选择，20%随机选择其他
+                    const selectTop3 = Math.random() < 0.8;
+                    let selectedDeity = null;
+
+                    if (selectTop3 && top3DeityIds.length > 0) {
+                        // 从前3名中随机选择一个
+                        const randomIndex = Math.floor(Math.random() * top3DeityIds.length);
+                        const deityId = top3DeityIds[randomIndex];
+                        selectedDeity = await db.prepare('SELECT * FROM deities WHERE id = ?').bind(deityId).first();
+                    } else {
+                        // 随机选择所有神明
+                        const allDeities = await db.prepare('SELECT * FROM deities').all();
+                        if (allDeities.results && allDeities.results.length > 0) {
+                            const randomIndex = Math.floor(Math.random() * allDeities.results.length);
+                            selectedDeity = allDeities.results[randomIndex];
+                        }
+                    }
+
+                    if (selectedDeity) {
+                        encounteredDeity = selectedDeity;
+                        encounteredDeityId = selectedDeity.id;
                     }
                 }
             }
@@ -217,7 +245,7 @@ export async function onRequest(context) {
             let favorabilityResult = null;
             if (encounteredDeity) {
                 // 随机增加1-50好感度
-                const favorabilityGain = randomInt(1, 50);
+                let favorabilityGain = randomInt(1, 50);
 
                 // 检查是否已有该神明的记录
                 const existingRelation = await db.prepare(
@@ -225,7 +253,7 @@ export async function onRequest(context) {
                 ).bind(userId, encounteredDeityId).first();
 
                 if (existingRelation) {
-                    // 更新好感度
+                    // 已有记录：正常增加好感度
                     const newFavorability = existingRelation.favorability + favorabilityGain;
                     await db.prepare(
                         'UPDATE user_deities SET favorability = ?, updated_at = ? WHERE user_id = ? AND deity_id = ?'
@@ -238,9 +266,13 @@ export async function onRequest(context) {
                         newFavorability,
                         newLevel: getFavorabilityLevel(newFavorability),
                         oldLevel: getFavorabilityLevel(existingRelation.favorability),
-                        levelUp: getFavorabilityLevel(newFavorability) > getFavorabilityLevel(existingRelation.favorability)
+                        levelUp: getFavorabilityLevel(newFavorability) > getFavorabilityLevel(existingRelation.favorability),
+                        isFirstEncounter: false
                     };
                 } else {
+                    // 新神明：首次遇到好感度翻倍
+                    favorabilityGain = favorabilityGain * 2;
+
                     // 创建新记录
                     const relationId = crypto.randomUUID();
                     await db.prepare(
@@ -254,7 +286,8 @@ export async function onRequest(context) {
                         newFavorability: favorabilityGain,
                         newLevel: getFavorabilityLevel(favorabilityGain),
                         oldLevel: 0,
-                        levelUp: false
+                        levelUp: false,
+                        isFirstEncounter: true
                     };
                 }
             }
