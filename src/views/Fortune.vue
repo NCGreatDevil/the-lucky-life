@@ -96,20 +96,13 @@
             </div>
             <div class="relation-actions" v-if="relation.level >= 1 && !relation.isWorshipping">
               <button
-                class="action-btn worship-btn"
-                @click="showWorshipConfirm(relation)"
-              >
-                供奉
-              </button>
-            </div>
-            <div class="relation-actions" v-if="relation.isWorshipping">
-              <button
                 class="action-btn switch-btn"
-                @click="showSwitchConfirm(relation)"
-                v-if="deityRelations.some(r => r.level >= 1 && !r.isWorshipping)"
+                @click="showSwitchToConfirm(relation)"
               >
                 更换
               </button>
+            </div>
+            <div class="relation-actions" v-if="relation.isWorshipping">
               <button
                 class="action-btn abandon-btn"
                 @click="showAbandonConfirm(relation)"
@@ -448,10 +441,31 @@ async function rejectWorship(deityId) {
   }
 }
 
-// 显示更换神明确认
-function showSwitchConfirm(relation) {
-  if (confirm(`是否更换供奉为${relation.deityName}？更换后将扣除当前供奉神明对应属性值的10%-40%。`)) {
+// 显示更换到该神明的确认
+function showSwitchToConfirm(relation) {
+  const currentDeity = worshippingDeity.value
+  if (!currentDeity) {
+    alert('当前没有供奉的神明')
+    return
+  }
+  
+  if (confirm(`当前供奉的神明是【${currentDeity.name}】，是否要替换为【${relation.deityName}】？\n\n代价：将随机减少当前供奉神明对应属性值的10%-40%`)) {
     switchDeity(relation.deityId)
+  }
+}
+
+// 显示更换神明确认（针对当前供奉的神明，点击更换按钮时）
+function showSwitchConfirm(relation) {
+  const availableDeities = deityRelations.value.filter(r => r.level >= 1 && !r.isWorshipping)
+  if (availableDeities.length === 0) {
+    alert('没有其他可供奉的神明')
+    return
+  }
+  
+  // 简单处理：让用户选择第一个可用的神明
+  const targetDeity = availableDeities[0]
+  if (confirm(`是否更换供奉为${targetDeity.deityName}？更换后将扣除当前供奉神明对应属性值的10%-40%。`)) {
+    switchDeity(targetDeity.deityId)
   }
 }
 
