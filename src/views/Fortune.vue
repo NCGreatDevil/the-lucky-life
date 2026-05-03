@@ -450,8 +450,7 @@ async function rejectWorship(deityId) {
 
 // 显示更换神明确认
 function showSwitchConfirm(relation) {
-  const targetDeity = deityRelations.find(r => r.deityId === relation.deityId)
-  if (confirm(`是否更换供奉为${targetDeity.deityName}？更换后将扣除当前供奉神明对应属性值的10%-40%。`)) {
+  if (confirm(`是否更换供奉为${relation.deityName}？更换后将扣除当前供奉神明对应属性值的10%-40%。`)) {
     switchDeity(relation.deityId)
   }
 }
@@ -810,6 +809,7 @@ onMounted(() => {
   color: #fff;
   border-radius: 12px;
   font-weight: bold;
+  margin-left: 16px;
 }
 
 .relation-progress {
