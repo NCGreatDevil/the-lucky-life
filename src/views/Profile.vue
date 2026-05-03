@@ -4,8 +4,9 @@
     <header class="header">
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的角色</h1>
-      <div class="placeholder"></div>
-      <button @click="handleLogout" class="btn-logout">退出</button>
+      <div class="placeholder">
+        <button @click="handleLogout" class="btn-logout">🚪</button>
+      </div> 
     </header>
     <div class="profile-container">
       <!-- <div class="profile-header">
