@@ -1153,14 +1153,14 @@ onMounted(() => {
 }
 
 .invite-btn.accept {
-  background: #667eea;
+  background: #ff9800;
   color: #fff;
 }
 
 .invite-btn.reject {
   background: #fff;
-  color: #000;
-  border: 2px solid #000;
+  color: #ff9800;
+  border: 2px solid #ff9800;
 }
 
 .close-result-btn {
