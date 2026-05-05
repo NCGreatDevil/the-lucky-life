@@ -673,6 +673,8 @@ onMounted(() => {
 
 .faith-status.has-faith {
   justify-content: center;
+  background: linear-gradient(135deg, #fff9e6, #fff);
+  border-color: #f0c040;
 }
 
 .faith-label {
@@ -694,7 +696,7 @@ onMounted(() => {
 .deity-level {
   font-size: 12px;
   padding: 2px 8px;
-  background: #000;
+  background: #ff9800;
   color: #fff;
   border-radius: 12px;
 }
