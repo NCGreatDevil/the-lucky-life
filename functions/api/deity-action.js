@@ -100,10 +100,10 @@ export async function onRequest(context) {
                     });
                 }
 
-                // 如果用户已有供奉的神明，先取消
+                // 如果用户已有供奉的神明，先取消，好感度降至99
                 await db.prepare(
-                    'UPDATE user_deities SET is_worshipping = 0 WHERE user_id = ? AND is_worshipping = 1'
-                ).bind(userId).run();
+                    'UPDATE user_deities SET is_worshipping = 0, favorability = 99, updated_at = ? WHERE user_id = ? AND is_worshipping = 1'
+                ).bind(now, userId).run();
 
                 // 设置新的供奉神明
                 await db.prepare(
@@ -165,8 +165,8 @@ export async function onRequest(context) {
 
                 // 取消供奉
                 await db.prepare(
-                    'UPDATE user_deities SET is_worshipping = 0 WHERE user_id = ? AND is_worshipping = 1'
-                ).bind(userId).run();
+                    'UPDATE user_deities SET is_worshipping = 0, favorability = 99, updated_at = ? WHERE user_id = ? AND is_worshipping = 1'
+                ).bind(now, userId).run();
 
                 return new Response(JSON.stringify({
                     success: true,
@@ -212,10 +212,10 @@ export async function onRequest(context) {
                         `UPDATE user_attributes SET ${attributeType} = ?, updated_at = ? WHERE user_id = ?`
                     ).bind(newAttributeValue, now, userId).run();
 
-                    // 取消当前供奉
+                    // 取消当前供奉，好感度降至99
                     await db.prepare(
-                        'UPDATE user_deities SET is_worshipping = 0 WHERE user_id = ? AND is_worshipping = 1'
-                    ).bind(userId).run();
+                        'UPDATE user_deities SET is_worshipping = 0, favorability = 99, updated_at = ? WHERE user_id = ? AND is_worshipping = 1'
+                    ).bind(now, userId).run();
                 }
 
                 // 设置新的供奉神明

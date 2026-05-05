@@ -450,7 +450,7 @@ function showSwitchToConfirm(relation) {
     return
   }
   
-  if (confirm(`当前供奉的神明是【${currentDeity.name}】，是否要替换为【${relation.deityName}】？\n\n代价：将随机减少当前供奉神明对应属性值的10%-40%`)) {
+  if (confirm(`当前供奉的神明是【${currentDeity.name}】，是否要替换为【${relation.deityName}】？\n\n代价：\n1. 随机减少当前供奉神明对应属性值的10%-40%\n2. 对原神明的好感度降至99（LV0）`)) {
     switchDeity(relation.deityId)
   }
 }
@@ -504,7 +504,7 @@ async function switchDeity(deityId) {
 
 // 显示放弃供奉确认
 function showAbandonConfirm(relation) {
-  if (confirm(`是否放弃供奉${relation.deityName}？放弃后将扣除该神明对应属性值的25%。`)) {
+  if (confirm(`是否放弃供奉${relation.deityName}？\n\n代价：\n1. 扣除该神明对应属性值的25%\n2. 对该神明的好感度降至99（LV0）`)) {
     abandonWorship(relation.deityId)
   }
 }
