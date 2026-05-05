@@ -18,8 +18,8 @@
 
     <div class="content-area">
       <!-- 信仰状态 -->
-      <div class="faith-status">
-        <div class="faith-label">当前信仰</div>
+      <div class="faith-status" :class="{ 'has-faith': worshippingDeity }">
+        <div class="faith-label" v-if="!worshippingDeity">当前信仰</div>
         <div class="faith-value">
           <template v-if="worshippingDeity">
             <span class="deity-name">{{ worshippingDeity.name }}</span>
@@ -30,6 +30,7 @@
           </template>
         </div>
       </div>
+
 
       <!-- 祈求按钮 -->
       <div class="prayer-section">
@@ -668,6 +669,10 @@ onMounted(() => {
   border: 2px solid #000;
   border-radius: 4px;
   margin-bottom: 24px;
+}
+
+.faith-status.has-faith {
+  justify-content: center;
 }
 
 .faith-label {
