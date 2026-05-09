@@ -190,6 +190,7 @@ async function triggerActiveEvent() {
     }
 
     currentEvent.value = result.event
+    currentEvent.value.isPending = false
     eventResolved.value = false
     isEventActive.value = true
 
@@ -220,7 +221,7 @@ async function makeChoice(optionId) {
       credentials: 'include',
       body: JSON.stringify({
         optionId,
-        passiveEventId: currentEvent.value?.id
+        passiveEventId: currentEvent.value?.isPending ? currentEvent.value?.id : undefined
       })
     })
 
@@ -273,13 +274,14 @@ async function makeChoice(optionId) {
 async function resolvePendingEvent(event) {
   showPendingEvents.value = false
   currentEvent.value = {
-    id: event.id,
-    name: event.name,
-    description: event.description,
-    category: event.category,
-    options: [],
-    encounter: null
-  }
+      id: event.id,
+      name: event.name,
+      description: event.description,
+      category: event.category,
+      options: [],
+      encounter: null,
+      isPending: true
+    }
 
   try {
     const response = await fetch(`/api/events/${event.eventId}/options`, {
