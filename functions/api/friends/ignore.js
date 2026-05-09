@@ -1,4 +1,4 @@
-import { corsHeaders, getNowISO, generateGUID } from '../../../_utils.js';
+import { corsHeaders, getNowISO, generateGUID } from '../../_utils.js';
 import { verifySession } from '../../events/_utils.js';
 
 export async function onRequest(context, targetId) {
