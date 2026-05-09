@@ -194,6 +194,9 @@ async function triggerActiveEvent() {
     isEventActive.value = true
 
     if (result.currentEnergy !== undefined) {
+      if (userStore.user?.attributes) {
+        userStore.user.attributes.energy = result.currentEnergy
+      }
       roleStore.updateAttribute('能量', result.currentEnergy - (roleStore.attributes.能量?.value || 80))
     }
 
@@ -249,6 +252,9 @@ async function makeChoice(optionId) {
         const attrName = attrMap[key]
         if (attrName && roleStore.attributes[attrName]) {
           roleStore.attributes[attrName].value = value
+        }
+        if (userStore.user?.attributes && (key === 'energy' || key === 'vitality')) {
+          userStore.user.attributes[key] = value
         }
       }
     }
