@@ -20,12 +20,39 @@
     </header>
 
     <div class="content-area">
+
+
       <div class="trigger-section">
         <button class="trigger-btn hand-drawn-border" @click="triggerActiveEvent" :disabled="isEventActive || isLoading">
           <span class="trigger-icon">⚡</span>
           <span class="trigger-text">{{ isEventActive ? '事件进行中...' : isLoading ? '加载中...' : '触发随机事件' }}</span>
         </button>
         <p class="trigger-tip">消耗10能量，可能触发各种事件</p>
+      </div>
+      
+      <!-- 测试按钮：恢复满状态 -->
+      <div class="test-section" v-if="isAdmin">
+        <button class="test-btn" @click="restoreFullStatus">
+          恢复满状态（测试用）
+        </button>
+      </div>
+
+      <!-- 属性条 -->
+      <div class="attr-bar-fixed" v-if="userStore.isLoggedIn">
+        <div class="attr-item">
+          <span class="attr-name">能量</span>
+          <div class="attr-bar">
+            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">活力</span>
+          <div class="attr-bar">
+            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
+        </div>
       </div>
 
       <div v-if="showPendingEvents && pendingEvents.length > 0" class="pending-events-panel hand-drawn-border">
@@ -124,12 +151,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoleStore } from '@/stores/role'
 import { useUserStore } from '@/stores/user'
 
 const roleStore = useRoleStore()
 const userStore = useUserStore()
+
+const isAdmin = computed(() => userStore.user?.id === 'admin')
 
 const isEventActive = ref(false)
 const eventResolved = ref(false)
@@ -345,6 +374,29 @@ function parseChanges(changesStr) {
   }
 }
 
+async function restoreFullStatus() {
+  try {
+    const response = await fetch('/api/test-restore', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    })
+    const data = await response.json()
+    if (data.success) {
+      userStore.user.attributes.energy = 100
+      userStore.user.attributes.vitality = 100
+      console.log('已恢复满状态！')
+    } else {
+      alert(data.error || '恢复失败')
+    }
+  } catch (error) {
+    console.error('恢复失败:', error)
+    alert('恢复失败，请稍后重试')
+  }
+}
+
 onMounted(() => {
   loadPendingCount()
   loadPendingEvents()
@@ -427,6 +479,77 @@ onMounted(() => {
   flex: 1;
   padding: 0 24px 24px;
   overflow-y: auto;
+}
+
+/* 测试按钮 */
+.test-section {
+  margin-bottom: 16px;
+}
+
+.test-btn {
+  width: 100%;
+  padding: 8px;
+  background: #f0f0f0;
+  border: 1px dashed #999;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+  cursor: pointer;
+}
+
+.test-btn:active {
+  background: #e0e0e0;
+}
+
+/* 属性条（固定） */
+.attr-bar-fixed {
+  background: #fff;
+  padding: 4px;
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.attr-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.attr-name {
+  font-size: 12px;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+.attr-bar {
+  flex: 1;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.attr-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.attr-fill.energy {
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+}
+
+.attr-fill.vitality {
+  background: linear-gradient(90deg, #FF9800, #FFC107);
+}
+
+.attr-value {
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+  min-width: 24px;
+  text-align: right;
 }
 
 .trigger-section {

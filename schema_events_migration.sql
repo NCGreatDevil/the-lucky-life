@@ -69,7 +69,8 @@ CREATE TABLE IF NOT EXISTS user_event_triggers (
     trigger_count INTEGER DEFAULT 0,
     last_triggered_at TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+    UNIQUE(user_id, event_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_event_triggers_user_event ON user_event_triggers(user_id, event_id);
