@@ -2,39 +2,36 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useRoleStore = defineStore('role', () => {
-  // 角色基础信息
   const roleName = ref('好运萌新')
   const roleLevel = ref(1)
   const roleTitle = ref('好运萌新')
 
-  // 角色属性 - 根据需求文档，部分属性初始隐藏
-  // 只有获得过的属性才会显示
   const attributes = ref({
-   体力: { value: 80, visible: true, unlocked: true },
-    心情: { value: 65, visible: true, unlocked: true },
-    财运: { value: 0, visible: false, unlocked: false },
-    桃花: { value: 0, visible: false, unlocked: false },
-    事业: { value: 0, visible: false, unlocked: false },
-    学识: { value: 0, visible: false, unlocked: false }
+    能量: { value: 80, visible: true, unlocked: true },
+    活力: { value: 60, visible: true, unlocked: true },
+    道德: { value: 0, visible: false, unlocked: false },
+    智力: { value: 0, visible: false, unlocked: false },
+    体质: { value: 0, visible: false, unlocked: false },
+    魅力: { value: 0, visible: false, unlocked: false },
+    意志: { value: 0, visible: false, unlocked: false },
+    情绪: { value: 0, visible: false, unlocked: false },
+    人缘: { value: 0, visible: false, unlocked: false },
+    金钱: { value: 0, visible: false, unlocked: false },
   })
 
-  // 已解锁的标签
+  const luckLevel = ref(3)
+  const luckLabel = ref('平常')
+
   const tags = ref([])
 
-  // 抽签记录
   const fortuneHistory = ref([])
-
-  // 今日是否已抽签
   const hasDrawnToday = ref(false)
   const lastDrawDate = ref('')
 
-  // 事件记录
   const eventHistory = ref([])
 
-  // 好友列表
   const friends = ref([])
 
-  // 计算属性：获取可见的属性
   const visibleAttributes = computed(() => {
     return Object.entries(attributes.value)
       .filter(([key, val]) => val.visible && val.unlocked)
@@ -44,10 +41,8 @@ export const useRoleStore = defineStore('role', () => {
       }, {})
   })
 
-  // 更新属性值，如果属性首次出现则解锁显示
   function updateAttribute(name, delta) {
     if (!attributes.value[name]) {
-      // 属性首次出现，解锁并显示
       attributes.value[name] = { value: 0, visible: true, unlocked: true }
     } else {
       attributes.value[name].visible = true
@@ -55,41 +50,57 @@ export const useRoleStore = defineStore('role', () => {
     }
     attributes.value[name].value += delta
 
-    // 检查是否达到解锁标签的条件
+    if (name === '能量') {
+      attributes.value[name].value = Math.max(0, Math.min(100, attributes.value[name].value))
+    }
+    if (name === '活力') {
+      attributes.value[name].value = Math.max(0, Math.min(100, attributes.value[name].value))
+    }
+    if (name === '金钱') {
+      attributes.value[name].value = Math.max(0, attributes.value[name].value)
+    }
+
     checkTagUnlock(name)
   }
 
-  // 检查并解锁标签
   function checkTagUnlock(attrName) {
     const tagRules = {
-      财运: [
-        { threshold: 50, tag: '小财神' },
-        { threshold: 100, tag: '财运亨通' },
-        { threshold: 200, tag: '富甲一方' }
+      道德: [
+        { threshold: 50, tag: '积德行善' },
+        { threshold: 100, tag: '功德无量' },
       ],
-      桃花: [
+      智力: [
+        { threshold: 50, tag: '聪明伶俐' },
+        { threshold: 100, tag: '学富五车' },
+      ],
+      体质: [
+        { threshold: 50, tag: '身强体壮' },
+        { threshold: 100, tag: '铜筋铁骨' },
+      ],
+      魅力: [
         { threshold: 50, tag: '人缘不错' },
         { threshold: 100, tag: '万人迷' },
-        { threshold: 200, tag: '桃花泛滥' }
       ],
-      事业: [
-        { threshold: 50, tag: '职场新人' },
-        { threshold: 100, tag: '事业有成' },
-        { threshold: 200, tag: '行业精英' }
+      意志: [
+        { threshold: 50, tag: '意志坚定' },
+        { threshold: 100, tag: '坚如磐石' },
       ],
-      学识: [
-        { threshold: 50, tag: '好学宝宝' },
-        { threshold: 100, tag: '学富五车' },
-        { threshold: 200, tag: '博古通今' }
+      情绪: [
+        { threshold: 50, tag: '开心果' },
+        { threshold: 100, tag: '乐天派' },
       ],
-      体力: [
+      人缘: [
+        { threshold: 50, tag: '广结善缘' },
+        { threshold: 100, tag: '八面玲珑' },
+      ],
+      金钱: [
+        { threshold: 50, tag: '小财神' },
+        { threshold: 100, tag: '财运亨通' },
+      ],
+      能量: [
         { threshold: 90, tag: '精力充沛' },
-        { threshold: 50, tag: '需要休息' }
+        { threshold: 30, tag: '需要休息' },
       ],
-      心情: [
-        { threshold: 80, tag: '开心果' },
-        { threshold: 50, tag: '情绪稳定' }
-      ]
     }
 
     const rules = tagRules[attrName]
@@ -104,7 +115,6 @@ export const useRoleStore = defineStore('role', () => {
     }
   }
 
-  // 添加抽签记录
   function addFortuneRecord(result, changes) {
     const today = new Date().toISOString().split('T')[0]
 
@@ -119,7 +129,6 @@ export const useRoleStore = defineStore('role', () => {
     lastDrawDate.value = today
   }
 
-  // 添加事件记录
   function addEventRecord(event) {
     eventHistory.value.unshift({
       ...event,
@@ -127,7 +136,6 @@ export const useRoleStore = defineStore('role', () => {
     })
   }
 
-  // 添加好友
   async function addFriend(friend) {
     if (!friends.value.find(f => f.id === friend.id)) {
       friends.value.push(friend)
@@ -135,13 +143,11 @@ export const useRoleStore = defineStore('role', () => {
     }
   }
 
-  // 移除好友
   async function removeFriend(friendId) {
     friends.value = friends.value.filter(f => f.id !== friendId)
     await syncFriendsToBackend()
   }
 
-  // 同步好友数据到后端
   async function syncFriendsToBackend() {
     try {
       const response = await fetch('/api/role-data', {
@@ -156,7 +162,7 @@ export const useRoleStore = defineStore('role', () => {
           }))
         })
       })
-      
+
       if (!response.ok) {
         console.error('同步好友数据失败')
       }
@@ -165,14 +171,13 @@ export const useRoleStore = defineStore('role', () => {
     }
   }
 
-  // 从后端加载好友数据
   async function loadFriendsFromBackend() {
     try {
       const response = await fetch('/api/role-data', {
         method: 'GET',
         credentials: 'include'
       })
-      
+
       if (response.ok) {
         const result = await response.json()
         if (result.success && result.data.friends) {
@@ -194,14 +199,13 @@ export const useRoleStore = defineStore('role', () => {
     }
   }
 
-  // 合并 NPC 元数据到好友列表
   async function mergeNPCMetadata() {
     try {
       const response = await fetch('/api/npc-list', {
         method: 'GET',
         credentials: 'include'
       })
-      
+
       if (response.ok) {
         const result = await response.json()
         if (result.success && result.data.npcs) {
@@ -209,7 +213,7 @@ export const useRoleStore = defineStore('role', () => {
           result.data.npcs.forEach(npc => {
             npcMap[npc.id] = npc
           })
-          
+
           friends.value = friends.value.map(friend => {
             if (friend.isNpc && friend.npcId && npcMap[friend.npcId]) {
               const npc = npcMap[friend.npcId]
@@ -230,7 +234,6 @@ export const useRoleStore = defineStore('role', () => {
     }
   }
 
-  // 检查每日重置
   function checkDailyReset() {
     const today = new Date().toISOString().split('T')[0]
     if (lastDrawDate.value !== today) {
@@ -238,14 +241,12 @@ export const useRoleStore = defineStore('role', () => {
     }
   }
 
-  // 计算角色等级
   function calculateLevel() {
     const totalAttr = Object.values(attributes.value)
       .reduce((sum, attr) => sum + (attr.unlocked ? attr.value : 0), 0)
     return Math.floor(totalAttr / 100) + 1
   }
 
-  // 初始化角色
   function initRole(name) {
     roleName.value = name || '好运萌新'
     roleLevel.value = 1
@@ -258,6 +259,8 @@ export const useRoleStore = defineStore('role', () => {
     roleLevel,
     roleTitle,
     attributes,
+    luckLevel,
+    luckLabel,
     tags,
     fortuneHistory,
     hasDrawnToday,
