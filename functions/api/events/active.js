@@ -167,7 +167,7 @@ export async function onRequest(context) {
 
     } catch (error) {
         console.error('触发主动事件错误:', error);
-        return new Response(JSON.stringify({ error: '服务器内部错误' }), {
+        return new Response(JSON.stringify({ error: '服务器内部错误', details: error.message }), {
             status: 500,
             headers: corsHeaders(context)
         });
