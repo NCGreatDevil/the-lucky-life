@@ -1,4 +1,4 @@
-import { corsHeaders, hashToken, isISOExpired, getNowISO, generateGUID, calculateLuckLevel } from '../_utils.js';
+import { corsHeaders, hashToken, isISOExpired, getNowISO, generateGUID, calculateLuckLevel } from '../../_utils.js';
 
 export async function verifySession(context) {
     const cookieHeader = context.request.headers.get('Cookie') || '';
