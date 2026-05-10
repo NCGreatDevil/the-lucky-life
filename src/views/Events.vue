@@ -97,9 +97,19 @@
               :key="option.id"
               class="choice-btn"
               @click="makeChoice(option.id)"
-              :disabled="isSubmitting"
+              :disabled="isSubmitting || !isOptionAvailable(option)"
+              :title="getOptionDisabledReason(option)"
             >
               {{ option.text }}
+              <span v-if="!isOptionAvailable(option)" class="disabled-reason">（{{ getOptionDisabledReason(option) }}）</span>
+            </button>
+            <button
+              v-if="allOptionsDisabled"
+              class="skip-btn"
+              @click="skipEvent"
+              :disabled="isSubmitting"
+            >
+              跳过此事件
             </button>
           </div>
 
@@ -171,6 +181,116 @@ const pendingCount = ref(0)
 const pendingEvents = ref([])
 const showPendingEvents = ref(false)
 const history = ref([])
+const currentAttributes = ref(null)
+
+const attrKeyMap = {
+  energy: '能量',
+  vitality: '活力',
+  morality: '道德',
+  intelligence: '智力',
+  constitution: '体质',
+  charm: '魅力',
+  willpower: '意志',
+  emotion: '情绪',
+  popularity: '人缘',
+  money: '金钱',
+  luck: '运气'
+}
+
+function isOptionAvailable(option) {
+  if (!currentAttributes.value || !option.effects) return true
+
+  try {
+    const effects = JSON.parse(option.effects)
+    for (const effect of effects) {
+      const { attr, range } = effect
+      const [minVal] = range
+      if (minVal < 0) {
+        const currentVal = currentAttributes.value[attr] || 0
+        if (currentVal + minVal < 0) {
+          return false
+        }
+      }
+    }
+    return true
+  } catch {
+    return true
+  }
+}
+
+function getOptionDisabledReason(option) {
+  if (!currentAttributes.value || !option.effects) return ''
+
+  try {
+    const effects = JSON.parse(option.effects)
+    const insufficientAttrs = []
+    for (const effect of effects) {
+      const { attr, range } = effect
+      const [minVal] = range
+      if (minVal < 0) {
+        const currentVal = currentAttributes.value[attr] || 0
+        if (currentVal + minVal < 0) {
+          insufficientAttrs.push(attrKeyMap[attr] || attr)
+        }
+      }
+    }
+    return insufficientAttrs.length > 0 ? `${insufficientAttrs.join('、')}不足` : ''
+  } catch {
+    return ''
+  }
+}
+
+const allOptionsDisabled = computed(() => {
+  if (!currentEvent.value?.options || currentEvent.value.options.length === 0) return false
+  return currentEvent.value.options.every(opt => !isOptionAvailable(opt))
+})
+
+async function skipEvent() {
+  if (isSubmitting.value || !currentEvent.value) return
+
+  isSubmitting.value = true
+  try {
+    const response = await fetch('/api/events/skip', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        eventId: currentEvent.value.id,
+        isPending: currentEvent.value.isPending
+      })
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      alert(result.error || '跳过失败')
+      return
+    }
+
+    if (result.attributes) {
+      for (const [key, value] of Object.entries(result.attributes)) {
+        const attrName = attrKeyMap[key]
+        if (attrName && roleStore.attributes[attrName]) {
+          roleStore.attributes[attrName].value = value
+        }
+        if (userStore.user?.attributes && (key === 'energy' || key === 'vitality')) {
+          userStore.user.attributes[key] = value
+        }
+      }
+    }
+
+    alert('已跳过事件')
+    isEventActive.value = false
+    currentEvent.value = null
+    await loadHistory()
+    await loadPendingCount()
+  } catch (error) {
+    console.error('跳过事件错误:', error)
+    alert('跳过失败，请稍后重试')
+  } finally {
+    isSubmitting.value = false
+  }
+}
 
 async function triggerActiveEvent() {
   if (isEventActive.value || isLoading.value) return
@@ -191,6 +311,7 @@ async function triggerActiveEvent() {
 
     currentEvent.value = result.event
     currentEvent.value.isPending = false
+    currentAttributes.value = result.currentAttributes || null
     eventResolved.value = false
     isEventActive.value = true
 
@@ -297,6 +418,7 @@ async function resolvePendingEvent(event) {
     }
 
     currentEvent.value.options = result.options
+    currentAttributes.value = result.currentAttributes || null
     eventResolved.value = false
     isEventActive.value = true
   } catch (error) {
@@ -794,6 +916,34 @@ onMounted(() => {
 }
 
 .choice-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.disabled-reason {
+  font-size: 11px;
+  color: #f44336;
+}
+
+.skip-btn {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #999;
+  border-radius: 4px;
+  background: #f9f9f9;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: transform 0.1s ease;
+}
+
+.skip-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  background: #eee;
+}
+
+.skip-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

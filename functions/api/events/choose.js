@@ -80,6 +80,49 @@ export async function onRequest(context, eventId) {
         }
 
         const effects = JSON.parse(option.effects || '[]');
+
+        const insufficientAttrs = [];
+        for (const effect of effects) {
+            const { attr, range } = effect;
+            const [minVal, maxVal] = range;
+            const worstDelta = minVal;
+
+            if (worstDelta < 0) {
+                const attrMap = {
+                    energy: 'energy',
+                    vitality: 'vitality',
+                    morality: 'morality',
+                    intelligence: 'intelligence',
+                    constitution: 'constitution',
+                    charm: 'charm',
+                    willpower: 'willpower',
+                    emotion: 'emotion',
+                    popularity: 'popularity',
+                    money: 'money',
+                    luck: 'luck'
+                };
+
+                const attrName = attrMap[attr];
+                if (attrName) {
+                    const currentVal = attrs[attrName] || 0;
+                    if (currentVal + worstDelta < 0) {
+                        insufficientAttrs.push(getAttributeDisplayName(attr));
+                    }
+                }
+            }
+        }
+
+        if (insufficientAttrs.length > 0) {
+            return new Response(JSON.stringify({
+                error: '属性不足',
+                message: `${insufficientAttrs.join('、')}不足，无法选择此选项`,
+                insufficientAttrs
+            }), {
+                status: 400,
+                headers: corsHeaders(context)
+            });
+        }
+
         const changes = {};
 
         for (const effect of effects) {

@@ -155,12 +155,26 @@ export async function onRequest(context) {
                 options: options.map(o => ({
                     id: o.id,
                     order: o.option_order,
-                    text: o.option_text
+                    text: o.option_text,
+                    effects: o.effects
                 })),
                 energyCost: 10,
                 encounter: encounterInfo
             },
-            currentEnergy: newEnergy
+            currentEnergy: newEnergy,
+            currentAttributes: {
+                energy: newEnergy,
+                vitality: attrs.vitality,
+                morality: attrs.morality,
+                intelligence: attrs.intelligence,
+                constitution: attrs.constitution,
+                charm: attrs.charm,
+                willpower: attrs.willpower,
+                emotion: attrs.emotion,
+                popularity: attrs.popularity,
+                money: attrs.money,
+                luck: attrs.luck
+            }
         }), {
             headers: corsHeaders(context)
         });
