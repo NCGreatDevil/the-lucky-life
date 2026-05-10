@@ -5,7 +5,7 @@
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的角色</h1>
       <div class="placeholder">
-        <button @click="handleLogout" class="btn-logout">🚪</button>
+        <button @click="handleLogout" class="btn-logout">退出</button>
       </div> 
     </header>
     <div class="profile-container">
@@ -355,11 +355,11 @@ async function handleLogout() {
 }
 
 .placeholder {
-  width: 40px;
+  width: 100%;
 }
 
 .btn-logout {
-  padding: 8px 16px;
+  padding: 4px 8px;
   font-size: 12px;
   font-weight: bold;
   background: #fff;
