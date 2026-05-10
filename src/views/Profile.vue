@@ -355,7 +355,7 @@ async function handleLogout() {
 }
 
 .placeholder {
-  width: 100%;
+  width: auto;
 }
 
 .btn-logout {
