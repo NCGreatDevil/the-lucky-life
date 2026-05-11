@@ -405,7 +405,7 @@ async function resolvePendingEvent(event) {
     }
 
   try {
-    const response = await fetch(`/api/events/${event.eventId}/options`, {
+    const response = await fetch(`/api/events/options/${event.eventId}`, {
       method: 'GET',
       credentials: 'include'
     })
