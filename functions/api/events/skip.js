@@ -1,5 +1,5 @@
-import { corsHeaders, getNowISO, generateGUID } from '../../../_utils.js';
-import { verifySession } from '../_utils.js';
+import { corsHeaders, getNowISO, generateGUID } from '../../_utils.js';
+import { verifySession } from './_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
