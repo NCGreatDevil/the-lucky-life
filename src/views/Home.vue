@@ -329,7 +329,7 @@ const dailyQuote = computed(() => {
   right: 0; */
   background: #fff;
   /* border-top: 2.5px solid #000; */
-  padding: 4px;
+  padding: 16px;
   display: flex;
   gap: 24px;
   z-index: 50;
