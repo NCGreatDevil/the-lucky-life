@@ -56,7 +56,6 @@
         <div class="fortune-quote">
           <div class="divider"></div>
           <p class="quote-text">"{{ dailyQuote }}"</p>
-          <p class="luck-level">Luckiness: {{ luckLevel }}</p>
         </div>
       </div>
     </div>
@@ -137,11 +136,6 @@ const dailyQuotes = [
 const dailyQuote = computed(() => {
   const index = new Date().getDate() % dailyQuotes.length
   return dailyQuotes[index]
-})
-
-const luckLevel = computed(() => {
-  const stars = Math.min(5, Math.floor(Math.random() * 3) + 3)
-  return '★'.repeat(stars) + '☆'.repeat(5 - stars)
 })
 </script>
 
@@ -318,12 +312,6 @@ const luckLevel = computed(() => {
   font-size: 14px;
   font-style: italic;
   font-weight: 500;
-}
-
-.luck-level {
-  font-size: 10px;
-  margin-top: 8px;
-  opacity: 0.5;
 }
 
 .attr-section {
