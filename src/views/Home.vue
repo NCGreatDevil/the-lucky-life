@@ -292,8 +292,7 @@ const luckLevel = computed(() => {
 .fortune-image {
   width: 66%;
   height: 66%;
-  opacity: 0.8;
-  filter: grayscale(100%);
+
 }
 
 .fortune-image img {
