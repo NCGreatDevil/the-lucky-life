@@ -123,7 +123,7 @@ const solarTerm = computed(() => {
 })
 
 const dailyFortuneImage = computed(() => {
-  return 'https://modao.cc/agent-py/media/generated_images/2026-04-20/9ae827ab420b44f1ab4b20089803fbc7.jpg'
+  return '/r2?path=home/sunny.png'
 })
 
 const dailyQuotes = [
