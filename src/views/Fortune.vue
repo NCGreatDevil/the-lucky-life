@@ -6,7 +6,7 @@
           <span class="user-icon">👤</span>
           <span class="user-name">{{ userStore.user?.nickname }}</span>
         </router-link>
-        <span class="notification-bell"></span>
+        <span class="notification-bell">🔔</span>
       </template>
     </div>
 
