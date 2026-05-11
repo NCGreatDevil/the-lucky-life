@@ -1,5 +1,5 @@
-import { corsHeaders } from '../../../../_utils.js';
-import { verifySession, getEventOptions } from '../../_utils.js';
+import { corsHeaders } from '../../../_utils.js';
+import { verifySession, getEventOptions } from '../_utils.js';
 
 export async function onRequest(context) {
     if (context.request.method === 'OPTIONS') {
