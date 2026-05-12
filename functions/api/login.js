@@ -92,10 +92,15 @@ export async function onRequest(context) {
         }
 
         const loginCount = dailyState ? dailyState.login_attempt_count + 1 : 1;
-        const loginTriggerProbability = 1 / Math.pow(2, loginCount - 1);
 
         let passiveEventTriggered = false;
-        if (Math.random() < loginTriggerProbability) {
+
+        const todayPassiveEvents = await db.prepare(
+            `SELECT COUNT(*) as count FROM user_passive_events
+             WHERE user_id = ? AND status = 'pending' AND expires_at > ?`
+        ).bind(user.id, now).first();
+
+        if (todayPassiveEvents.count < 3) {
             const attrs = await db.prepare('SELECT energy FROM user_attributes WHERE user_id = ?').bind(user.id).first();
             if (attrs && attrs.energy >= 5) {
                 const passiveEvents = await db.prepare(
@@ -106,11 +111,11 @@ export async function onRequest(context) {
 
                 if (passiveEvents.results && passiveEvents.results.length > 0) {
                     const selectedEvent = passiveEvents.results[0];
-                    const expiresAt = new Date(new Date(now).getTime() + 16 * 60 * 60 * 1000).toISOString();
+                    const eventExpiresAt = new Date(new Date(now).getTime() + 16 * 60 * 60 * 1000).toISOString();
                     await db.prepare(
                         `INSERT INTO user_passive_events (id, user_id, event_id, status, generated_at, expires_at)
                          VALUES (?, ?, ?, 'pending', ?, ?)`
-                    ).bind(generateGUID(), user.id, selectedEvent.id, now, expiresAt).run();
+                    ).bind(generateGUID(), user.id, selectedEvent.id, now, eventExpiresAt).run();
                     passiveEventTriggered = true;
                 }
             }

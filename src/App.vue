@@ -1,13 +1,51 @@
 <template>
   <div class="app-container">
-    <!-- 模拟手机容器 -->
     <div class="phone-frame">
+      <div class="global-notification" v-if="pendingCount > 0" @click="goToEvents">
+        🔔 <span class="badge">{{ pendingCount }}</span>
+      </div>
       <router-view />
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const pendingCount = ref(0)
+const checkTimer = ref(null)
+
+async function loadPendingCount() {
+  try {
+    const response = await fetch('/api/events/pending-count', {
+      credentials: 'include'
+    })
+
+    if (response.ok) {
+      const result = await response.json()
+      pendingCount.value = result.count || 0
+    }
+  } catch (error) {
+    console.error('加载待处理数量错误:', error)
+  }
+}
+
+function goToEvents() {
+  router.push('/events')
+}
+
+onMounted(() => {
+  loadPendingCount()
+  checkTimer.value = setInterval(loadPendingCount, 60000)
+})
+
+onUnmounted(() => {
+  if (checkTimer.value) {
+    clearInterval(checkTimer.value)
+  }
+})
 </script>
 
 <style scoped>
@@ -63,5 +101,27 @@
   .phone-frame::before {
     display: none;
   }
+}
+
+.global-notification {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #f44336;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 16px;
+  text-align: center;
 }
 </style>

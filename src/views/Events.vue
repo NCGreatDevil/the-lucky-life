@@ -61,7 +61,9 @@
           <div v-for="event in pendingEvents" :key="event.id" class="pending-item" @click="resolvePendingEvent(event)">
             <div class="pending-header">
               <span class="pending-badge">{{ event.category === 'npc' ? 'NPC' : event.category === 'friend' ? '好友' : '普通' }}</span>
-              <span class="pending-time">{{ formatTime(event.generatedAt) }}</span>
+              <span class="pending-countdown" :class="{ 'expiring-soon': isExpiringSoon(event.expiresAt) }">
+                {{ getCountdownText(event.expiresAt) }}
+              </span>
             </div>
             <p class="pending-name">{{ event.name }}</p>
             <p class="pending-desc">{{ event.description }}</p>
@@ -161,7 +163,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoleStore } from '@/stores/role'
 import { useUserStore } from '@/stores/user'
 
@@ -182,6 +184,51 @@ const pendingEvents = ref([])
 const showPendingEvents = ref(false)
 const history = ref([])
 const currentAttributes = ref(null)
+const countdownTimer = ref(null)
+
+function getCountdownText(expiresAt) {
+  const now = new Date()
+  const expires = new Date(expiresAt)
+  const diff = expires.getTime() - now.getTime()
+
+  if (diff <= 0) return '已过期'
+
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+
+  if (hours > 0) {
+    return `${hours}小时${minutes}分钟`
+  } else {
+    return `${minutes}分钟`
+  }
+}
+
+function isExpiringSoon(expiresAt) {
+  const now = new Date()
+  const expires = new Date(expiresAt)
+  const diff = expires.getTime() - now.getTime()
+  return diff > 0 && diff < 60 * 60 * 1000
+}
+
+function startCountdownTimer() {
+  if (countdownTimer.value) {
+    clearInterval(countdownTimer.value)
+  }
+  countdownTimer.value = setInterval(() => {
+    const now = new Date()
+    const expiredEvents = pendingEvents.value.filter(e => new Date(e.expiresAt) <= now)
+    if (expiredEvents.length > 0) {
+      loadPendingEvents()
+    }
+  }, 60000)
+}
+
+function stopCountdownTimer() {
+  if (countdownTimer.value) {
+    clearInterval(countdownTimer.value)
+    countdownTimer.value = null
+  }
+}
 
 const attrKeyMap = {
   energy: '能量',
@@ -432,6 +479,12 @@ function confirmEvent() {
   currentEvent.value = null
   resultText.value = ''
   resultChanges.value = {}
+
+  loadPendingEvents()
+
+  if (pendingEvents.value.length > 0) {
+    showPendingEvents.value = true
+  }
 }
 
 function closeEvent() {
@@ -531,6 +584,11 @@ onMounted(() => {
   loadPendingCount()
   loadPendingEvents()
   loadHistory()
+  startCountdownTimer()
+})
+
+onUnmounted(() => {
+  stopCountdownTimer()
 })
 </script>
 
@@ -771,9 +829,14 @@ onMounted(() => {
   border-radius: 2px;
 }
 
-.pending-time {
+.pending-countdown {
   font-size: 10px;
-  opacity: 0.5;
+  color: #666;
+}
+
+.pending-countdown.expiring-soon {
+  color: #f44336;
+  font-weight: bold;
 }
 
 .pending-name {
