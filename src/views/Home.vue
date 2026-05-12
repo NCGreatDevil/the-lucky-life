@@ -31,7 +31,7 @@
     <nav class="nav-grid">
       <router-link to="/fortune" class="nav-item">
         <span class="nav-icon">🙏</span>
-        <span class="nav-label">求神</span>
+        <span class="nav-label">祈祷</span>
       </router-link>
       <router-link to="/events" class="nav-item">
         <span class="nav-icon">⚡</span>

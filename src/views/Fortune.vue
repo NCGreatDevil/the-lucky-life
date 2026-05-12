@@ -12,7 +12,7 @@
 
     <header class="header">
       <router-link to="/" class="back-btn">←</router-link>
-      <h1 class="title sketch-font">求神</h1>
+      <h1 class="title sketch-font">祈祷</h1>
       <div class="placeholder"></div>
     </header>
 
