@@ -3,7 +3,7 @@ import { NPCBase } from './NPCBase.js';
 export class TaizaiNPC extends NPCBase {
   constructor() {
     super({
-      id: 'dog_npc',
+      id: 'taizai_npc',
       name: '太宰',
       avatar: '🐶',
       title: '高冷酷狗',

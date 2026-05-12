@@ -12,7 +12,7 @@ export async function onRequest(context) {
       const npcList = npcIds.map(id => {
         const npc = getNPC(id);
         const avatarUrlMap = {
-          'dog_npc': '/r2?path=avatar/cooldog.png',
+          'taizai_npc': '/r2?path=avatar/cooldog.png',
           'huangshan_npc': '/r2?path=avatar/fatcat.png',
           'xianyu_npc': '/r2?path=avatar/saltfish.png'
         };

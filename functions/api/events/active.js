@@ -119,7 +119,7 @@ export async function onRequest(context) {
                 type: 'npc',
                 npcId: npc.id,
                 npcName: npc.name,
-                npcAvatar: npc.avatar,
+                npcAvatar: npc.avatar ? `https://fortunelife.pages.dev/r2?path=${npc.avatar}` : '',
                 npcTitle: npc.title,
                 favorabilityGained: favDelta,
                 totalFavorability: newFav

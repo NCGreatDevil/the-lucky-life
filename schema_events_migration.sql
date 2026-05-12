@@ -156,6 +156,6 @@ CREATE INDEX IF NOT EXISTS idx_user_friend_requests_status ON user_friend_reques
 -- =============================================================================
 
 INSERT INTO npcs (id, name, avatar, title, description, conversation_rounds_min, conversation_rounds_max, created_at) VALUES
-('dog_npc', '太宰', '🐶', '高冷酷狗', '一只会说人话的小狗。性格孤僻冷淡，非常不爱搭理人类。', 8, 10, datetime('now')),
+('taizai_npc', '太宰', '🐶', '高冷酷狗', '一只会说人话的小狗。性格孤僻冷淡，非常不爱搭理人类。', 8, 10, datetime('now')),
 ('huangshan_npc', '黄山', '', '猫界少帅', '一只爱装逼的大橘猫，自认为是猫界少帅，喜欢吹嘘自己过往的成功经历。', 15, 20, datetime('now')),
 ('xianyu_npc', '咸鱼', '🐟', '佛系咸鱼', '一条无欲无求的咸鱼，淡泊名利，对很多事情都不上心，爱喝水。', 10, 20, datetime('now'));

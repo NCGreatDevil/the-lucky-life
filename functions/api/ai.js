@@ -53,7 +53,7 @@ export async function onRequest(context) {
     const userText = req.content?.trim() || "";
     const chatHistoryFromFront = req.chatHistory || [];
     const userState = req.userTag || {};
-    const npcId = req.npcId || 'dog_npc';
+    const npcId = req.npcId || 'taizai_npc';
 
     const db = context.env['game-db'];
     const user = await db.prepare('SELECT * FROM users WHERE id = ?').bind(session.user_id).first();

@@ -49,7 +49,7 @@ INSERT INTO event_options (id, event_id, option_order, option_text, effects, cre
 -- 事件4：太宰的求助（主动事件 - NPC类型 - 关联太宰 - 运气等级3）
 -- =============================================================================
 INSERT INTO events (id, name, description, image_url, category, trigger_type, npc_id, luck_tier, enabled, created_at)
-VALUES ('evt_taizai_help', '太宰的求助', '太宰难得主动找你，说它饿了，想让你帮忙找点吃的。', '', 'npc', 'active', 'dog_npc', 3, 1, datetime('now'));
+VALUES ('evt_taizai_help', '太宰的求助', '太宰难得主动找你，说它饿了，想让你帮忙找点吃的。', '', 'npc', 'active', 'taizai_npc', 3, 1, datetime('now'));
 
 INSERT INTO event_options (id, event_id, option_order, option_text, effects, created_at) VALUES
 ('opt_taizai_help_1', 'evt_taizai_help', 1, '给它买好吃的', '[{"attr":"emotion","range":[5,8]},{"attr":"money","range":[-15,-10]}]', datetime('now')),

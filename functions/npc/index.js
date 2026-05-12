@@ -3,7 +3,7 @@ import { HuangshanNPC } from './HuangshanNPC.js';
 import { XianyuNPC } from './XianyuNPC.js';
 
 const npcRegistry = {
-  'dog_npc': TaizaiNPC,
+  'taizai_npc': TaizaiNPC,
   'huangshan_npc': HuangshanNPC,
   'xianyu_npc': XianyuNPC
 };

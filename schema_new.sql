@@ -402,7 +402,7 @@ CREATE TABLE IF NOT EXISTS user_friends (
     -- 关联的用户ID (关联 users 表的 id 字段)
     user_id TEXT NOT NULL,
 
-    -- 好友ID：若是NPC则为固定标识（如 'dog_npc'），若是真实用户则为用户ID
+    -- 好友ID：若是NPC则为固定标识（如 'taizai_npc'），若是真实用户则为用户ID
     friend_id TEXT NOT NULL,
 
     -- 是否为NPC好友 (true=NPC, false=真实用户)
@@ -441,7 +441,7 @@ CREATE TABLE IF NOT EXISTS user_memories (
     -- 关联的用户ID (关联 users 表的 id 字段)
     user_id TEXT NOT NULL,
 
-    -- 目标角色ID：若是NPC则为固定标识（如 'dog_npc'），若是真实用户则为用户ID
+    -- 目标角色ID：若是NPC则为固定标识（如 'taizai_npc'），若是真实用户则为用户ID
     target_id TEXT NOT NULL,
 
     -- 是否嘲讽过目标角色
