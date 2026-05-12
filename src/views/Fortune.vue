@@ -298,7 +298,12 @@ async function loadDeityInfo() {
     const data = await response.json()
     if (data.success) {
       worshippingDeity.value = data.worshippingDeity
-      deityRelations.value = data.deityRelations || []
+      deityRelations.value = (data.deityRelations || []).sort((a, b) => {
+        if (b.favorability !== a.favorability) {
+          return b.favorability - a.favorability
+        }
+        return a.name.localeCompare(b.name, 'zh-CN')
+      })
     }
   } catch (error) {
     console.error('加载神明信息失败:', error)
