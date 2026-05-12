@@ -273,7 +273,7 @@ const dailyQuote = computed(() => {
 }
 
 .fortune-card {
-  aspect-ratio: 1;
+  /* aspect-ratio: 1; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -284,9 +284,8 @@ const dailyQuote = computed(() => {
 }
 
 .fortune-image {
-  width: 66%;
-  height: 66%;
-
+  width: 100%;
+  height: 100%;
 }
 
 .fortune-image img {

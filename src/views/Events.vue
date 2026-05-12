@@ -11,7 +11,7 @@
 
     <header class="header">
       <router-link to="/" class="back-btn">←</router-link>
-      <h1 class="title sketch-font">随机事件</h1>
+      <h1 class="title sketch-font">事件</h1>
       <div class="placeholder"></div>
     </header>
 
@@ -583,7 +583,10 @@ async function restoreFullStatus() {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  if (userStore.isLoggedIn) {
+    await userStore.fetchProfile()
+  }
   loadPendingCount()
   loadPendingEvents()
   loadHistory()

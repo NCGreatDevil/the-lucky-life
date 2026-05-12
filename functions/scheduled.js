@@ -5,18 +5,19 @@ export async function scheduled(event, env, ctx) {
 
     const db = env['game-db'];
     const now = new Date();
-    const hour = now.getUTCHours();
+    // 使用北京时间 (UTC+8)
+    const beijingHour = new Date(now.getTime() + 8 * 60 * 60 * 1000).getUTCHours();
     const today = now.toISOString().split('T')[0];
     const nowISO = now.toISOString();
 
     try {
-        if (hour === 0) {
+        if (beijingHour === 0) {
             await handleMidnightReset(db, today, nowISO);
         }
 
-        await handleTimerEventGeneration(db, hour, today, nowISO);
+        await handleTimerEventGeneration(db, beijingHour, today, nowISO);
 
-        console.log(`定时任务执行完成: ${hour}点任务`);
+        console.log(`定时任务执行完成: ${beijingHour}点任务`);
 
     } catch (error) {
         console.error('定时任务执行失败:', error);
