@@ -98,15 +98,34 @@ export async function checkPersonEncounter(luckLevel) {
     return { encounter: true, isNPC };
 }
 
-export async function selectEvent(db, targetTier, category, userId) {
-    const candidates = await db.prepare(
-        `SELECT e.id, e.name, e.description, e.image_url, e.category, e.trigger_type, e.npc_id, e.luck_tier
+export async function selectEvent(db, targetTier, category, userId, targetNpcId = null) {
+    let query = `SELECT e.id, e.name, e.description, e.image_url, e.category, e.trigger_type, e.npc_id, e.luck_tier
          FROM events e
-         WHERE e.luck_tier = ? AND e.category = ? AND e.enabled = 1`
-    ).bind(targetTier, category).all();
+         WHERE e.luck_tier = ? AND e.category = ? AND e.enabled = 1`;
+    let params = [targetTier, category];
+
+    if (targetNpcId) {
+        query += ` AND e.npc_id = ?`;
+        params.push(targetNpcId);
+    }
+
+    const candidates = await db.prepare(query).bind(...params).all();
 
     if (!candidates.results || candidates.results.length === 0) {
-        return null;
+        if (targetNpcId) {
+            const fallbackCandidates = await db.prepare(
+                `SELECT e.id, e.name, e.description, e.image_url, e.category, e.trigger_type, e.npc_id, e.luck_tier
+                 FROM events e
+                 WHERE e.luck_tier = ? AND e.category = ? AND e.enabled = 1`
+            ).bind(targetTier, category).all();
+            if (fallbackCandidates.results && fallbackCandidates.results.length > 0) {
+                candidates.results = fallbackCandidates.results;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     const eventIds = candidates.results.map(e => e.id);

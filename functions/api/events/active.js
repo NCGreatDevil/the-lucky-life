@@ -66,7 +66,10 @@ export async function onRequest(context) {
 
         let event = null;
         if (category === 'npc' && npcId) {
-            event = await selectEvent(db, tier, 'npc', userId);
+            event = await selectEvent(db, tier, 'npc', userId, npcId);
+            if (!event) {
+                event = await selectEvent(db, tier, 'npc', userId);
+            }
             if (!event) {
                 event = await selectEvent(db, tier, 'normal', userId);
             }

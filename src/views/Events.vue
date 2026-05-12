@@ -74,9 +74,9 @@
       <div v-if="isEventActive && currentEvent" class="event-modal modal-overlay" @click.self="closeEvent">
         <div class="event-card modal-content hand-drawn-border">
           <div class="event-header">
-            <span class="event-badge">{{ getCategoryLabel(currentEvent.category) }}</span>
+            <span v-if="!currentEvent.encounter" class="event-badge">{{ getCategoryLabel(currentEvent.category) }}</span>
             <span v-if="currentEvent.encounter" class="encounter-badge">
-              {{ currentEvent.encounter.type === 'npc' ? '🐾 NPC' : '👤 真人' }}
+              {{ currentEvent.encounter.type === 'npc' ? ' NPC' : '👤 真人' }}
             </span>
           </div>
 

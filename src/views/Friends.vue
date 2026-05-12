@@ -167,16 +167,30 @@ function isFriendAdded(npcId) {
 async function loadNPCList() {
   try {
     loadingNPCs.value = true;
-    const response = await fetch('/api/npc-list', {
-      method: 'GET',
-      credentials: 'include'
-    });
     
-    if (response.ok) {
-      const result = await response.json();
-      if (result.success && result.data.npcs) {
-        const allNPCs = result.data.npcs;
-        availableNPCs.value = allNPCs.filter(npc => !isFriendAdded(npc.id));
+    const [npcResponse, favResponse] = await Promise.all([
+      fetch('/api/npc-list', { method: 'GET', credentials: 'include' }),
+      fetch('/api/favorability', { method: 'GET', credentials: 'include' })
+    ]);
+    
+    if (npcResponse.ok && favResponse.ok) {
+      const npcResult = await npcResponse.json();
+      const favResult = await favResponse.json();
+      
+      if (npcResult.success && npcResult.data.npcs && favResult.success) {
+        const allNPCs = npcResult.data.npcs;
+        const favorabilityMap = {};
+        
+        (favResult.favorability || []).forEach(fav => {
+          if (fav.targetType === 'npc') {
+            favorabilityMap[fav.targetId] = fav.favorability;
+          }
+        });
+        
+        availableNPCs.value = allNPCs.filter(npc => {
+          const fav = favorabilityMap[npc.id] || 0;
+          return fav >= 100 && !isFriendAdded(npc.id);
+        });
         
         allNPCs.forEach(npc => {
           npcMessages.value[npc.id] = {
