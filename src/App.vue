@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="phone-frame">
-      <div class="global-notification" v-if="pendingCount > 0" @click="goToEvents">
+      <div class="global-notification" v-if="pendingCount > 0 && !isOnEventsPage" @click="goToEvents">
         🔔 <span class="badge">{{ pendingCount }}</span>
       </div>
       <router-view />
@@ -10,12 +10,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const pendingCount = ref(0)
 const checkTimer = ref(null)
+
+const isOnEventsPage = computed(() => route.path === '/events')
 
 async function loadPendingCount() {
   try {

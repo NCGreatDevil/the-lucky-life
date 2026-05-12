@@ -6,10 +6,6 @@
           <span class="user-icon">👤</span>
           <span class="user-name">{{ userStore.user?.nickname }}</span>
         </router-link>
-        <span class="notification-bell" @click="showPendingEvents = !showPendingEvents">
-          🔔
-          <span v-if="pendingCount > 0" class="badge">{{ pendingCount }}</span>
-        </span>
       </template>
     </div>
 
@@ -21,6 +17,10 @@
 
     <div class="content-area">
 
+      <div class="pending-toggle" v-if="pendingCount > 0" @click="showPendingEvents = !showPendingEvents">
+        <span class="pending-toggle-icon">📋</span>
+        <span class="pending-toggle-text">待处理事件 ({{ pendingCount }})</span>
+      </div>
 
       <div class="trigger-section">
         <button class="trigger-btn hand-drawn-border" @click="triggerActiveEvent" :disabled="isEventActive || isLoading">
@@ -621,25 +621,6 @@ onUnmounted(() => {
   font-size: 14px;
 }
 
-.notification-bell {
-  font-size: 16px;
-  position: relative;
-  cursor: pointer;
-}
-
-.badge {
-  position: absolute;
-  top: -6px;
-  right: -8px;
-  background: #f44336;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 5px;
-  border-radius: 10px;
-  min-width: 16px;
-  text-align: center;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
@@ -782,6 +763,27 @@ onUnmounted(() => {
   margin-top: 12px;
   font-size: 12px;
   opacity: 0.5;
+}
+
+.pending-toggle {
+  background: #fff;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 2px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pending-toggle-icon {
+  font-size: 18px;
+}
+
+.pending-toggle-text {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .pending-events-panel {
