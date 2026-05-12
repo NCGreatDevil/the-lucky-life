@@ -302,7 +302,7 @@ async function loadDeityInfo() {
         if (b.favorability !== a.favorability) {
           return b.favorability - a.favorability
         }
-        return a.name.localeCompare(b.name, 'zh-CN')
+        return (a.deityName || '').localeCompare(b.deityName || '', 'zh-CN')
       })
     }
   } catch (error) {
