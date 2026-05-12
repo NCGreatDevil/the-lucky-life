@@ -506,6 +506,7 @@ async function loadPendingCount() {
     if (response.ok) {
       const result = await response.json()
       pendingCount.value = result.count || 0
+      window.dispatchEvent(new CustomEvent('pending-count-change', { detail: pendingCount.value }))
     }
   } catch (error) {
     console.error('加载待处理数量错误:', error)

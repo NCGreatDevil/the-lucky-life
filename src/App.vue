@@ -42,12 +42,18 @@ function goToEvents() {
 onMounted(() => {
   loadPendingCount()
   checkTimer.value = setInterval(loadPendingCount, 60000)
+  window.addEventListener('pending-count-change', (e) => {
+    pendingCount.value = e.detail
+  })
 })
 
 onUnmounted(() => {
   if (checkTimer.value) {
     clearInterval(checkTimer.value)
   }
+  window.removeEventListener('pending-count-change', (e) => {
+    pendingCount.value = e.detail
+  })
 })
 </script>
 
