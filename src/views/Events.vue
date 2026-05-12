@@ -322,6 +322,7 @@ async function skipEvent() {
         }
         if (userStore.user?.attributes && (key === 'energy' || key === 'vitality')) {
           userStore.user.attributes[key] = value
+          sessionStorage.setItem('user_data', JSON.stringify(userStore.user))
         }
       }
     }
@@ -365,6 +366,7 @@ async function triggerActiveEvent() {
     if (result.currentEnergy !== undefined) {
       if (userStore.user?.attributes) {
         userStore.user.attributes.energy = result.currentEnergy
+        sessionStorage.setItem('user_data', JSON.stringify(userStore.user))
       }
       roleStore.updateAttribute('能量', result.currentEnergy - (roleStore.attributes.能量?.value || 80))
     }

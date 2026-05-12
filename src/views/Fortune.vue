@@ -336,6 +336,7 @@ async function startPrayer() {
       // 更新用户属性
       userStore.user.attributes.vitality = data.newVitality
       userStore.user.attributes.luck = data.newLuck
+      sessionStorage.setItem('user_data', JSON.stringify(userStore.user))
 
       // 重新加载神明信息
       await loadDeityInfo()
