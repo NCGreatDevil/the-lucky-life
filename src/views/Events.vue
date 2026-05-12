@@ -474,13 +474,14 @@ async function resolvePendingEvent(event) {
   }
 }
 
-function confirmEvent() {
+async function confirmEvent() {
   isEventActive.value = false
   currentEvent.value = null
   resultText.value = ''
   resultChanges.value = {}
 
-  loadPendingEvents()
+  await loadPendingEvents()
+  await loadHistory()
 
   if (pendingEvents.value.length > 0) {
     showPendingEvents.value = true
