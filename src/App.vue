@@ -74,7 +74,7 @@ onUnmounted(() => {
   border-radius: 4px;
   position: relative;
   box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 1);
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .phone-frame::before {
