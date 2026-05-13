@@ -98,11 +98,16 @@ export async function checkPersonEncounter(luckLevel) {
     return { encounter: true, isNPC };
 }
 
-export async function selectEvent(db, targetTier, category, userId, targetNpcId = null) {
+export async function selectEvent(db, targetTier, category, userId, targetNpcId = null, triggerType = null) {
     let query = `SELECT e.id, e.name, e.description, e.image_url, e.category, e.trigger_type, e.npc_id, e.luck_tier
          FROM events e
          WHERE e.luck_tier = ? AND e.category = ? AND e.enabled = 1`;
     let params = [targetTier, category];
+
+    if (triggerType) {
+        query += ` AND e.trigger_type = ?`;
+        params.push(triggerType);
+    }
 
     if (targetNpcId) {
         query += ` AND e.npc_id = ?`;
@@ -113,11 +118,15 @@ export async function selectEvent(db, targetTier, category, userId, targetNpcId 
 
     if (!candidates.results || candidates.results.length === 0) {
         if (targetNpcId) {
-            const fallbackCandidates = await db.prepare(
-                `SELECT e.id, e.name, e.description, e.image_url, e.category, e.trigger_type, e.npc_id, e.luck_tier
+            let fallbackQuery = `SELECT e.id, e.name, e.description, e.image_url, e.category, e.trigger_type, e.npc_id, e.luck_tier
                  FROM events e
-                 WHERE e.luck_tier = ? AND e.category = ? AND e.enabled = 1`
-            ).bind(targetTier, category).all();
+                 WHERE e.luck_tier = ? AND e.category = ? AND e.enabled = 1`;
+            let fallbackParams = [targetTier, category];
+            if (triggerType) {
+                fallbackQuery += ` AND e.trigger_type = ?`;
+                fallbackParams.push(triggerType);
+            }
+            const fallbackCandidates = await db.prepare(fallbackQuery).bind(...fallbackParams).all();
             if (fallbackCandidates.results && fallbackCandidates.results.length > 0) {
                 candidates.results = fallbackCandidates.results;
             } else {

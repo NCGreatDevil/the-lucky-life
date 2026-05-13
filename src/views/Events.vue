@@ -348,6 +348,7 @@ async function skipEvent() {
     currentEvent.value = null
     await loadHistory()
     await loadPendingCount()
+    await loadPendingEvents()
   } catch (error) {
     console.error('跳过事件错误:', error)
     alert('跳过失败，请稍后重试')
@@ -388,6 +389,7 @@ async function triggerActiveEvent() {
     }
 
     await loadPendingCount()
+    await loadPendingEvents()
   } catch (error) {
     console.error('触发事件错误:', error)
     alert('触发事件失败，请稍后重试')

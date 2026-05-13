@@ -66,22 +66,22 @@ export async function onRequest(context) {
 
         let event = null;
         if (category === 'npc' && npcId) {
-            event = await selectEvent(db, tier, 'npc', userId, npcId);
+            event = await selectEvent(db, tier, 'npc', userId, npcId, 'active');
             if (!event) {
-                event = await selectEvent(db, tier, 'npc', userId);
+                event = await selectEvent(db, tier, 'npc', userId, null, 'active');
             }
             if (!event) {
-                event = await selectEvent(db, tier, 'normal', userId);
+                event = await selectEvent(db, tier, 'normal', userId, null, 'active');
             }
         } else if (category === 'friend' && matchedUserId) {
-            event = await selectEvent(db, tier, 'friend', userId);
+            event = await selectEvent(db, tier, 'friend', userId, null, 'active');
             if (!event) {
-                event = await selectEvent(db, tier, 'normal', userId);
+                event = await selectEvent(db, tier, 'normal', userId, null, 'active');
             }
         }
 
         if (!event) {
-            event = await selectEvent(db, tier, 'normal', userId);
+            event = await selectEvent(db, tier, 'normal', userId, null, 'active');
         }
 
         if (!event) {
