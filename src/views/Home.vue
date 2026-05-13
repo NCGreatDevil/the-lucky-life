@@ -268,8 +268,7 @@ const dailyQuote = computed(() => {
 .content-area {
   flex: 1;
   padding: 0 16px 80px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .fortune-card {
