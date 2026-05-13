@@ -17,6 +17,21 @@
     </header>
 
     <div class="content-area">
+      <div v-if="isLoading" class="skeleton-container">
+        <div class="skeleton-card skeleton-faith"></div>
+        <div class="skeleton-card skeleton-prayer"></div>
+        <div class="skeleton-attr-bar">
+          <div class="skeleton-attr-item"></div>
+          <div class="skeleton-attr-item"></div>
+        </div>
+        <div class="skeleton-relations">
+          <div class="skeleton-card skeleton-relation"></div>
+          <div class="skeleton-card skeleton-relation"></div>
+          <div class="skeleton-card skeleton-relation"></div>
+        </div>
+      </div>
+
+      <template v-else>
       <!-- 信仰状态 -->
       <div class="faith-status" :class="{ 'has-faith': worshippingDeity }">
         <div class="faith-label" v-if="!worshippingDeity">当前信仰</div>
@@ -114,6 +129,7 @@
           </div>
         </div>
       </div>
+      </template>
 
       <!-- 祈求动画弹窗 -->
       <div v-if="isPraying" class="prayer-modal">
@@ -230,6 +246,7 @@ const isAdmin = computed(() => userStore.user?.id === 'admin')
 const vitality = computed(() => userStore.user?.attributes?.vitality || 0)
 const worshippingDeity = ref(null)
 const deityRelations = ref([])
+const isLoading = ref(true)
 const isPraying = ref(false)
 const showResult = ref(false)
 const prayerResult = ref(null)
@@ -290,6 +307,7 @@ function getParticleStyle(index) {
 // 加载神明信息
 async function loadDeityInfo() {
   try {
+    isLoading.value = true
     const response = await fetch('/api/deity-info', {
       headers: {
         'Content-Type': 'application/json'
@@ -307,6 +325,8 @@ async function loadDeityInfo() {
     }
   } catch (error) {
     console.error('加载神明信息失败:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -613,6 +633,57 @@ onMounted(() => {
   flex: 1;
   padding: 0 16px 24px;
   overflow-y: auto;
+}
+
+/* 骨架屏 */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-card {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-faith {
+  height: 60px;
+}
+
+.skeleton-prayer {
+  height: 100px;
+}
+
+.skeleton-attr-bar {
+  display: flex;
+  gap: 24px;
+}
+
+.skeleton-attr-item {
+  flex: 1;
+  height: 20px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-relations {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-relation {
+  height: 80px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* 属性条（固定） */

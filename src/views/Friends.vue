@@ -17,6 +17,14 @@
     </header>
 
     <div class="content-area">
+      <div v-if="isPageLoading" class="skeleton-container">
+        <div class="skeleton-card skeleton-npc-card"></div>
+        <div class="skeleton-card skeleton-friend-item"></div>
+        <div class="skeleton-card skeleton-friend-item"></div>
+        <div class="skeleton-card skeleton-friend-item"></div>
+      </div>
+
+      <template v-else>
       <div class="npc-section" v-if="availableNPCs.length > 0">
         <h3 class="section-title">可添加的 NPC</h3>
         <div class="npc-list">
@@ -121,6 +129,7 @@
           </div>
         </div>
       </div>
+      </template>
     </div>
   </div>
 </template>
@@ -148,6 +157,7 @@ const deleteFriendId = ref(null);
 const deleteFriendName = ref('');
 const availableNPCs = ref([]);
 const loadingNPCs = ref(true);
+const isPageLoading = ref(true);
 const friendsLoaded = ref(false);
 const npcMessages = ref({});
 
@@ -423,9 +433,12 @@ function removeFriend(friendId) {
 }
 
 onMounted(async () => {
-  await roleStore.loadFriendsFromBackend();
-  await loadNPCList();
+  await Promise.all([
+    roleStore.loadFriendsFromBackend(),
+    loadNPCList()
+  ]);
   await roleStore.mergeNPCMetadata();
+  isPageLoading.value = false;
 });
 
 onUnmounted(() => {
@@ -495,6 +508,33 @@ onUnmounted(() => {
   flex: 1;
   padding: 0 24px 24px;
   overflow-y: auto;
+}
+
+/* 骨架屏 */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-card {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-npc-card {
+  height: 140px;
+}
+
+.skeleton-friend-item {
+  height: 80px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .npc-section {

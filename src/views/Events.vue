@@ -16,6 +16,20 @@
     </header>
 
     <div class="content-area">
+      <div v-if="isPageLoading" class="skeleton-container">
+        <div class="skeleton-card skeleton-trigger"></div>
+        <div class="skeleton-attr-bar">
+          <div class="skeleton-attr-item"></div>
+          <div class="skeleton-attr-item"></div>
+        </div>
+        <div class="skeleton-history">
+          <div class="skeleton-card skeleton-history-item"></div>
+          <div class="skeleton-card skeleton-history-item"></div>
+          <div class="skeleton-card skeleton-history-item"></div>
+        </div>
+      </div>
+
+      <template v-else>
 
       <div class="pending-toggle" v-if="pendingCount > 0" @click="showPendingEvents = !showPendingEvents">
         <span class="pending-toggle-icon">📋</span>
@@ -158,6 +172,7 @@
           暂无事件记录，去触发一些事件吧！
         </div>
       </div>
+      </template>
     </div>
   </div>
 </template>
@@ -176,6 +191,7 @@ const isEventActive = ref(false)
 const eventResolved = ref(false)
 const currentEvent = ref(null)
 const isLoading = ref(false)
+const isPageLoading = ref(true)
 const isSubmitting = ref(false)
 const resultText = ref('')
 const resultChanges = ref({})
@@ -588,9 +604,12 @@ onMounted(async () => {
   if (userStore.isLoggedIn) {
     await userStore.fetchProfile()
   }
-  loadPendingCount()
-  loadPendingEvents()
-  loadHistory()
+  await Promise.all([
+    loadPendingCount(),
+    loadPendingEvents(),
+    loadHistory()
+  ])
+  isPageLoading.value = false
   startCountdownTimer()
 })
 
@@ -655,6 +674,53 @@ onUnmounted(() => {
   flex: 1;
   padding: 0 24px 24px;
   overflow-y: auto;
+}
+
+/* 骨架屏 */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-card {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-trigger {
+  height: 80px;
+}
+
+.skeleton-attr-bar {
+  display: flex;
+  gap: 24px;
+}
+
+.skeleton-attr-item {
+  flex: 1;
+  height: 20px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.skeleton-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-history-item {
+  height: 100px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* 测试按钮 */
