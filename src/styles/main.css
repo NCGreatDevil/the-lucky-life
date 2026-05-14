@@ -10,8 +10,8 @@
 }
 
 body {
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
-  color: #000;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
+  color: #1a1a1a;
   background-color: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -38,7 +38,7 @@ body {
 }
 
 .sketch-font {
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .nav-grid:active {
@@ -103,14 +103,14 @@ body {
 /* 按钮样式 */
 .btn-primary {
   background-color: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-primary:active {
@@ -119,14 +119,14 @@ body {
 
 .btn-secondary {
   background-color: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-secondary:active {

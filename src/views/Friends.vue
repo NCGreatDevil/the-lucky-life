@@ -468,7 +468,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: #000;
+  color: #1a1a1a;
   font-weight: bold;
 }
 
@@ -735,7 +735,7 @@ onUnmounted(() => {
   border: 1px solid #000;
   border-radius: 4px;
   font-size: 12px;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .friend-actions {
@@ -858,7 +858,7 @@ onUnmounted(() => {
 .cancel-btn {
   border: 2px solid #000;
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
 }
 
 .cancel-btn:hover {
@@ -1008,7 +1008,7 @@ onUnmounted(() => {
 
 .bot-message .message-content {
   background: #f5f5f5;
-  color: #000;
+  color: #1a1a1a;
 }
 
 .chat-input-area {

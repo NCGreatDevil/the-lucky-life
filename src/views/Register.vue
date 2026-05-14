@@ -458,10 +458,10 @@ async function handleRegister() {
   transition: transform 0.1s;
   margin-top: 8px;
   background-color: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
   border-radius: 4px;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-primary:active:not(:disabled) {
@@ -480,7 +480,7 @@ async function handleRegister() {
 }
 
 .register-footer a {
-  color: #000;
+  color: #1a1a1a;
   font-weight: bold;
   text-decoration: underline;
 }

@@ -161,7 +161,7 @@ const dailyQuote = computed(() => {
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: #000;
+  color: #1a1a1a;
   font-weight: bold;
 }
 
@@ -386,7 +386,7 @@ const dailyQuote = computed(() => {
   white-space: nowrap;
   min-width: 24px;
   text-align: right;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .footer {

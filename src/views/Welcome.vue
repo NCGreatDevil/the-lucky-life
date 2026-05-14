@@ -99,9 +99,9 @@ function goToLogin() {
 
 .btn-register {
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-register:hover {
@@ -110,9 +110,9 @@ function goToLogin() {
 
 .btn-login {
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-login:hover {
@@ -122,6 +122,6 @@ function goToLogin() {
 .btn-text {
   position: relative;
   z-index: 1;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 </style>

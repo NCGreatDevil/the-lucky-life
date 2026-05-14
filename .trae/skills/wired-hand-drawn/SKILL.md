@@ -43,24 +43,24 @@ usage: 生成前端页面、重构页面、美化UI、编写Vue组件/JS/CSS/MD�
 ## 2. 字体规范
 
 ### 2.1 全局字体引入
-在 HTML 头部引入 Google 开源中文字体 Ma Shan Zheng：
+在 HTML 头部引入 Google 开源中文字体 Ma Shan Zheng 和英文字体 Indie Flower：
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Indie+Flower&display=swap" rel="stylesheet">
 ```
 
 ### 2.2 字体应用
-- `body` 和所有 `wired-*` 组件强制使用 `Ma Shan Zheng` 手写字体
-- 确保中文显示具有原生手绘质感
-- 英文/数字可 fallback 到 `Comic Sans MS, cursive`
+- `body` 和所有 `wired-*` 组件使用 `Ma Shan Zheng` 作为中文字体，`Indie Flower` 作为英文/数字字体
+- 确保中文显示具有原生手绘质感，英文和数字圆润可爱
+- fallback 到 `cursive`
 
 CSS 示例：
 ```css
 body {
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 wired-button, wired-card, wired-input, wired-textarea, wired-combo {
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive !important;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive !important;
 }
 ```
 
@@ -82,7 +82,7 @@ wired-button, wired-card, wired-input, wired-textarea, wired-combo {
 
 - 主背景：白色 `#ffffff`
 - 卡片背景：浅灰 `#fafafa`
-- 文字颜色：深灰 `#000` 或 `#333`
+- 文字颜色：深灰 `#1a1a1a`（非纯黑，稍微柔和）
 - 强调色：避免花哨颜色，保持黑白灰为主
 - 渐变色：增加灰度，不要太亮（详见各组件规范）
 

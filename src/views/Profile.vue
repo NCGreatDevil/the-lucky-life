@@ -367,7 +367,7 @@ async function handleLogout() {
   border-radius: 4px;
   cursor: pointer;
   flex-shrink: 0;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .loading {
@@ -454,7 +454,7 @@ async function handleLogout() {
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-edit:active {
@@ -519,12 +519,12 @@ async function handleLogout() {
   font-size: 14px;
   font-weight: bold;
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-primary:active {
@@ -537,12 +537,12 @@ async function handleLogout() {
   font-size: 14px;
   font-weight: bold;
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-secondary:active {
@@ -572,7 +572,7 @@ async function handleLogout() {
 .attr-name {
   font-size: 12px;
   opacity: 0.6;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .attr-bar {
@@ -598,13 +598,13 @@ async function handleLogout() {
 .attr-value {
   font-size: 14px;
   font-weight: bold;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .attr-value-simple {
   font-size: 18px;
   font-weight: bold;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .luck-item {

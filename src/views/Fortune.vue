@@ -593,7 +593,7 @@ onMounted(() => {
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: #000;
+  color: #1a1a1a;
   font-weight: bold;
 }
 
@@ -705,7 +705,7 @@ onMounted(() => {
   font-size: 12px;
   opacity: 0.6;
   white-space: nowrap;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .attr-bar {
@@ -735,7 +735,7 @@ onMounted(() => {
   white-space: nowrap;
   min-width: 24px;
   text-align: right;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 /* 信仰状态 */
@@ -794,7 +794,7 @@ onMounted(() => {
   width: 100%;
   padding: 16px 32px;
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2.5px solid #000;
   border-radius: 4px;
   cursor: pointer;
@@ -803,7 +803,7 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .prayer-btn:active:not(:disabled) {
@@ -937,7 +937,7 @@ onMounted(() => {
   font-size: 12px;
   opacity: 0.6;
   white-space: nowrap;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .relation-actions {
@@ -954,9 +954,9 @@ onMounted(() => {
   border-radius: 4px;
   cursor: pointer;
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .action-btn:active {
@@ -965,20 +965,20 @@ onMounted(() => {
 
 .worship-btn {
   background: #fff;
-  color: #000;
-  border-color: #000;
+  color: #1a1a1a;
+  border-color: #1a1a1a;
 }
 
 .switch-btn {
   background: #fff;
-  color: #000;
-  border-color: #000;
+  color: #1a1a1a;
+  border-color: #1a1a1a;
 }
 
 .abandon-btn {
   background: #fff;
-  color: #000;
-  border-color: #000;
+  color: #1a1a1a;
+  border-color: #1a1a1a;
   margin-left: 8px;
 }
 

@@ -641,7 +641,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: #000;
+  color: #1a1a1a;
   font-weight: bold;
 }
 
@@ -765,7 +765,7 @@ onUnmounted(() => {
   font-size: 12px;
   opacity: 0.6;
   white-space: nowrap;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .attr-bar {
@@ -795,7 +795,7 @@ onUnmounted(() => {
   white-space: nowrap;
   min-width: 24px;
   text-align: right;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .trigger-section {
@@ -807,7 +807,7 @@ onUnmounted(() => {
   width: 100%;
   padding: 24px;
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2.5px solid #000;
   border-radius: 4px;
   cursor: pointer;
@@ -816,7 +816,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .trigger-btn:active:not(:disabled) {
@@ -1207,14 +1207,14 @@ onUnmounted(() => {
 
 .btn-primary {
   background: #fff;
-  color: #000;
+  color: #1a1a1a;
   border: 2px solid #000;
   padding: 12px;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .btn-primary:active {

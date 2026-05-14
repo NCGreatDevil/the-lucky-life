@@ -85,7 +85,7 @@ function showUnderConstruction() {
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: #000;
+  color: #1a1a1a;
   font-weight: bold;
 }
 
