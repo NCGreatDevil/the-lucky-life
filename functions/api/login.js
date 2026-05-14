@@ -83,12 +83,22 @@ export async function onRequest(context) {
 
         if (dailyState) {
             await db.prepare(
-                'UPDATE user_daily_state SET login_attempt_count = login_attempt_count + 1, updated_at = ? WHERE user_id = ?'
-            ).bind(now, user.id).run();
+                'UPDATE user_daily_state SET login_attempt_count = login_attempt_count + 1, updated_at = ? WHERE user_id = ? AND date = ?'
+            ).bind(now, user.id, today).run();
         } else {
-            await db.prepare(
-                'INSERT INTO user_daily_state (user_id, date, login_attempt_count, updated_at) VALUES (?, ?, 1, ?)'
-            ).bind(user.id, today, now).run();
+            try {
+                await db.prepare(
+                    'INSERT INTO user_daily_state (user_id, date, login_attempt_count, updated_at) VALUES (?, ?, 1, ?)'
+                ).bind(user.id, today, now).run();
+            } catch (e) {
+                if (e.message && e.message.includes('UNIQUE constraint')) {
+                    await db.prepare(
+                        'UPDATE user_daily_state SET login_attempt_count = login_attempt_count + 1, updated_at = ? WHERE user_id = ? AND date = ?'
+                    ).bind(now, user.id, today).run();
+                } else {
+                    throw e;
+                }
+            }
         }
 
         const loginCount = dailyState ? dailyState.login_attempt_count + 1 : 1;
