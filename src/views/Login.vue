@@ -8,36 +8,41 @@
 
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
-          <label for="loginId">用户ID</label>
-          <input
-            type="text"
+          <label for="loginId" class="sketch-font">用户ID</label>
+          <wired-input
             id="loginId"
-            v-model="loginId"
+            :value="loginId"
+            @input="loginId = $event.target.value"
             placeholder="请输入你的用户ID"
-            required
-          />
+            style="width: 100%;"
+          ></wired-input>
         </div>
 
         <div class="form-group">
-          <label for="password">密码</label>
-          <input
-            type="password"
+          <label for="password" class="sketch-font">密码</label>
+          <wired-input
             id="password"
-            v-model="password"
+            type="password"
+            :value="password"
+            @input="password = $event.target.value"
             placeholder="请输入密码"
-            required
-          />
+            style="width: 100%;"
+          ></wired-input>
         </div>
 
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-        <button type="submit" class="btn-primary" :disabled="loading">
+        <wired-button
+          type="submit"
+          :disabled="loading"
+          style="width: 100%;"
+        >
           {{ loading ? '登录中...' : '登录' }}
-        </button>
+        </wired-button>
       </form>
 
       <div class="login-footer">
-        <p>还没有账号？<router-link to="/register">立即注册</router-link></p>
+        <p class="sketch-font">还没有账号？<router-link to="/register" class="sketch-font">立即注册</router-link></p>
       </div>
     </div>
   </div>
