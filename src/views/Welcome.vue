@@ -98,27 +98,30 @@ function goToLogin() {
 }
 
 .btn-register {
-  background: #667eea;
-  color: white;
-  border: 2px solid #667eea;
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .btn-register:hover {
-  background: #5a6fd8;
+  background: #f0f0f0;
 }
 
 .btn-login {
-  background: white;
-  color: #333;
-  border: 2px solid #ddd;
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .btn-login:hover {
-  background: #f8f9fa;
+  background: #f0f0f0;
 }
 
 .btn-text {
   position: relative;
   z-index: 1;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 </style>

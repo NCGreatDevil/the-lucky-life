@@ -457,6 +457,11 @@ async function handleRegister() {
   cursor: pointer;
   transition: transform 0.1s;
   margin-top: 8px;
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 4px;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .btn-primary:active:not(:disabled) {
@@ -464,7 +469,7 @@ async function handleRegister() {
 }
 
 .btn-primary:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 

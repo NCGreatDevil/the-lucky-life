@@ -363,10 +363,11 @@ async function handleLogout() {
   font-size: 12px;
   font-weight: bold;
   background: #fff;
-  border: 2px solid #ccc;
+  border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
   flex-shrink: 0;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .loading {
@@ -452,6 +453,12 @@ async function handleLogout() {
   border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+}
+
+.btn-edit:active {
+  transform: translate(2px, 2px);
 }
 
 .edit-form {
@@ -511,11 +518,17 @@ async function handleLogout() {
   padding: 12px;
   font-size: 14px;
   font-weight: bold;
-  background: #000;
-  color: #fff;
-  border: none;
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+}
+
+.btn-primary:active {
+  transform: translate(2px, 2px);
 }
 
 .btn-secondary {
@@ -524,9 +537,16 @@ async function handleLogout() {
   font-size: 14px;
   font-weight: bold;
   background: #fff;
+  color: #000;
   border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+}
+
+.btn-secondary:active {
+  transform: translate(2px, 2px);
 }
 
 .error-message {
@@ -552,11 +572,12 @@ async function handleLogout() {
 .attr-name {
   font-size: 12px;
   opacity: 0.6;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .attr-bar {
   height: 8px;
-  background: #eee;
+  background: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -567,21 +588,23 @@ async function handleLogout() {
 }
 
 .attr-fill.energy {
-  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
 }
 
 .attr-fill.vitality {
-  background: linear-gradient(90deg, #FF9800, #FFC107);
+  background: linear-gradient(90deg, #c48a4a, #d4a85a);
 }
 
 .attr-value {
   font-size: 14px;
   font-weight: bold;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .attr-value-simple {
   font-size: 18px;
   font-weight: bold;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .luck-item {

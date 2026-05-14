@@ -686,9 +686,9 @@ onUnmounted(() => {
 }
 
 .skeleton-card {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 2.25s infinite;
   border-radius: 4px;
 }
 
@@ -704,9 +704,9 @@ onUnmounted(() => {
 .skeleton-attr-item {
   flex: 1;
   height: 20px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 2.25s infinite;
   border-radius: 4px;
 }
 
@@ -765,12 +765,13 @@ onUnmounted(() => {
   font-size: 12px;
   opacity: 0.6;
   white-space: nowrap;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .attr-bar {
   flex: 1;
   height: 8px;
-  background: #eee;
+  background: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -781,11 +782,11 @@ onUnmounted(() => {
 }
 
 .attr-fill.energy {
-  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
 }
 
 .attr-fill.vitality {
-  background: linear-gradient(90deg, #FF9800, #FFC107);
+  background: linear-gradient(90deg, #c48a4a, #d4a85a);
 }
 
 .attr-value {
@@ -794,6 +795,7 @@ onUnmounted(() => {
   white-space: nowrap;
   min-width: 24px;
   text-align: right;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .trigger-section {
@@ -804,9 +806,9 @@ onUnmounted(() => {
 .trigger-btn {
   width: 100%;
   padding: 24px;
-  background: #000;
-  color: #fff;
-  border: none;
+  background: #fff;
+  color: #000;
+  border: 2.5px solid #000;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -814,14 +816,15 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .trigger-btn:active:not(:disabled) {
-  transform: translate(4px, 4px);
+  transform: translate(2px, 2px);
 }
 
 .trigger-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -1203,13 +1206,19 @@ onUnmounted(() => {
 }
 
 .btn-primary {
-  background: #000;
-  color: #fff;
-  border: none;
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
   padding: 12px;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+}
+
+.btn-primary:active {
+  transform: translate(2px, 2px);
 }
 
 .modal-overlay {

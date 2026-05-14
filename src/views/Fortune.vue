@@ -643,9 +643,9 @@ onMounted(() => {
 }
 
 .skeleton-card {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 2.25s infinite;
   border-radius: 4px;
 }
 
@@ -705,12 +705,13 @@ onMounted(() => {
   font-size: 12px;
   opacity: 0.6;
   white-space: nowrap;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .attr-bar {
   flex: 1;
   height: 8px;
-  background: #eee;
+  background: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -721,11 +722,11 @@ onMounted(() => {
 }
 
 .attr-fill.energy {
-  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
 }
 
 .attr-fill.vitality {
-  background: linear-gradient(90deg, #FF9800, #FFC107);
+  background: linear-gradient(90deg, #c48a4a, #d4a85a);
 }
 
 .attr-value {
@@ -734,6 +735,7 @@ onMounted(() => {
   white-space: nowrap;
   min-width: 24px;
   text-align: right;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 /* 信仰状态 */
@@ -790,22 +792,22 @@ onMounted(() => {
 
 .prayer-btn {
   width: 100%;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
+  padding: 16px 32px;
+  background: #fff;
+  color: #000;
+  border: 2.5px solid #000;
+  border-radius: 4px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  transition: transform 0.1s ease, opacity 0.2s ease;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .prayer-btn:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: translate(2px, 2px);
 }
 
 .prayer-btn:disabled {
@@ -869,14 +871,14 @@ onMounted(() => {
 
 .relation-card {
   padding: 16px;
-  background: #fff;
-  border: 2px solid #000;
+  background: #fafafa;
+  border: 2.5px solid #000;
   border-radius: 4px;
 }
 
 .relation-card.worshipping {
-  background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
-  border-color: #f0c040;
+  background: #f0f0f0;
+  border-color: #666;
 }
 
 .relation-header {
@@ -919,14 +921,14 @@ onMounted(() => {
 .progress-bar {
   flex: 1;
   height: 8px;
-  background: #eee;
+  background: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #8a9bb5, #9a85a8);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -935,6 +937,7 @@ onMounted(() => {
   font-size: 12px;
   opacity: 0.6;
   white-space: nowrap;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .relation-actions {
@@ -947,24 +950,35 @@ onMounted(() => {
   padding: 8px 16px;
   font-size: 12px;
   font-weight: bold;
-  border: none;
+  border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
+  background: #fff;
+  color: #000;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
+}
+
+.action-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .worship-btn {
-  background: #667eea;
-  color: #fff;
+  background: #fff;
+  color: #000;
+  border-color: #000;
 }
 
 .switch-btn {
-  background: #ff9800;
-  color: #fff;
+  background: #fff;
+  color: #000;
+  border-color: #000;
 }
 
 .abandon-btn {
-  background: #f44336;
-  color: #fff;
+  background: #fff;
+  color: #000;
+  border-color: #000;
   margin-left: 8px;
 }
 

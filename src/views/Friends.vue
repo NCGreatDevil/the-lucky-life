@@ -518,9 +518,9 @@ onUnmounted(() => {
 }
 
 .skeleton-card {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 2.25s infinite;
   border-radius: 4px;
 }
 
@@ -548,7 +548,7 @@ onUnmounted(() => {
 }
 
 .npc-card {
-  background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+  background: #fafafa;
   padding: 16px;
 }
 
@@ -730,10 +730,12 @@ onUnmounted(() => {
 }
 
 .tag {
-  padding: 2px 6px;
-  background: #f5f5f5;
-  border-radius: 2px;
-  font-size: 10px;
+  padding: 2px 8px;
+  background: #f0f0f0;
+  border: 1px solid #000;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .friend-actions {

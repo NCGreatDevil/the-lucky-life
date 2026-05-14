@@ -362,7 +362,7 @@ const dailyQuote = computed(() => {
 .attr-bar {
   flex: 1;
   height: 8px;
-  background: #eee;
+  background: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -373,11 +373,11 @@ const dailyQuote = computed(() => {
 }
 
 .attr-fill.energy {
-  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
 }
 
 .attr-fill.vitality {
-  background: linear-gradient(90deg, #FF9800, #FFC107);
+  background: linear-gradient(90deg, #c48a4a, #d4a85a);
 }
 
 .attr-value {
@@ -386,6 +386,7 @@ const dailyQuote = computed(() => {
   white-space: nowrap;
   min-width: 24px;
   text-align: right;
+  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
 }
 
 .footer {
