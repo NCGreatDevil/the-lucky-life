@@ -16,119 +16,117 @@
 
       <form @submit.prevent="handleRegister" class="register-form">
         <div class="form-group">
-          <label for="userId">用户ID <span class="required">*</span></label>
-          <input
+          <label for="userId" class="sketch-font">用户ID <span class="required">*</span></label>
+          <wired-input
             type="text"
             id="userId"
-            v-model="form.userId"
-            @input="validateUserId"
+            :value="form.userId"
+            @input="form.userId = $event.target.value.replace(/[^A-Za-z0-9_]/g, '')"
             placeholder="字母、数字、下划线，最多16字符"
-            required
-            maxlength="16"
-            pattern="[A-Za-z0-9_]+"
-          />
+            style="width: 100%;"
+          ></wired-input>
           <span class="hint">用于登录的唯一标识，如：Player_01</span>
         </div>
 
         <div class="form-group">
-          <label for="nickname">昵称 <span class="required">*</span></label>
-          <input
+          <label for="nickname" class="sketch-font">昵称 <span class="required">*</span></label>
+          <wired-input
             type="text"
             id="nickname"
-            v-model="form.nickname"
+            :value="form.nickname"
+            @input="form.nickname = $event.target.value"
             placeholder="给自己起个昵称"
-            required
-          />
+            style="width: 100%;"
+          ></wired-input>
         </div>
 
         <div class="form-group">
-          <label for="password">密码 <span class="required">*</span></label>
-          <input
+          <label for="password" class="sketch-font">密码 <span class="required">*</span></label>
+          <wired-input
             type="password"
             id="password"
-            v-model="form.password"
+            :value="form.password"
+            @input="form.password = $event.target.value"
             placeholder="至少6位密码"
-            minlength="6"
-            required
-          />
+            style="width: 100%;"
+          ></wired-input>
         </div>
 
         <div class="form-group">
-          <label for="confirmPassword">确认密码 <span class="required">*</span></label>
-          <input
+          <label for="confirmPassword" class="sketch-font">确认密码 <span class="required">*</span></label>
+          <wired-input
             type="password"
             id="confirmPassword"
-            v-model="form.confirmPassword"
+            :value="form.confirmPassword"
+            @input="form.confirmPassword = $event.target.value"
             placeholder="再次输入密码"
-            required
-          />
+            style="width: 100%;"
+          ></wired-input>
         </div>
 
         <div class="form-group">
-          <label>出生日期 <span class="required">*</span></label>
+          <label class="sketch-font">出生日期 <span class="required">*</span></label>
           <div class="birthday-selects">
-            <select v-model="form.birthYear" @change="updateBirthday" class="birthday-select">
-              <option value="">年</option>
-              <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-            </select>
-            <select v-model="form.birthMonth" @change="updateBirthday" class="birthday-select">
-              <option value="">月</option>
-              <option v-for="month in 12" :key="month" :value="month">{{ month }}月</option>
-            </select>
-            <select v-model="form.birthDay" @change="updateBirthday" class="birthday-select">
-              <option value="">日</option>
-              <option v-for="day in daysInMonth" :key="day" :value="day">{{ day }}日</option>
-            </select>
+            <wired-combo :value="form.birthYear" @selected="form.birthYear = $event.detail.value; updateBirthday()" style="width: 100%;">
+              <wired-item value="" text="年"></wired-item>
+              <wired-item v-for="year in years" :key="year" :value="year" :text="String(year)"></wired-item>
+            </wired-combo>
+            <wired-combo :value="form.birthMonth" @selected="form.birthMonth = $event.detail.value; updateBirthday()" style="width: 100%;">
+              <wired-item value="" text="月"></wired-item>
+              <wired-item v-for="month in 12" :key="month" :value="month" :text="month + '月'"></wired-item>
+            </wired-combo>
+            <wired-combo :value="form.birthDay" @selected="form.birthDay = $event.detail.value; updateBirthday()" style="width: 100%;">
+              <wired-item value="" text="日"></wired-item>
+              <wired-item v-for="day in daysInMonth" :key="day" :value="day" :text="day + '日'"></wired-item>
+            </wired-combo>
           </div>
           <span class="hint">例如：你28岁，可以选择1999年</span>
         </div>
 
         <div class="form-group">
-          <label>性别 <span class="required">*</span></label>
+          <label class="sketch-font">性别 <span class="required">*</span></label>
           <div class="radio-group">
-            <label class="radio-label">
-              <input type="radio" v-model="form.gender" value="male" />
-              <span>男</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" v-model="form.gender" value="female" />
-              <span>女</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" v-model="form.gender" value="other" />
-              <span>其他</span>
-            </label>
+            <wired-radio :checked="form.gender === 'male'" @click="form.gender = 'male'" class="sketch-font">男</wired-radio>
+            <wired-radio :checked="form.gender === 'female'" @click="form.gender = 'female'" class="sketch-font">女</wired-radio>
+            <wired-radio :checked="form.gender === 'other'" @click="form.gender = 'other'" class="sketch-font">其他</wired-radio>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="occupation">职业 <span class="required">*</span></label>
-          <input
+          <label for="occupation" class="sketch-font">职业 <span class="required">*</span></label>
+          <wired-input
             type="text"
             id="occupation"
-            v-model="form.occupation"
+            :value="form.occupation"
+            @input="form.occupation = $event.target.value"
             placeholder="请输入职业"
-            required
-          />
+            style="width: 100%;"
+          ></wired-input>
           <span class="hint">例如：你是教师，可以填写"学校教职工"</span>
         </div>
 
         <div class="form-group">
-          <label for="bio">个人简介</label>
-          <textarea
+          <label for="bio" class="sketch-font">个人简介</label>
+          <wired-textarea
             id="bio"
-            v-model="form.bio"
+            :value="form.bio"
+            @input="form.bio = $event.target.value"
             placeholder="简单介绍一下你的虚拟角色（选填）"
             rows="3"
-          ></textarea>
+            style="width: 100%;"
+          ></wired-textarea>
         </div>
 
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
 
-        <button type="submit" class="btn-primary" :disabled="loading">
+        <wired-button
+          type="submit"
+          :disabled="loading"
+          style="width: 100%;"
+        >
           {{ loading ? '注册中...' : '创建角色' }}
-        </button>
+        </wired-button>
       </form>
 
       <div class="register-footer">

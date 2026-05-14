@@ -37,10 +37,10 @@
       </div>
 
       <div class="trigger-section">
-        <button class="trigger-btn hand-drawn-border" @click="triggerActiveEvent" :disabled="isEventActive || isLoading">
+        <wired-button class="trigger-btn hand-drawn-border" @click="triggerActiveEvent" :disabled="isEventActive || isLoading" style="width: 100%;">
           <span class="trigger-icon">⚡</span>
           <span class="trigger-text">{{ isEventActive ? '事件进行中...' : isLoading ? '加载中...' : '触发随机事件' }}</span>
-        </button>
+        </wired-button>
         <p class="trigger-tip">消耗10能量，可能触发各种事件</p>
       </div>
       
@@ -108,25 +108,27 @@
 
           <div class="event-choices" v-if="!eventResolved">
             <p class="choices-hint">请选择：</p>
-            <button
+            <wired-button
               v-for="option in currentEvent.options"
               :key="option.id"
               class="choice-btn"
               @click="makeChoice(option.id)"
               :disabled="isSubmitting || !isOptionAvailable(option)"
               :title="getOptionDisabledReason(option)"
+              style="width: 100%;"
             >
               {{ option.text }}
               <span v-if="!isOptionAvailable(option)" class="disabled-reason">（{{ getOptionDisabledReason(option) }}）</span>
-            </button>
-            <button
+            </wired-button>
+            <wired-button
               v-if="allOptionsDisabled"
               class="skip-btn"
               @click="skipEvent"
               :disabled="isSubmitting"
+              style="width: 100%;"
             >
               跳过此事件
-            </button>
+            </wired-button>
           </div>
 
           <div class="event-result" v-if="eventResolved">
@@ -141,7 +143,7 @@
                 {{ attr }} {{ value > 0 ? '+' : '' }}{{ value }}
               </span>
             </div>
-            <button class="confirm-btn btn-primary" @click="confirmEvent">确定</button>
+            <wired-button class="confirm-btn" @click="confirmEvent" style="width: 100%;">确定</wired-button>
           </div>
         </div>
       </div>

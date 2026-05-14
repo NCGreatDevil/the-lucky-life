@@ -5,13 +5,13 @@
     <h1 class="welcome-title">欢迎来到好运人生</h1>
     
     <div class="buttons-container">
-      <button class="btn btn-register" @click="goToRegister">
+      <wired-button class="btn btn-register" @click="goToRegister" style="width: 100%;">
         <span class="btn-text">注册</span>
-      </button>
+      </wired-button>
       
-      <button class="btn btn-login" @click="goToLogin">
+      <wired-button class="btn btn-login" @click="goToLogin" style="width: 100%;">
         <span class="btn-text">登录</span>
-      </button>
+      </wired-button>
     </div>
   </div>
 </template>

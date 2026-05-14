@@ -49,15 +49,16 @@
 
       <!-- 祈求按钮 -->
       <div class="prayer-section">
-        <button
+        <wired-button
           class="prayer-btn"
           :disabled="isPraying || vitality < 30"
           @click="startPrayer"
+          style="width: 100%;"
         >
           <span class="btn-icon">🙏</span>
           <span class="btn-text">{{ vitality < 30 ? '活力不足' : '祈求好运' }}</span>
           <span class="btn-cost">消耗30活力</span>
-        </button>
+        </wired-button>
       </div>
 
       <!-- 测试按钮：恢复满状态 -->
@@ -111,20 +112,20 @@
               <span class="progress-text">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
             </div>
             <div class="relation-actions" v-if="relation.level >= 1 && !relation.isWorshipping">
-              <button
+              <wired-button
                 class="action-btn switch-btn"
                 @click="showSwitchToConfirm(relation)"
               >
                 更换
-              </button>
+              </wired-button>
             </div>
             <div class="relation-actions" v-if="relation.isWorshipping">
-              <button
+              <wired-button
                 class="action-btn abandon-btn"
                 @click="showAbandonConfirm(relation)"
               >
                 放弃
-              </button>
+              </wired-button>
             </div>
           </div>
         </div>
@@ -224,12 +225,12 @@
           <div v-if="prayerResult.favorabilityResult && prayerResult.favorabilityResult.levelUp && prayerResult.favorabilityResult.newLevel === 1" class="worship-invitation">
             <p class="invitation-text">{{ prayerResult.favorabilityResult.deityName }} 向你发出供奉邀请</p>
             <div class="invitation-actions">
-              <button class="invite-btn accept" @click="acceptWorship(prayerResult.favorabilityResult.deityId)">接受</button>
-              <button class="invite-btn reject" @click="rejectWorship(prayerResult.favorabilityResult.deityId)">拒绝</button>
+              <wired-button class="invite-btn accept" @click="acceptWorship(prayerResult.favorabilityResult.deityId)">接受</wired-button>
+              <wired-button class="invite-btn reject" @click="rejectWorship(prayerResult.favorabilityResult.deityId)">拒绝</wired-button>
             </div>
           </div>
 
-          <button class="close-result-btn" @click="closeResult">确定</button>
+          <wired-button class="close-result-btn" @click="closeResult" style="width: 100%;">确定</wired-button>
         </div>
       </div>
     </div>

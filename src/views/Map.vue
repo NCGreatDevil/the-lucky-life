@@ -37,7 +37,7 @@
     <div v-if="showTip" class="tip-modal modal-overlay" @click.self="showTip = false">
       <div class="tip-content hand-drawn-border">
         <p class="tip-text">该区域建设中，暂未开放</p>
-        <button class="tip-close-btn" @click="showTip = false">知道了</button>
+        <wired-button class="tip-close-btn" @click="showTip = false">知道了</wired-button>
       </div>
     </div>
   </div>

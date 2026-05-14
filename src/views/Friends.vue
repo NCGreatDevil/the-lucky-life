@@ -43,10 +43,10 @@
                   <p class="npc-desc">{{ npc.description || '神秘的 NPC 角色。' }}</p>
                 </div>
               </div>
-              <button class="add-npc-btn" @click="addNPCFriend(npc)">
+              <wired-button class="add-npc-btn" @click="addNPCFriend(npc)">
                 <span>🐾</span>
                 <span>添加为好友</span>
-              </button>
+              </wired-button>
             </div>
           </template>
         </div>
@@ -72,13 +72,13 @@
               </div>
             </div>
             <div class="friend-actions">
-              <button v-if="friend.isNpc" class="chat-btn" @click="openChat(friend)">
+              <wired-button v-if="friend.isNpc" class="chat-btn" @click="openChat(friend)">
                 💬
-              </button>
+              </wired-button>
               <div class="more-menu-wrapper">
-                <button class="more-btn" @click="toggleMoreMenu(friend.id)">⋮</button>
+                <wired-button class="more-btn" @click="toggleMoreMenu(friend.id)">⋮</wired-button>
                 <div v-if="showMoreMenu === friend.id" class="more-menu hand-drawn-border">
-                  <button class="menu-item" @click="confirmDelete(friend.id)">删除好友</button>
+                  <wired-button class="menu-item" @click="confirmDelete(friend.id)">删除好友</wired-button>
                 </div>
               </div>
             </div>
@@ -93,8 +93,8 @@
         <div class="delete-dialog hand-drawn-border">
           <p class="delete-message">确定要删除好友「{{ deleteFriendName }}」吗？</p>
           <div class="delete-actions">
-            <button class="cancel-btn" @click="cancelDelete">取消</button>
-            <button class="confirm-btn" @click="executeDelete">确定</button>
+            <wired-button class="cancel-btn" @click="cancelDelete">取消</wired-button>
+            <wired-button class="confirm-btn" @click="executeDelete">确定</wired-button>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@
               <p class="chat-name">{{ currentFriend?.name }}</p>
               <div class="chat-npc-tag" v-if="currentFriend?.isNpc">NPC</div>
             </div>
-            <button class="close-chat-btn" @click="closeChat">×</button>
+            <wired-button class="close-chat-btn" @click="closeChat">×</wired-button>
           </div>
           <div class="chat-messages" ref="chatMessagesRef">
             <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['message', msg.isUser ? 'user-message' : 'bot-message']">
@@ -121,8 +121,8 @@
             <div ref="lastMessageRef"></div>
           </div>
           <div class="chat-input-area" v-if="!isRefused">
-            <input type="text" v-model="chatInput" class="chat-input" placeholder="说点什么..." @keyup.enter="sendMessage">
-            <button class="send-btn" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</button>
+            <wired-input type="text" :value="chatInput" @input="chatInput = $event.target.value" class="chat-input" placeholder="说点什么..." @keyup.enter="sendMessage" style="flex: 1;"></wired-input>
+            <wired-button class="send-btn" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</wired-button>
           </div>
           <div class="chat-refused-tip" v-else>
             <p>{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>

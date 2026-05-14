@@ -58,50 +58,70 @@
 
           <form v-else @submit.prevent="handleUpdate" class="edit-form">
             <div class="form-group">
-              <label>昵称</label>
-              <input type="text" v-model="editForm.nickname" required />
+              <label class="sketch-font">昵称</label>
+              <wired-input
+                :value="editForm.nickname"
+                @input="editForm.nickname = $event.target.value"
+                style="width: 100%;"
+              ></wired-input>
             </div>
 
             <div class="form-group">
-              <label>出生日期</label>
-              <input type="date" v-model="editForm.birthday" required />
+              <label class="sketch-font">出生日期</label>
+              <wired-input
+                type="date"
+                :value="editForm.birthday"
+                @input="editForm.birthday = $event.target.value"
+                style="width: 100%;"
+              ></wired-input>
             </div>
 
             <div class="form-group">
-              <label>性别</label>
+              <label class="sketch-font">性别</label>
               <div class="radio-group">
-                <label class="radio-label">
-                  <input type="radio" v-model="editForm.gender" value="male" />
-                  <span>男</span>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" v-model="editForm.gender" value="female" />
-                  <span>女</span>
-                </label>
-                <label class="radio-label">
-                  <input type="radio" v-model="editForm.gender" value="other" />
-                  <span>其他</span>
-                </label>
+                <wired-radio :checked="editForm.gender === 'male'" @click="editForm.gender = 'male'" class="sketch-font">男</wired-radio>
+                <wired-radio :checked="editForm.gender === 'female'" @click="editForm.gender = 'female'" class="sketch-font">女</wired-radio>
+                <wired-radio :checked="editForm.gender === 'other'" @click="editForm.gender = 'other'" class="sketch-font">其他</wired-radio>
               </div>
             </div>
 
             <div class="form-group">
-              <label>职业</label>
-              <input type="text" v-model="editForm.occupation" required />
+              <label class="sketch-font">职业</label>
+              <wired-input
+                :value="editForm.occupation"
+                @input="editForm.occupation = $event.target.value"
+                style="width: 100%;"
+              ></wired-input>
             </div>
 
             <div class="form-group">
-              <label>个人简介</label>
-              <textarea v-model="editForm.bio" rows="3" placeholder="简单介绍一下你的虚拟角色"></textarea>
+              <label class="sketch-font">个人简介</label>
+              <wired-textarea
+                :value="editForm.bio"
+                @input="editForm.bio = $event.target.value"
+                placeholder="简单介绍一下你的虚拟角色"
+                rows="3"
+                style="width: 100%;"
+              ></wired-textarea>
             </div>
 
             <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
             <div class="btn-group">
-              <button type="submit" class="btn-primary" :disabled="saving">
+              <wired-button
+                type="submit"
+                :disabled="saving"
+                style="width: 100%;"
+              >
                 {{ saving ? '保存中...' : '保存' }}
-              </button>
-              <button type="button" @click="cancelEdit" class="btn-secondary">取消</button>
+              </wired-button>
+              <wired-button
+                type="button"
+                @click="cancelEdit"
+                style="width: 100%;"
+              >
+                取消
+              </wired-button>
             </div>
           </form>
 
