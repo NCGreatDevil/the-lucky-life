@@ -397,8 +397,10 @@ async function handleLogout() {
 
 .user-card {
   padding: 20px;
-  background: #eee;
-  color: #333;
+  background: #fafafa;
+  border: 2.5px solid #000;
+  border-radius: 4px;
+  color: #1a1a1a;
   text-align: center;
 }
 
@@ -419,19 +421,12 @@ async function handleLogout() {
   justify-content: center;
 }
 
-/* .luck-label {
-  font-size: 14px;
-  padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  color:#00A878;
-  border: 1px solid #00a878;
-} */
-
 .info-section,
 .attr-section {
   padding: 20px;
   background: #fff;
+  border: 2.5px solid #000;
+  border-radius: 4px;
 }
 
 .info-section h2,
@@ -439,7 +434,7 @@ async function handleLogout() {
   font-size: 16px;
   margin-bottom: 16px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 2px solid #000;
 }
 
 .info-list {

@@ -249,6 +249,20 @@ const dailyQuote = computed(() => {
   color: inherit;
   background: #fff;
   transition: transform 0.1s ease;
+  position: relative;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .nav-item:active {
@@ -280,6 +294,22 @@ const dailyQuote = computed(() => {
   overflow: hidden;
   background: #fafafa;
   padding: 16px;
+  border: 2.5px solid #000;
+  border-radius: 4px;
+  position: relative;
+}
+
+.fortune-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .fortune-image {

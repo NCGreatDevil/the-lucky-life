@@ -753,8 +753,8 @@ onMounted(() => {
 
 .faith-status.has-faith {
   justify-content: center;
-  background: linear-gradient(135deg, #fff9e6, #fff);
-  border-color: #f0c040;
+  background: #f0f0f0;
+  border-color: #000;
 }
 
 .faith-label {
@@ -1209,6 +1209,7 @@ onMounted(() => {
   gap: 12px;
   padding: 12px;
   background: #fafafa;
+  border: 2px solid #000;
   border-radius: 4px;
   margin-bottom: 12px;
 }
@@ -1235,7 +1236,7 @@ onMounted(() => {
 }
 
 .luck-result {
-  background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+  background: #f0f0f0;
 }
 
 /* 供奉邀请 */

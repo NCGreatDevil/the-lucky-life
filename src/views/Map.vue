@@ -139,8 +139,24 @@ function showUnderConstruction() {
   gap: 16px;
   padding: 16px;
   background: #fff;
+  border: 2.5px solid #000;
+  border-radius: 4px;
   cursor: pointer;
   transition: transform 0.1s ease;
+  position: relative;
+}
+
+.location-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .location-card:active {
@@ -155,7 +171,8 @@ function showUnderConstruction() {
   align-items: center;
   justify-content: center;
   background: #fafafa;
-  border-radius: 8px;
+  border: 2px solid #000;
+  border-radius: 4px;
   flex-shrink: 0;
 }
 
@@ -171,15 +188,16 @@ function showUnderConstruction() {
 
 .location-desc {
   font-size: 12px;
-  color: #666;
+  color: #1a1a1a;
   margin: 0;
 }
 
 .location-status {
   font-size: 10px;
   padding: 4px 8px;
-  background: #f0f0f0;
-  color: #999;
+  background: #e0e0e0;
+  color: #1a1a1a;
+  border: 1px solid #000;
   border-radius: 4px;
   flex-shrink: 0;
 }
@@ -199,6 +217,8 @@ function showUnderConstruction() {
 
 .tip-content {
   background: #fff;
+  border: 2.5px solid #000;
+  border-radius: 4px;
   padding: 24px;
   max-width: 300px;
   width: 90%;
@@ -214,11 +234,17 @@ function showUnderConstruction() {
 .tip-close-btn {
   width: 100%;
   padding: 10px;
-  background: #000;
-  color: #fff;
-  border: none;
+  background: #fff;
+  color: #1a1a1a;
+  border: 2px solid #000;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
+}
+
+.tip-close-btn:active {
+  transform: translate(2px, 2px);
 }
 </style>

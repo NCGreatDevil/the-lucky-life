@@ -550,6 +550,22 @@ onUnmounted(() => {
 .npc-card {
   background: #fafafa;
   padding: 16px;
+  border: 2.5px solid #000;
+  border-radius: 4px;
+  position: relative;
+}
+
+.npc-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .npc-header {
@@ -562,7 +578,7 @@ onUnmounted(() => {
   width: 64px;
   height: 64px;
   border: 2px solid #000;
-  border-radius: 50%;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -597,20 +613,21 @@ onUnmounted(() => {
 .npc-tag {
   padding: 2px 8px;
   background: #e0e0e0;
-  color: #666;
+  color: #1a1a1a;
+  border: 1px solid #000;
   border-radius: 4px;
   font-size: 11px;
 }
 
 .npc-title {
   font-size: 13px;
-  color: #666;
+  color: #1a1a1a;
   margin: 0 0 4px 0;
 }
 
 .npc-desc {
   font-size: 12px;
-  color: #888;
+  color: #1a1a1a;
   margin: 0;
   line-height: 1.5;
 }
@@ -618,10 +635,10 @@ onUnmounted(() => {
 .add-npc-btn {
   width: 100%;
   padding: 10px;
-  border: 2px solid #a5834f;
-  border-radius: 6px;
-  background: #f3c178;
-  color: #fff;
+  border: 2px solid #000;
+  border-radius: 4px;
+  background: #fff;
+  color: #1a1a1a;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
@@ -629,11 +646,12 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
-.add-npc-btn:hover {
-  background: #333;
+.add-npc-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .friends-section {
@@ -658,13 +676,29 @@ onUnmounted(() => {
   gap: 12px;
   padding: 12px;
   background: #fff;
+  border: 2.5px solid #000;
+  border-radius: 4px;
+  position: relative;
+}
+
+.friend-item::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .friend-avatar {
   width: 48px;
   height: 48px;
   border: 2px solid #000;
-  border-radius: 50%;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -702,24 +736,25 @@ onUnmounted(() => {
 
 .friend-header .friend-level {
   font-size: 10px;
-  background: #000;
+  background: #1a1a1a;
   color: #fff;
   padding: 1px 4px;
-  border-radius: 2px;
+  border-radius: 4px;
+  border: 1px solid #000;
 }
 
 .npc-tag-small {
   padding: 1px 4px;
   background: #e0e0e0;
-  color: #666;
-  border-radius: 2px;
+  color: #1a1a1a;
+  border: 1px solid #000;
+  border-radius: 4px;
   font-size: 9px;
-  opacity: 0.5;
 }
 
 .friend-title {
   font-size: 12px;
-  color: #666;
+  color: #1a1a1a;
   margin: 0 0 4px 0;
 }
 
@@ -746,19 +781,19 @@ onUnmounted(() => {
 .chat-btn {
   width: 32px;
   height: 32px;
-  border: 1px solid #ccc;
-  border-radius: 50%;
+  border: 2px solid #000;
+  border-radius: 4px;
   background: #fff;
   font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
 }
 
-.chat-btn:hover {
-  background: #f0f0f0;
+.chat-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .more-menu-wrapper {
@@ -768,20 +803,20 @@ onUnmounted(() => {
 .more-btn {
   width: 32px;
   height: 32px;
-  border: 1px solid #CCC;
-  border-radius: 50%;
+  border: 2px solid #000;
+  border-radius: 4px;
   background: #fff;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
   line-height: 1;
 }
 
-.more-btn:hover {
-  background: #f0f0f0;
+.more-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .more-menu {
@@ -790,6 +825,7 @@ onUnmounted(() => {
   right: 0;
   margin-top: 4px;
   background: #fff;
+  border: 2px solid #000;
   border-radius: 4px;
   overflow: hidden;
   z-index: 10;
@@ -800,6 +836,7 @@ onUnmounted(() => {
   width: 100%;
   padding: 8px 12px;
   border: none;
+  border-bottom: 1px solid #e0e0e0;
   background: transparent;
   font-size: 12px;
   cursor: pointer;
@@ -807,9 +844,12 @@ onUnmounted(() => {
   transition: background 0.1s ease;
 }
 
-.menu-item:hover {
-  background: #ffebee;
-  color: #f44336;
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: #f5e8e8;
 }
 
 .delete-modal {
@@ -827,7 +867,8 @@ onUnmounted(() => {
 
 .delete-dialog {
   background: #fff;
-  border-radius: 8px;
+  border: 2.5px solid #000;
+  border-radius: 4px;
   padding: 24px;
   max-width: 320px;
   width: 90%;
@@ -852,7 +893,8 @@ onUnmounted(() => {
   border-radius: 4px;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .cancel-btn {
@@ -861,19 +903,18 @@ onUnmounted(() => {
   color: #1a1a1a;
 }
 
-.cancel-btn:hover {
-  background: #f5f5f5;
+.cancel-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .confirm-btn {
-  border: 2px solid #f44336;
-  background: #f44336;
+  border: 2px solid #000;
+  background: #1a1a1a;
   color: #fff;
 }
 
-.confirm-btn:hover {
-  background: #d32f2f;
-  border-color: #d32f2f;
+.confirm-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .empty-tip {
@@ -901,7 +942,8 @@ onUnmounted(() => {
   max-width: 400px;
   height: 80vh;
   background: #fff;
-  border-radius: 8px;
+  border: 2.5px solid #000;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -919,7 +961,7 @@ onUnmounted(() => {
   width: 40px;
   height: 40px;
   border: 2px solid #000;
-  border-radius: 50%;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -948,8 +990,9 @@ onUnmounted(() => {
   display: inline-block;
   padding: 1px 6px;
   background: #e0e0e0;
-  color: #666;
-  border-radius: 3px;
+  color: #1a1a1a;
+  border: 1px solid #000;
+  border-radius: 4px;
   font-size: 10px;
   margin-top: 2px;
 }
@@ -1036,15 +1079,16 @@ onUnmounted(() => {
   padding: 8px 16px;
   border: 2px solid #000;
   border-radius: 4px;
-  background: #000;
+  background: #1a1a1a;
   color: #fff;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
-.send-btn:hover:not(:disabled) {
-  background: #333;
+.send-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
 }
 
 .send-btn:disabled {
@@ -1061,7 +1105,7 @@ onUnmounted(() => {
 .chat-refused-tip p {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: #1a1a1a;
 }
 
 .info-section {
@@ -1069,9 +1113,9 @@ onUnmounted(() => {
 }
 
 .info-card {
-  background: #f9f9f9;
+  background: #fafafa;
   border: 2px solid #000;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 16px;
   text-align: center;
 }
@@ -1095,7 +1139,7 @@ onUnmounted(() => {
 
 .info-list li {
   font-size: 12px;
-  color: #666;
+  color: #1a1a1a;
   margin-bottom: 4px;
   line-height: 1.5;
 }

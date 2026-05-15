@@ -888,14 +888,15 @@ onUnmounted(() => {
 
 .pending-item {
   padding: 12px;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.1s ease;
+  background: #fff;
 }
 
 .pending-item:active {
-  background: #f5f5f5;
+  transform: translate(2px, 2px);
 }
 
 .pending-header {
@@ -986,7 +987,8 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #f9f9f9;
+  background: #fafafa;
+  border: 2px solid #000;
   border-radius: 4px;
   margin-bottom: 16px;
 }
@@ -994,8 +996,9 @@ onUnmounted(() => {
 .encounter-avatar {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 4px;
   object-fit: cover;
+  border: 2px solid #000;
 }
 
 .encounter-details {
@@ -1096,7 +1099,7 @@ onUnmounted(() => {
 
 .event-result {
   padding-top: 16px;
-  border-top: 1px solid #eee;
+  border-top: 2px solid #000;
 }
 
 .result-text {
@@ -1161,8 +1164,9 @@ onUnmounted(() => {
 
 .history-item {
   padding: 12px;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #000;
   border-radius: 4px;
+  background: #fff;
 }
 
 .history-header {

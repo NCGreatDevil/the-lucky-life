@@ -309,7 +309,7 @@ async function handleRegister() {
   margin: 0 auto;
   background: #fff;
   border: 2.5px solid #000;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 24px;
 }
 
@@ -330,8 +330,8 @@ async function handleRegister() {
 
 .warning-box {
   padding: 12px;
-  background: #fff3cd;
-  border: 1px solid #ffc107;
+  background: #fafafa;
+  border: 2px solid #000;
   border-radius: 4px;
   margin-bottom: 20px;
 }
@@ -344,7 +344,7 @@ async function handleRegister() {
 
 .warning-text {
   font-size: 11px;
-  color: #666;
+  color: #1a1a1a;
   line-height: 1.5;
 }
 
