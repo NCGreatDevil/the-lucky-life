@@ -61,7 +61,6 @@ function goToLogin() {
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 40px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
   text-align: center;
 }
 
@@ -74,49 +73,41 @@ function goToLogin() {
 }
 
 .btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14px 20px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 14px 32px;
+  border: 2.5px solid #000;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.1s ease;
+  font-weight: bold;
+  font-size: 18px;
+  position: relative;
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+.btn::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0.3;
 }
 
 .btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transform: translate(2px, 2px);
 }
 
 .btn-register {
   background: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-register:hover {
-  background: #f0f0f0;
 }
 
 .btn-login {
-  background: #fff;
-  color: #1a1a1a;
-  border: 2px solid #000;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-login:hover {
-  background: #f0f0f0;
+  background: #1a1a1a;
+  color: #fff;
 }
 
 .btn-text {

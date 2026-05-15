@@ -433,10 +433,11 @@ async function handleRegister() {
 }
 
 .error-message {
-  color: #d32f2f;
+  color: #c62828;
   font-size: 14px;
   padding: 8px 12px;
-  background: #ffebee;
+  background: #f5e8e8;
+  border: 1px solid #c48a8a;
   border-radius: 4px;
 }
 
@@ -444,7 +445,8 @@ async function handleRegister() {
   color: #2e7d32;
   font-size: 14px;
   padding: 8px 12px;
-  background: #e8f5e9;
+  background: #f0f5e8;
+  border: 1px solid #7a9a6d;
   border-radius: 4px;
 }
 

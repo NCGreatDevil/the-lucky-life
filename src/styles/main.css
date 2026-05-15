@@ -66,14 +66,17 @@ body {
 
 /* 进度条样式 */
 .progress-bar {
-  height: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
   overflow: hidden;
 }
 
-.progress-bar .fill {
+.progress-bar .fill,
+.progress-fill {
   height: 100%;
-  background-color: #fff;
+  background: linear-gradient(90deg, #8a9bb5, #9a85a8);
+  border-radius: 4px;
   transition: width 0.3s ease;
 }
 
@@ -131,4 +134,61 @@ body {
 
 .btn-secondary:active {
   transform: translate(2px, 2px);
+}
+
+/* 属性条样式 */
+.attr-bar {
+  flex: 1;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.attr-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.attr-fill.energy {
+  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
+}
+
+.attr-fill.vitality {
+  background: linear-gradient(90deg, #c48a4a, #d4a85a);
+}
+
+/* 骨架屏加载动画（闪烁减慢50%） */
+.skeleton-card {
+  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2.25s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* wired-elements 字体强制 */
+wired-button, wired-card, wired-input, wired-textarea, wired-combo, wired-radio, wired-checkbox, wired-progress, wired-divider, wired-toggle, wired-slider, wired-tabs, wired-tab, wired-dialog, wired-spinner, wired-fab, wired-icon-button, wired-link, wired-image {
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive !important;
+}
+
+/* 标签样式 */
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #f0f0f0;
+  border: 1px solid #000;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 4px;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
+}
+
+/* 通用链接样式 */
+a {
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }

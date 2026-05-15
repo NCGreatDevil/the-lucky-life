@@ -917,7 +917,7 @@ onUnmounted(() => {
 }
 
 .pending-countdown.expiring-soon {
-  color: #f44336;
+  color: #c62828;
   font-weight: bold;
 }
 
@@ -973,10 +973,11 @@ onUnmounted(() => {
 
 .encounter-badge {
   display: inline-block;
-  background: #ff9800;
+  background: #d4a85a;
   color: #fff;
   padding: 4px 12px;
-  border-radius: 2px;
+  border-radius: 4px;
+  border: 1px solid #000;
   font-size: 10px;
 }
 
@@ -1067,7 +1068,7 @@ onUnmounted(() => {
 
 .disabled-reason {
   font-size: 11px;
-  color: #f44336;
+  color: #c62828;
 }
 
 .skip-btn {
@@ -1125,14 +1126,14 @@ onUnmounted(() => {
 }
 
 .change-tag.positive {
-  background: #e8f5e9;
-  border-color: #4caf50;
+  background: #f0f5e8;
+  border-color: #7a9a6d;
   color: #2e7d32;
 }
 
 .change-tag.negative {
-  background: #ffebee;
-  border-color: #f44336;
+  background: #f5e8e8;
+  border-color: #c48a8a;
   color: #c62828;
 }
 

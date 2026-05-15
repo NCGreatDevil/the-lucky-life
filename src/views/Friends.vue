@@ -958,18 +958,18 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   border: 2px solid #000;
-  border-radius: 50%;
+  border-radius: 4px;
   background: #fff;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.1s ease;
+  transition: transform 0.1s ease;
 }
 
-.close-chat-btn:hover {
-  background: #f0f0f0;
+.close-chat-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .chat-messages {
@@ -996,18 +996,19 @@ onUnmounted(() => {
 .message-content {
   max-width: 70%;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 4px;
+  border: 2px solid #000;
   font-size: 13px;
   line-height: 1.5;
 }
 
 .user-message .message-content {
-  background: #000;
+  background: #1a1a1a;
   color: #fff;
 }
 
 .bot-message .message-content {
-  background: #f5f5f5;
+  background: #fafafa;
   color: #1a1a1a;
 }
 

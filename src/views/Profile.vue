@@ -569,10 +569,11 @@ async function handleLogout() {
 }
 
 .error-message {
-  color: #d32f2f;
+  color: #c62828;
   font-size: 14px;
   padding: 8px 12px;
-  background: #ffebee;
+  background: #f5e8e8;
+  border: 1px solid #c48a8a;
   border-radius: 4px;
 }
 

@@ -141,10 +141,11 @@ async function handleLogin() {
 }
 
 .error-message {
-  color: #d32f2f;
+  color: #c62828;
   font-size: 14px;
   padding: 8px 12px;
-  background: #ffebee;
+  background: #f5e8e8;
+  border: 1px solid #c48a8a;
   border-radius: 4px;
 }
 
@@ -185,8 +186,8 @@ async function handleLogin() {
 .warning-box {
   margin-top: 24px;
   padding: 12px;
-  background: #fff8e1;
-  border: 1px solid #ffc107;
+  background: #fafafa;
+  border: 2px solid #000;
   border-radius: 4px;
 }
 
@@ -198,7 +199,7 @@ async function handleLogin() {
 
 .warning-text {
   font-size: 11px;
-  color: #666;
+  color: #1a1a1a;
   line-height: 1.5;
 }
 </style>

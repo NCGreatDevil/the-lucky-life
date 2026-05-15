@@ -776,9 +776,10 @@ onMounted(() => {
 .deity-level {
   font-size: 12px;
   padding: 2px 8px;
-  background: #ff9800;
+  background: #d4a85a;
   color: #fff;
-  border-radius: 12px;
+  border-radius: 4px;
+  border: 1px solid #000;
 }
 
 .no-faith {
@@ -839,18 +840,19 @@ onMounted(() => {
 .test-btn {
   width: 100%;
   padding: 12px;
-  background: #ff9800;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  background: #fff;
+  color: #1a1a1a;
+  border: 2px solid #000;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
-  transition: transform 0.1s ease, opacity 0.2s ease;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .test-btn:active {
-  transform: scale(0.98);
+  transform: translate(2px, 2px);
 }
 
 /* 神明关系 */
@@ -897,18 +899,20 @@ onMounted(() => {
 .relation-level {
   font-size: 12px;
   padding: 2px 8px;
-  background: #000;
+  background: #1a1a1a;
   color: #fff;
-  border-radius: 12px;
+  border-radius: 4px;
+  border: 1px solid #000;
   margin-left: auto;
 }
 
 .worshipping-badge {
   font-size: 12px;
   padding: 2px 8px;
-  background: #43b105;
+  background: #7a9a6d;
   color: #fff;
-  border-radius: 12px;
+  border-radius: 4px;
+  border: 1px solid #000;
   font-weight: bold;
   margin-left: 16px;
 }
@@ -1184,7 +1188,7 @@ onMounted(() => {
 .result-content {
   background: #fff;
   border: 2.5px solid #000;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 24px;
   max-width: 360px;
   width: 90%;
@@ -1238,9 +1242,9 @@ onMounted(() => {
 .worship-invitation {
   margin-top: 20px;
   padding: 16px;
-  background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
-  border: 2px solid #f0c040;
-  border-radius: 8px;
+  background: #fafafa;
+  border: 2px solid #000;
+  border-radius: 4px;
   text-align: center;
 }
 
@@ -1260,31 +1264,42 @@ onMounted(() => {
   padding: 10px 24px;
   font-size: 14px;
   font-weight: bold;
-  border: none;
+  border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
+}
+
+.invite-btn:active {
+  transform: translate(2px, 2px);
 }
 
 .invite-btn.accept {
-  background: #ff9800;
+  background: #1a1a1a;
   color: #fff;
 }
 
 .invite-btn.reject {
   background: #fff;
-  color: #ff9800;
-  border: 2px solid #ff9800;
+  color: #1a1a1a;
 }
 
 .close-result-btn {
   width: 100%;
   padding: 12px;
-  background: #000;
-  color: #fff;
-  border: none;
+  background: #fff;
+  color: #1a1a1a;
+  border: 2px solid #000;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
   margin-top: 16px;
+  transition: transform 0.1s ease;
+  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
+}
+
+.close-result-btn:active {
+  transform: translate(2px, 2px);
 }
 </style>

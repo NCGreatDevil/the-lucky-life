@@ -131,11 +131,12 @@ onUnmounted(() => {
   position: absolute;
   top: -6px;
   right: -8px;
-  background: #f44336;
+  background: #c62828;
   color: #fff;
   font-size: 10px;
   padding: 2px 5px;
-  border-radius: 10px;
+  border-radius: 4px;
+  border: 1px solid #000;
   min-width: 16px;
   text-align: center;
 }
