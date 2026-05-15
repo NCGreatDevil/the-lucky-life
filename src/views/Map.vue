@@ -18,10 +18,10 @@
 
     <div class="content-area">
       <div class="location-list">
-        <div
+        <wired-card
           v-for="location in locations"
           :key="location.id"
-          class="location-card hand-drawn-border"
+          class="location-card"
           @click="showUnderConstruction"
         >
           <div class="location-icon">{{ location.icon }}</div>
@@ -30,15 +30,15 @@
             <p class="location-desc">{{ location.description }}</p>
           </div>
           <span class="location-status">建设中</span>
-        </div>
+        </wired-card>
       </div>
     </div>
 
     <div v-if="showTip" class="tip-modal modal-overlay" @click.self="showTip = false">
-      <div class="tip-content hand-drawn-border">
+      <wired-card class="tip-content">
         <p class="tip-text">该区域建设中，暂未开放</p>
         <wired-button class="tip-close-btn" @click="showTip = false">知道了</wired-button>
-      </div>
+      </wired-card>
     </div>
   </div>
 </template>
@@ -139,28 +139,7 @@ function showUnderConstruction() {
   gap: 16px;
   padding: 16px;
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.1s ease;
-  position: relative;
-}
-
-.location-card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
-}
-
-.location-card:active {
-  transform: translate(2px, 2px);
 }
 
 .location-icon {
@@ -217,8 +196,6 @@ function showUnderConstruction() {
 
 .tip-content {
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   padding: 24px;
   max-width: 300px;
   width: 90%;
@@ -236,15 +213,8 @@ function showUnderConstruction() {
   padding: 10px;
   background: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.tip-close-btn:active {
-  transform: translate(2px, 2px);
 }
 </style>

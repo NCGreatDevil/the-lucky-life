@@ -33,7 +33,7 @@
 
       <template v-else>
       <!-- 信仰状态 -->
-      <div class="faith-status" :class="{ 'has-faith': worshippingDeity }">
+      <wired-card class="faith-status" :class="{ 'has-faith': worshippingDeity }">
         <div class="faith-label" v-if="!worshippingDeity">当前信仰</div>
         <div class="faith-value">
           <template v-if="worshippingDeity">
@@ -44,7 +44,7 @@
             <span class="no-faith">无</span>
           </template>
         </div>
-      </div>
+      </wired-card>
 
 
       <!-- 祈求按钮 -->
@@ -72,16 +72,12 @@
       <div class="attr-bar-fixed" v-if="userStore.isLoggedIn">
         <div class="attr-item">
           <span class="attr-name">能量</span>
-          <div class="attr-bar">
-            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
-          </div>
+          <wired-progress :value="userStore.user?.attributes?.energy || 80" style="flex: 1;"></wired-progress>
           <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
         <div class="attr-item">
           <span class="attr-name">活力</span>
-          <div class="attr-bar">
-            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
-          </div>
+          <wired-progress :value="userStore.user?.attributes?.vitality || 60" style="flex: 1;"></wired-progress>
           <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
       </div>
@@ -90,7 +86,7 @@
       <div class="deity-relations" v-if="deityRelations.length > 0">
         <h3 class="relations-title">神明关系</h3>
         <div class="relations-list">
-          <div
+          <wired-card
             v-for="relation in deityRelations"
             :key="relation.deityId"
             class="relation-card"
@@ -103,12 +99,10 @@
               
             </div>
             <div class="relation-progress">
-              <div class="progress-bar">
-                <div
-                  class="progress-fill"
-                  :style="{ width: getProgressPercent(relation) + '%' }"
-                ></div>
-              </div>
+              <wired-progress
+                :value="getProgressPercent(relation)"
+                style="flex: 1;"
+              ></wired-progress>
               <span class="progress-text">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
             </div>
             <div class="relation-actions" v-if="relation.level >= 1 && !relation.isWorshipping">
@@ -127,7 +121,7 @@
                 放弃
               </wired-button>
             </div>
-          </div>
+          </wired-card>
         </div>
       </div>
       </template>
@@ -168,11 +162,11 @@
 
       <!-- 祈求结果弹窗 -->
       <div v-if="showResult" class="result-modal" @click.self="closeResult">
-        <div class="result-content">
+        <wired-card class="result-content">
           <h3 class="result-title">祈求完成</h3>
 
           <!-- 运气提升 -->
-          <div class="result-item luck-result">
+          <wired-card class="result-item luck-result">
             <span class="result-icon">✨</span>
             <div class="result-info">
               <span class="result-label">运气</span>
@@ -186,28 +180,28 @@
                 获得提升
               </span>
             </div>
-          </div>
+          </wired-card>
 
           <!-- 属性提升 -->
-          <div class="result-item" v-if="prayerResult.attributeGain">
+          <wired-card class="result-item" v-if="prayerResult.attributeGain">
             <span class="result-icon">️</span>
             <div class="result-info">
               <span class="result-label">{{ getAttributeName(prayerResult.attributeType) }}</span>
               <span class="result-value">+{{ prayerResult.attributeGain }}</span>
             </div>
-          </div>
+          </wired-card>
 
           <!-- 遇到神明 -->
-          <div class="result-item" v-if="prayerResult.encounteredDeity">
+          <wired-card class="result-item" v-if="prayerResult.encounteredDeity">
             <span class="result-icon">🌟</span>
             <div class="result-info">
               <span class="result-label">偶遇神明</span>
               <span class="result-value">{{ prayerResult.encounteredDeity.name }}</span>
             </div>
-          </div>
+          </wired-card>
 
           <!-- 好感度提升 -->
-          <div class="result-item" v-if="prayerResult.favorabilityResult">
+          <wired-card class="result-item" v-if="prayerResult.favorabilityResult">
             <span class="result-icon">💕</span>
             <div class="result-info">
               <span class="result-label">{{ prayerResult.favorabilityResult.deityName }} 好感</span>
@@ -219,19 +213,19 @@
                 </span>
               </span>
             </div>
-          </div>
+          </wired-card>
 
           <!-- 供奉邀请 -->
-          <div v-if="prayerResult.favorabilityResult && prayerResult.favorabilityResult.levelUp && prayerResult.favorabilityResult.newLevel === 1" class="worship-invitation">
+          <wired-card v-if="prayerResult.favorabilityResult && prayerResult.favorabilityResult.levelUp && prayerResult.favorabilityResult.newLevel === 1" class="worship-invitation">
             <p class="invitation-text">{{ prayerResult.favorabilityResult.deityName }} 向你发出供奉邀请</p>
             <div class="invitation-actions">
               <wired-button class="invite-btn accept" @click="acceptWorship(prayerResult.favorabilityResult.deityId)">接受</wired-button>
               <wired-button class="invite-btn reject" @click="rejectWorship(prayerResult.favorabilityResult.deityId)">拒绝</wired-button>
             </div>
-          </div>
+          </wired-card>
 
           <wired-button class="close-result-btn" @click="closeResult" style="width: 100%;">确定</wired-button>
-        </div>
+        </wired-card>
       </div>
     </div>
   </div>
@@ -709,27 +703,6 @@ onMounted(() => {
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
-.attr-bar {
-  flex: 1;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.attr-fill {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.attr-fill.energy {
-  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
-}
-
-.attr-fill.vitality {
-  background: linear-gradient(90deg, #c48a4a, #d4a85a);
-}
-
 .attr-value {
   font-size: 12px;
   font-weight: bold;
@@ -746,15 +719,12 @@ onMounted(() => {
   align-items: center;
   padding: 16px;
   background: #fafafa;
-  border: 2px solid #000;
-  border-radius: 4px;
   margin-bottom: 24px;
 }
 
 .faith-status.has-faith {
   justify-content: center;
   background: #f0f0f0;
-  border-color: #000;
 }
 
 .faith-label {
@@ -797,24 +767,12 @@ onMounted(() => {
   padding: 16px 32px;
   background: #fff;
   color: #1a1a1a;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.prayer-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.prayer-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .btn-icon {
@@ -842,17 +800,10 @@ onMounted(() => {
   padding: 12px;
   background: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.test-btn:active {
-  transform: translate(2px, 2px);
 }
 
 /* 神明关系 */
@@ -875,13 +826,10 @@ onMounted(() => {
 .relation-card {
   padding: 16px;
   background: #fafafa;
-  border: 2.5px solid #000;
-  border-radius: 4px;
 }
 
 .relation-card.worshipping {
   background: #f0f0f0;
-  border-color: #666;
 }
 
 .relation-header {
@@ -923,21 +871,6 @@ onMounted(() => {
   gap: 12px;
 }
 
-.progress-bar {
-  flex: 1;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #8a9bb5, #9a85a8);
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
 .progress-text {
   font-size: 12px;
   opacity: 0.6;
@@ -955,17 +888,10 @@ onMounted(() => {
   padding: 8px 16px;
   font-size: 12px;
   font-weight: bold;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
   background: #fff;
   color: #1a1a1a;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.action-btn:active {
-  transform: translate(2px, 2px);
 }
 
 .worship-btn {
@@ -1187,8 +1113,6 @@ onMounted(() => {
 
 .result-content {
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   padding: 24px;
   max-width: 360px;
   width: 90%;
@@ -1209,8 +1133,6 @@ onMounted(() => {
   gap: 12px;
   padding: 12px;
   background: #fafafa;
-  border: 2px solid #000;
-  border-radius: 4px;
   margin-bottom: 12px;
 }
 
@@ -1244,8 +1166,6 @@ onMounted(() => {
   margin-top: 20px;
   padding: 16px;
   background: #fafafa;
-  border: 2px solid #000;
-  border-radius: 4px;
   text-align: center;
 }
 
@@ -1265,15 +1185,8 @@ onMounted(() => {
   padding: 10px 24px;
   font-size: 14px;
   font-weight: bold;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.invite-btn:active {
-  transform: translate(2px, 2px);
 }
 
 .invite-btn.accept {
@@ -1291,16 +1204,9 @@ onMounted(() => {
   padding: 12px;
   background: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
   margin-top: 16px;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.close-result-btn:active {
-  transform: translate(2px, 2px);
 }
 </style>

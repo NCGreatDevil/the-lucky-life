@@ -29,49 +29,53 @@
 
     <!-- 导航格子 -->
     <nav class="nav-grid">
-      <router-link to="/fortune" class="nav-item">
-        <span class="nav-icon">🙏</span>
-        <span class="nav-label">祈祷</span>
+      <router-link to="/fortune" class="nav-link">
+        <wired-card class="nav-item">
+          <span class="nav-icon">🙏</span>
+          <span class="nav-label">祈祷</span>
+        </wired-card>
       </router-link>
-      <router-link to="/events" class="nav-item">
-        <span class="nav-icon">⚡</span>
-        <span class="nav-label">事件</span>
+      <router-link to="/events" class="nav-link">
+        <wired-card class="nav-item">
+          <span class="nav-icon">⚡</span>
+          <span class="nav-label">事件</span>
+        </wired-card>
       </router-link>
-      <router-link to="/friends" class="nav-item">
-        <span class="nav-icon">👥</span>
-        <span class="nav-label">好友</span>
+      <router-link to="/friends" class="nav-link">
+        <wired-card class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">好友</span>
+        </wired-card>
       </router-link>
-      <router-link to="/map" class="nav-item">
-        <span class="nav-icon">🗺️</span>
-        <span class="nav-label">地图</span>
+      <router-link to="/map" class="nav-link">
+        <wired-card class="nav-item">
+          <span class="nav-icon">🗺️</span>
+          <span class="nav-label">地图</span>
+        </wired-card>
       </router-link>
     </nav>
 
     <!-- 运势大图区域 -->
     <div class="content-area">
-      <div class="fortune-card hand-drawn-border">
+      <wired-card class="fortune-card">
         <div class="fortune-image">
           <img :src="dailyFortuneImage" alt="今日运势" />
         </div>
         <div class="fortune-quote">
-          <div class="divider"></div>
+          <wired-divider></wired-divider>
           <p class="quote-text">"{{ dailyQuote }}"</p>
         </div>
-      </div>
+      </wired-card>
 
       <div class="attr-bar-section" v-if="userStore.isLoggedIn">
         <div class="attr-item">
           <span class="attr-name">能量</span>
-          <div class="attr-bar">
-            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
-          </div>
+          <wired-progress :value="userStore.user?.attributes?.energy || 80" style="flex: 1;"></wired-progress>
           <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
         <div class="attr-item">
           <span class="attr-name">活力</span>
-          <div class="attr-bar">
-            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
-          </div>
+          <wired-progress :value="userStore.user?.attributes?.vitality || 60" style="flex: 1;"></wired-progress>
           <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
       </div>
@@ -234,6 +238,11 @@ const dailyQuote = computed(() => {
   margin-bottom: 24px;
 }
 
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .nav-item {
   display: flex;
   flex-direction: column;
@@ -241,28 +250,9 @@ const dailyQuote = computed(() => {
   justify-content: center;
   width: 100%;
   aspect-ratio: 1;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   padding: 4px;
   text-align: center;
-  text-decoration: none;
-  color: inherit;
   background: #fff;
-  transition: transform 0.1s ease;
-  position: relative;
-}
-
-.nav-item::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
 }
 
 .nav-item:active {
@@ -286,7 +276,6 @@ const dailyQuote = computed(() => {
 }
 
 .fortune-card {
-  /* aspect-ratio: 1; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -294,22 +283,6 @@ const dailyQuote = computed(() => {
   overflow: hidden;
   background: #fafafa;
   padding: 16px;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  position: relative;
-}
-
-.fortune-card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
 }
 
 .fortune-image {
@@ -327,13 +300,6 @@ const dailyQuote = computed(() => {
   margin-top: 16px;
   padding: 0 24px;
   text-align: center;
-}
-
-.divider {
-  width: 48px;
-  height: 2px;
-  background: #000;
-  margin: 0 auto 12px;
 }
 
 .quote-text {
@@ -358,27 +324,6 @@ const dailyQuote = computed(() => {
   gap: 24px;
 }
 
-.attr-section {
-  margin-top: 24px;
-  padding: 20px;
-  background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-}
-
-.attr-section h2 {
-  font-size: 16px;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eee;
-}
-
-.attr-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
 .attr-item {
   display: flex;
   align-items: center;
@@ -390,27 +335,6 @@ const dailyQuote = computed(() => {
   font-size: 12px;
   opacity: 0.6;
   white-space: nowrap;
-}
-
-.attr-bar {
-  flex: 1;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.attr-fill {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.attr-fill.energy {
-  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
-}
-
-.attr-fill.vitality {
-  background: linear-gradient(90deg, #c48a4a, #d4a85a);
 }
 
 .attr-value {

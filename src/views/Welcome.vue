@@ -74,30 +74,9 @@ function goToLogin() {
 
 .btn {
   padding: 14px 32px;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-weight: bold;
   font-size: 18px;
-  position: relative;
-}
-
-.btn::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
-}
-
-.btn:active {
-  transform: translate(2px, 2px);
 }
 
 .btn-register {

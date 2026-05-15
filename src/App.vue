@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    <div class="phone-frame">
+    <wired-card class="phone-frame">
       <div class="global-notification" v-if="pendingCount > 0 && !isOnEventsPage" @click="goToEvents">
         🔔 <span class="badge">{{ pendingCount }}</span>
       </div>
       <router-view />
-    </div>
+    </wired-card>
   </div>
 </template>
 
@@ -76,25 +76,9 @@ onUnmounted(() => {
   width: 375px;
   height: 812px;
   background-color: #ffffff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   position: relative;
   box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 1);
   overflow: hidden;
-}
-
-.phone-frame::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  /* border: 1px solid #000; */
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
-  z-index: 0;
 }
 
 @media (max-width: 768px) {
@@ -107,14 +91,9 @@ onUnmounted(() => {
   .phone-frame {
     width: 100%;
     height: 100vh;
-    border: none;
     border-radius: 0;
     box-shadow: none;
     position: static;
-  }
-
-  .phone-frame::before {
-    display: none;
   }
 }
 

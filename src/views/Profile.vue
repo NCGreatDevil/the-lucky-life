@@ -5,7 +5,7 @@
       <router-link to="/" class="back-btn">←</router-link>
       <h1 class="title sketch-font">我的角色</h1>
       <div class="placeholder">
-        <button @click="handleLogout" class="btn-logout">退出</button>
+        <wired-button @click="handleLogout" class="btn-logout">退出</wired-button>
       </div> 
     </header>
     <div class="profile-container">
@@ -17,16 +17,16 @@
       <div v-if="loading" class="loading">加载中...</div>
 
       <template v-else-if="user">
-        <div class="user-card hand-drawn-border">
+        <wired-card class="user-card">
           <div class="user-id">ID: {{ user.id }}</div>
           <div class="user-nickname">{{ user.nickname }}</div>
           <div v-if="user.attributes" class="user-luck">
             <span class="luck-tag">{{ user.attributes.luckLabel }}</span>
             <!-- <span class="luck-label">{{ user.attributes.luckLabel }}</span> -->
           </div>
-        </div>
+        </wired-card>
 
-        <div class="info-section hand-drawn-border">
+        <wired-card class="info-section">
           <h2>基本信息</h2>
 
           <div v-if="!isEditing" class="info-list">
@@ -124,30 +124,26 @@
             </div>
           </form>
 
-          <button v-if="!isEditing" @click="startEdit" class="btn-edit">编辑资料</button>
-        </div>
+          <wired-button v-if="!isEditing" @click="startEdit" class="btn-edit">编辑资料</wired-button>
+        </wired-card>
 
-        <div class="attr-section hand-drawn-border" v-if="user.attributes">
+        <wired-card class="attr-section" v-if="user.attributes">
           <h2>日常属性</h2>
           <div class="attr-grid">
             <div class="attr-item">
               <span class="attr-name">能量</span>
-              <div class="attr-bar">
-                <div class="attr-fill energy" :style="{ width: user.attributes.energy + '%' }"></div>
-              </div>
+              <wired-progress :value="user.attributes.energy" style="flex: 1;"></wired-progress>
               <span class="attr-value">{{ user.attributes.energy }} / 100</span>
             </div>
             <div class="attr-item">
               <span class="attr-name">活力</span>
-              <div class="attr-bar">
-                <div class="attr-fill vitality" :style="{ width: user.attributes.vitality + '%' }"></div>
-              </div>
+              <wired-progress :value="user.attributes.vitality" style="flex: 1;"></wired-progress>
               <span class="attr-value">{{ user.attributes.vitality }} / 100</span>
             </div>
           </div>
-        </div>
+        </wired-card>
 
-        <div class="attr-section hand-drawn-border" v-if="user.attributes">
+        <wired-card class="attr-section" v-if="user.attributes">
           <h2>长期属性</h2>
           <div class="attr-grid">
             <div class="attr-item">
@@ -183,9 +179,9 @@
               <span class="attr-value-simple">{{ user.attributes.money }}</span>
             </div>
           </div>
-        </div>
+        </wired-card>
 
-        <div class="attr-section hand-drawn-border" v-if="user.attributes">
+        <wired-card class="attr-section" v-if="user.attributes">
           <h2>隐藏属性</h2>
           <div class="attr-grid">
             <div class="attr-item luck-item">
@@ -193,7 +189,7 @@
               <span class="luck-tag">{{ user.attributes.luckLabel }}</span>
             </div>
           </div>
-        </div>
+        </wired-card>
       </template>
 
       <div v-else class="not-logged-in">
@@ -382,8 +378,6 @@ async function handleLogout() {
   font-size: 12px;
   font-weight: bold;
   background: #fff;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
   flex-shrink: 0;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
@@ -398,8 +392,6 @@ async function handleLogout() {
 .user-card {
   padding: 20px;
   background: #fafafa;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   color: #1a1a1a;
   text-align: center;
 }
@@ -425,8 +417,6 @@ async function handleLogout() {
 .attr-section {
   padding: 20px;
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
 }
 
 .info-section h2,
@@ -464,15 +454,8 @@ async function handleLogout() {
   font-size: 14px;
   font-weight: bold;
   background: #fff;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-edit:active {
-  transform: translate(2px, 2px);
 }
 
 .edit-form {
@@ -534,15 +517,8 @@ async function handleLogout() {
   font-weight: bold;
   background: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-primary:active {
-  transform: translate(2px, 2px);
 }
 
 .btn-secondary {
@@ -552,15 +528,8 @@ async function handleLogout() {
   font-weight: bold;
   background: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-secondary:active {
-  transform: translate(2px, 2px);
 }
 
 .error-message {
@@ -588,26 +557,6 @@ async function handleLogout() {
   font-size: 12px;
   opacity: 0.6;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.attr-bar {
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.attr-fill {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.attr-fill.energy {
-  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
-}
-
-.attr-fill.vitality {
-  background: linear-gradient(90deg, #c48a4a, #d4a85a);
 }
 
 .attr-value {

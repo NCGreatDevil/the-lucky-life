@@ -37,7 +37,7 @@
       </div>
 
       <div class="trigger-section">
-        <wired-button class="trigger-btn hand-drawn-border" @click="triggerActiveEvent" :disabled="isEventActive || isLoading" style="width: 100%;">
+        <wired-button class="trigger-btn" @click="triggerActiveEvent" :disabled="isEventActive || isLoading" style="width: 100%;">
           <span class="trigger-icon">⚡</span>
           <span class="trigger-text">{{ isEventActive ? '事件进行中...' : isLoading ? '加载中...' : '触发随机事件' }}</span>
         </wired-button>
@@ -55,24 +55,20 @@
       <div class="attr-bar-fixed" v-if="userStore.isLoggedIn">
         <div class="attr-item">
           <span class="attr-name">能量</span>
-          <div class="attr-bar">
-            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
-          </div>
+          <wired-progress :value="userStore.user?.attributes?.energy || 80" style="flex: 1;"></wired-progress>
           <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
         <div class="attr-item">
           <span class="attr-name">活力</span>
-          <div class="attr-bar">
-            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
-          </div>
+          <wired-progress :value="userStore.user?.attributes?.vitality || 60" style="flex: 1;"></wired-progress>
           <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
       </div>
 
-      <div v-if="showPendingEvents && pendingEvents.length > 0" class="pending-events-panel hand-drawn-border">
+      <div v-if="showPendingEvents && pendingEvents.length > 0" class="pending-events-panel">
         <h3 class="panel-title">待处理事件</h3>
         <div class="pending-list">
-          <div v-for="event in pendingEvents" :key="event.id" class="pending-item" @click="resolvePendingEvent(event)">
+          <wired-card v-for="event in pendingEvents" :key="event.id" class="pending-item" @click="resolvePendingEvent(event)">
             <div class="pending-header">
               <span class="pending-badge">{{ event.category === 'npc' ? 'NPC' : event.category === 'friend' ? '好友' : '普通' }}</span>
               <span class="pending-countdown" :class="{ 'expiring-soon': isExpiringSoon(event.expiresAt) }">
@@ -81,12 +77,12 @@
             </div>
             <p class="pending-name">{{ event.name }}</p>
             <p class="pending-desc">{{ event.description }}</p>
-          </div>
+          </wired-card>
         </div>
       </div>
 
       <div v-if="isEventActive && currentEvent" class="event-modal modal-overlay" @click.self="closeEvent">
-        <div class="event-card modal-content hand-drawn-border">
+        <wired-card class="event-card modal-content">
           <div class="event-header">
             <span v-if="!currentEvent.encounter" class="event-badge">{{ getCategoryLabel(currentEvent.category) }}</span>
             <span v-if="currentEvent.encounter" class="encounter-badge">
@@ -94,14 +90,14 @@
             </span>
           </div>
 
-          <div v-if="currentEvent.encounter" class="encounter-info">
+          <wired-card v-if="currentEvent.encounter" class="encounter-info">
             <img v-if="currentEvent.encounter.npcAvatar" :src="currentEvent.encounter.npcAvatar" class="encounter-avatar" />
             <div class="encounter-details">
               <p class="encounter-name">{{ currentEvent.encounter.npcName || currentEvent.encounter.nickname }}</p>
               <p v-if="currentEvent.encounter.npcTitle" class="encounter-title">{{ currentEvent.encounter.npcTitle }}</p>
               <p class="encounter-fav">好感度 +{{ currentEvent.encounter.favorabilityGained }} (总计 {{ currentEvent.encounter.totalFavorability }})</p>
             </div>
-          </div>
+          </wired-card>
 
           <h3 class="event-title">{{ currentEvent.name }}</h3>
           <p class="event-description">{{ currentEvent.description }}</p>
@@ -145,13 +141,13 @@
             </div>
             <wired-button class="confirm-btn" @click="confirmEvent" style="width: 100%;">确定</wired-button>
           </div>
-        </div>
+        </wired-card>
       </div>
 
       <div class="history-section">
         <h3 class="section-title">事件历史</h3>
         <div class="history-list" v-if="history.length > 0">
-          <div v-for="item in history" :key="item.id" class="history-item">
+          <wired-card v-for="item in history" :key="item.id" class="history-item">
             <div class="history-header">
               <span class="history-type">{{ item.event_type === 'active' ? '主动' : '被动' }}</span>
               <span class="history-time">{{ formatTime(item.timestamp) }}</span>
@@ -168,7 +164,7 @@
                 {{ attr }} {{ value > 0 ? '+' : '' }}{{ value }}
               </span>
             </div>
-          </div>
+          </wired-card>
         </div>
         <div v-else class="empty-tip">
           暂无事件记录，去触发一些事件吧！
@@ -770,27 +766,6 @@ onUnmounted(() => {
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
-.attr-bar {
-  flex: 1;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.attr-fill {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.attr-fill.energy {
-  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
-}
-
-.attr-fill.vitality {
-  background: linear-gradient(90deg, #c48a4a, #d4a85a);
-}
-
 .attr-value {
   font-size: 12px;
   font-weight: bold;
@@ -810,24 +785,12 @@ onUnmounted(() => {
   padding: 24px;
   background: #fff;
   color: #1a1a1a;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.trigger-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.trigger-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .trigger-icon {
@@ -849,8 +812,6 @@ onUnmounted(() => {
   background: #fff;
   padding: 12px 16px;
   margin-bottom: 16px;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -870,8 +831,6 @@ onUnmounted(() => {
   background: #fff;
   padding: 16px;
   margin-bottom: 24px;
-  border: 2px solid #000;
-  border-radius: 4px;
 }
 
 .panel-title {
@@ -888,15 +847,8 @@ onUnmounted(() => {
 
 .pending-item {
   padding: 12px;
-  border: 2px solid #000;
-  border-radius: 4px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   background: #fff;
-}
-
-.pending-item:active {
-  transform: translate(2px, 2px);
 }
 
 .pending-header {
@@ -988,8 +940,6 @@ onUnmounted(() => {
   gap: 12px;
   padding: 12px;
   background: #fafafa;
-  border: 2px solid #000;
-  border-radius: 4px;
   margin-bottom: 16px;
 }
 
@@ -1051,55 +1001,23 @@ onUnmounted(() => {
 .choice-btn {
   width: 100%;
   padding: 12px;
-  border: 2px solid #000;
-  border-radius: 4px;
   background: #fff;
   font-size: 14px;
   cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.choice-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  background: #f0f0f0;
-}
-
-.choice-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.disabled-reason {
-  font-size: 11px;
-  color: #c62828;
 }
 
 .skip-btn {
   width: 100%;
   padding: 10px;
-  border: 2px dashed #999;
-  border-radius: 4px;
   background: #f9f9f9;
   font-size: 13px;
   color: #666;
   cursor: pointer;
   margin-top: 8px;
-  transition: transform 0.1s ease;
-}
-
-.skip-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  background: #eee;
-}
-
-.skip-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .event-result {
   padding-top: 16px;
-  border-top: 2px solid #000;
 }
 
 .result-text {
@@ -1164,8 +1082,6 @@ onUnmounted(() => {
 
 .history-item {
   padding: 12px;
-  border: 2px solid #000;
-  border-radius: 4px;
   background: #fff;
 }
 

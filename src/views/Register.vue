@@ -1,18 +1,18 @@
 <template>
   <div class="register-page">
-    <div class="register-container">
+    <wired-card class="register-container">
       <div class="register-header">
         <h1 class="sketch-font">注册</h1>
         <p class="subtitle">创建你的虚拟角色</p>
       </div>
 
-      <div class="warning-box">
+      <wired-card class="warning-box">
         <p class="warning-title">⚠️ 重要提示</p>
         <p class="warning-text">
           这是一个虚拟人生体验项目。<strong>请勿填写真实的个人信息</strong>，<br/>
           但建议填写与真实情况相似的信息以获得更真实的体验。
         </p>
-      </div>
+      </wired-card>
 
       <form @submit.prevent="handleRegister" class="register-form">
         <div class="form-group">
@@ -132,7 +132,7 @@
       <div class="register-footer">
         <p>已有账号？<router-link to="/login">立即登录</router-link></p>
       </div>
-    </div>
+    </wired-card>
   </div>
 </template>
 
@@ -308,8 +308,6 @@ async function handleRegister() {
   max-width: 400px;
   margin: 0 auto;
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   padding: 24px;
 }
 
@@ -331,8 +329,6 @@ async function handleRegister() {
 .warning-box {
   padding: 12px;
   background: #fafafa;
-  border: 2px solid #000;
-  border-radius: 4px;
   margin-bottom: 20px;
 }
 
@@ -455,22 +451,10 @@ async function handleRegister() {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.1s;
   margin-top: 8px;
   background-color: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  border-radius: 4px;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .register-footer {

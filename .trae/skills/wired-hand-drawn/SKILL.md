@@ -6,54 +6,101 @@ usage: 生成前端页面、重构页面、美化UI、编写Vue组件/JS/CSS/MD�
 
 # 手绘风强制规则（Wired-Elements + 自定义样式）
 
-## 1. 组件使用规范
+## 核心原则
 
-### 1.1 Wired-Elements 组件（优先使用）
-所有交互组件必须使用 `<wired-*>` 标签：
-- 按钮 → `<wired-button>`
-- 卡片 → `<wired-card>`
-- 输入框 → `<wired-input>`
-- 复选框 → `<wired-checkbox>`
-- 单选框 → `<wired-radio>`
-- 下拉框 → `<wired-combo>`
-- 文本域 → `<wired-textarea>`
-- 面板 → `<wired-panel>`
-- 分割线 → `<wired-divider>`
-- 开关 → `<wired-toggle>`
-- 进度条 → `<wired-progress>`
+**所有 UI 元素必须使用 `<wired-*>` 组件，禁止用 div + CSS 模拟手绘风格。**
 
-### 1.2 自定义手绘组件（Wired-Elements 未覆盖时）
-对于 wired-elements 未覆盖的组件，使用项目已有的手绘样式类或按以下规范自定义：
+## 1. 组件映射表（强制）
 
-**通用样式类：**
-- `.hand-drawn-border` - 手绘边框效果（双层边框 + 轻微偏移）
-- `.sketch-font` - 手写字体（用于标题、标签等）
-- `.click-feedback` - 点击反馈效果（按下时位移 2px）
-- `.modal-overlay` - 弹窗遮罩层
-- `.modal-content` - 弹窗内容框
-- `.hide-scrollbar` - 隐藏滚动条但保持滚动功能
+| UI 元素 | 必须使用的组件 | 禁止的做法 |
+|---------|--------------|-----------|
+| 按钮 | `<wired-button>` | `<button>` 或 `<div>` + CSS 边框 |
+| 图标按钮 | `<wired-icon-button>` | `<button>` + CSS 边框 |
+| 卡片容器 | `<wired-card>` | `<div>` + `border: 2px solid #000` |
+| 面板容器 | `<wired-card>` | `<div>` + CSS 双层边框 |
+| 输入框 | `<wired-input>` | `<input>` |
+| 文本域 | `<wired-textarea>` | `<textarea>` |
+| 复选框 | `<wired-checkbox>` | `<input type="checkbox">` |
+| 单选框 | `<wired-radio>` | `<input type="radio">` |
+| 下拉框 | `<wired-combo>` | `<select>` |
+| 进度条 | `<wired-progress>` | `<div>` + CSS 渐变进度条 |
+| 分割线 | `<wired-divider>` | `<hr>` 或 `<div>` + CSS 边框 |
+| 开关 | `<wired-toggle>` | 自定义开关 |
+| 弹窗 | `<wired-dialog>` | `<div>` + CSS 弹窗 |
+| 加载 | `<wired-spinner>` | 自定义加载动画 |
+| 浮动按钮 | `<wired-fab>` | 自定义浮动按钮 |
+| 链接 | `<wired-link>` | `<a>` 标签 |
+| 图片 | `<wired-image>` | `<img>` 标签 |
 
-**自定义组件必须遵循的样式规范：**
-- 边框：`2.5px solid #000` + 伪元素双层边框效果
-- 圆角：`border-radius: 4px`
-- 背景：白色或浅灰 `#fafafa`
-- 阴影：无阴影，纯线条风格
-- 交互：点击时 `transform: translate(2px, 2px)`
+## 2. 组件使用示例
 
-## 2. 字体规范
+### 2.1 wired-card（替代所有卡片 div）
+```html
+<!-- ✅ 正确：使用 wired-card -->
+<wired-card>
+  <div class="card-content">
+    ...
+  </div>
+</wired-card>
 
-### 2.1 全局字体引入
+<!-- ❌ 错误：用 div 模拟 -->
+<div class="npc-card" style="border: 2px solid #000; border-radius: 4px;">
+  ...
+</div>
+```
+
+### 2.2 wired-progress（替代所有进度条 div）
+```html
+<!-- ✅ 正确：使用 wired-progress -->
+<wired-progress :value="energyPercent" style="flex: 1;"></wired-progress>
+
+<!-- ❌ 错误：用 div 模拟 -->
+<div class="attr-bar">
+  <div class="attr-fill energy" :style="{ width: energyPercent + '%' }"></div>
+</div>
+```
+
+### 2.3 wired-button（替代所有按钮）
+```html
+<!-- ✅ 正确 -->
+<wired-button @click="handleClick">点击</wired-button>
+
+<!-- ❌ 错误 -->
+<button class="btn-standard" @click="handleClick">点击</button>
+```
+
+### 2.4 wired-divider（替代所有分割线）
+```html
+<!-- ✅ 正确 -->
+<wired-divider></wired-divider>
+
+<!-- ❌ 错误 -->
+<hr>
+<div style="border-top: 2px solid #000;"></div>
+```
+
+### 2.5 wired-dialog（替代弹窗 div）
+```html
+<!-- ✅ 正确 -->
+<wired-dialog :open="showDialog">
+  <div class="dialog-content">...</div>
+</wired-dialog>
+
+<!-- ❌ 错误 -->
+<div v-if="showDialog" class="modal-overlay">
+  <div class="modal-content">...</div>
+</div>
+```
+
+## 3. 字体规范
+
+### 3.1 全局字体引入
 在 HTML 头部引入 Google 开源中文字体 Ma Shan Zheng 和英文字体 Indie Flower：
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Indie+Flower&display=swap" rel="stylesheet">
 ```
 
-### 2.2 字体应用
-- `body` 和所有 `wired-*` 组件使用 `Ma Shan Zheng` 作为中文字体，`Indie Flower` 作为英文/数字字体
-- 确保中文显示具有原生手绘质感，英文和数字圆润可爱
-- fallback 到 `cursive`
-
-CSS 示例：
+### 3.2 字体应用
 ```css
 body {
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
@@ -64,27 +111,13 @@ wired-button, wired-card, wired-input, wired-textarea, wired-combo {
 }
 ```
 
-## 3. 输出格式
-
-### 3.1 Vue 单文件组件
-- 输出 `.vue` 文件，包含 `<template>`、`<script setup>`、`<style scoped>`
-- 使用 Vue 3 Composition API
-- 样式使用 scoped 避免污染全局
-
-### 3.2 其他文件类型
-根据项目实际情况输出对应格式：
-- `.js` - JavaScript 逻辑文件
-- `.css` - 全局样式文件
-- `.md` - 文档说明文件
-- `.html` - 入口 HTML 文件（如需要引入 CDN）
-
 ## 4. 配色规范
 
 - 主背景：白色 `#ffffff`
 - 卡片背景：浅灰 `#fafafa`
-- 文字颜色：深灰 `#1a1a1a`（非纯黑，稍微柔和）
+- 文字颜色：深灰 `#1a1a1a`
 - 强调色：避免花哨颜色，保持黑白灰为主
-- 渐变色：增加灰度，不要太亮（详见各组件规范）
+- 禁止使用高饱和度渐变色
 
 ## 5. 布局规范
 
@@ -92,316 +125,42 @@ wired-button, wired-card, wired-input, wired-textarea, wired-combo {
 - 样式干净、宽松、留白充足
 - 组件间距：`16px` - `24px`
 - 内边距：`16px` - `20px`
-- 移动端适配：使用 `@media` 查询
 
-## 6. 组件样式规范
+## 6. 仅允许的自定义 CSS（wired 组件内部布局用）
 
-### 6.1 按钮类组件
+以下 CSS 仅用于 wired 组件内部的布局调整，**不得用于模拟手绘边框**：
 
-**标准按钮（白底黑字 + 边框）：**
 ```css
-.btn-standard {
-  background-color: #fff;
-  color: #000;
-  border: 2px solid #000;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
-}
-
-.btn-standard:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.btn-standard:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-```
-
-**触发按钮（用于主要操作，如触发事件）：**
-```css
-.trigger-btn {
-  background-color: #fff;
-  color: #000;
-  border: 2.5px solid #000;
-  padding: 12px 24px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
-}
-
-.trigger-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.trigger-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-```
-
-**祈祷按钮（用于祈祷操作）：**
-```css
-.prayer-btn {
-  background-color: #fff;
-  color: #000;
-  border: 2.5px solid #000;
-  padding: 16px 32px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 18px;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
-}
-
-.prayer-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.prayer-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-```
-
-### 6.2 卡片类组件
-
-**NPC 卡片：**
-```css
-.npc-card {
-  background: #fafafa;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.npc-card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
-}
-```
-
-**关系卡片：**
-```css
-.relation-card {
-  background: #fafafa;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  padding: 16px;
-  margin-bottom: 12px;
-}
-
-.relation-card.worshipping {
-  background: #f0f0f0;
-  border-color: #666;
-}
-```
-
-**好友列表项：**
-```css
-.friend-item {
-  background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  padding: 12px 16px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-```
-
-### 6.3 列表类组件
-
-**标签：**
-```css
-.tag {
-  display: inline-block;
-  padding: 2px 8px;
-  background: #f0f0f0;
-  border: 1px solid #000;
-  border-radius: 4px;
-  font-size: 12px;
-  margin-right: 4px;
-}
-```
-
-**徽章/角标：**
-```css
-.badge {
-  position: absolute;
-  top: -6px;
-  right: -8px;
-  background: #f44336;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 5px;
-  border-radius: 10px;
-  min-width: 16px;
-  text-align: center;
-}
-```
-
-### 6.4 弹窗类组件
-
-**遮罩层：**
-```css
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-```
-
-**内容框：**
-```css
-.modal-content {
-  background-color: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  padding: 20px;
-  max-width: 300px;
-  width: 90%;
-}
-```
-
-### 6.5 状态类组件
-
-**进度条（增加灰度的渐变色）：**
-```css
-.progress-bar {
-  flex: 1;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #8a9bb5, #9a85a8);
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  font-size: 12px;
-  opacity: 0.6;
-  white-space: nowrap;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
-}
-```
-
-**属性条（能量/活力显示，增加灰度的渐变色）：**
-```css
-.attr-bar {
-  flex: 1;
-  height: 8px;
-  background: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.attr-fill {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-
-.attr-fill.energy {
-  background: linear-gradient(90deg, #7a9a6d, #8fa87a);
-}
-
-.attr-fill.vitality {
-  background: linear-gradient(90deg, #c48a4a, #d4a85a);
-}
-
-.attr-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.attr-name {
-  font-size: 12px;
-  opacity: 0.6;
-  white-space: nowrap;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
-}
-
-.attr-value {
-  font-size: 12px;
-  font-weight: bold;
-  white-space: nowrap;
-  min-width: 24px;
-  text-align: right;
-  font-family: 'Ma Shan Zheng', 'Comic Sans MS', cursive;
-}
-```
-
-**骨架屏加载（闪烁减慢 50%）：**
-```css
-.skeleton-container {
+/* ✅ 允许：wired-card 内部的 flex 布局 */
+.card-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
-.skeleton-card {
-  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2.25s infinite;
-  border-radius: 4px;
+/* ✅ 允许：wired-card 内部的 padding 调整 */
+wired-card {
+  padding: 16px;
+  display: block;
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* ❌ 禁止：给 div 加手绘边框 */
+.my-card {
+  border: 2px solid #000;  /* 禁止！用 wired-card */
+  border-radius: 4px;       /* 禁止！用 wired-card */
 }
-
-/* 常见骨架屏变体 */
-.skeleton-trigger { height: 80px; }
-.skeleton-attr-bar { display: flex; gap: 24px; }
-.skeleton-attr-item { flex: 1; height: 20px; }
-.skeleton-history { display: flex; flex-direction: column; gap: 12px; }
-.skeleton-history-item { height: 100px; }
-.skeleton-npc-card { height: 120px; }
-.skeleton-friend-item { height: 60px; }
-.skeleton-faith { height: 100px; }
-.skeleton-prayer { height: 150px; }
-.skeleton-relations { display: flex; flex-direction: column; gap: 12px; }
-.skeleton-relation { height: 100px; }
 ```
 
 ## 7. 禁止事项
 
-- 禁止使用原生 `button`、`input`、`card` 等组件（除非 wired-elements 不支持）
-- 禁止使用 Material Design、Ant Design 等现代 UI 框架风格
-- 禁止使用圆角过大（> 8px）的设计
-- 禁止使用复杂阴影效果
-- 禁止使用高饱和度渐变色（必须增加灰度）
-- 禁止使用花哨的动画效果（骨架屏闪烁除外）
+- **禁止** 使用 `div` + CSS 边框模拟手绘卡片 → 用 `<wired-card>`
+- **禁止** 使用 `div` + CSS 渐变模拟进度条 → 用 `<wired-progress>`
+- **禁止** 使用 `<button>` 或 `<div>` 模拟按钮 → 用 `<wired-button>`
+- **禁止** 使用 `<hr>` 或 div 边框模拟分割线 → 用 `<wired-divider>`
+- **禁止** 使用 div 模拟弹窗 → 用 `<wired-dialog>`
+- **禁止** 使用 `::before` 伪元素模拟双层边框
+- **禁止** 使用 Material Design、Ant Design 等现代 UI 框架风格
+- **禁止** 使用圆角过大（> 8px）的设计
+- **禁止** 使用复杂阴影效果
+- **禁止** 使用高饱和度渐变色
+- **禁止** 使用花哨的动画效果

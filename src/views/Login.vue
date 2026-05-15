@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-    <div class="login-container">
+    <wired-card class="login-container">
       <div class="login-header">
         <h1 class="sketch-font">登录</h1>
         <p class="subtitle">进入你的虚拟人生</p>
@@ -44,7 +44,7 @@
       <div class="login-footer">
         <p class="sketch-font">还没有账号？<router-link to="/register" class="sketch-font">立即注册</router-link></p>
       </div>
-    </div>
+    </wired-card>
   </div>
 </template>
 
@@ -90,8 +90,6 @@ async function handleLogin() {
   width: 100%;
   max-width: 360px;
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   padding: 32px 24px;
 }
 
@@ -154,21 +152,9 @@ async function handleLogin() {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.1s;
   background-color: #fff;
   color: #1a1a1a;
-  border: 2px solid #000;
-  border-radius: 4px;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .login-footer {

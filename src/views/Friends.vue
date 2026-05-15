@@ -29,7 +29,7 @@
         <h3 class="section-title">可添加的 NPC</h3>
         <div class="npc-list">
           <template v-for="npc in availableNPCs" :key="npc.id">
-            <div v-if="!isFriendAdded(npc.id)" class="npc-card hand-drawn-border">
+            <wired-card v-if="!isFriendAdded(npc.id)" class="npc-card">
               <div class="npc-header">
                 <div class="npc-avatar">
                   <img :src="npc.avatarUrl" :alt="npc.name" class="npc-avatar-img">
@@ -47,7 +47,7 @@
                 <span>🐾</span>
                 <span>添加为好友</span>
               </wired-button>
-            </div>
+            </wired-card>
           </template>
         </div>
       </div>
@@ -55,7 +55,7 @@
       <div class="friends-section">
         <h3 class="section-title">好友列表 ({{ roleStore.friends.length }})</h3>
         <div class="friends-list" v-if="roleStore.friends.length > 0">
-          <div v-for="friend in roleStore.friends" :key="friend.id" class="friend-item hand-drawn-border">
+          <wired-card v-for="friend in roleStore.friends" :key="friend.id" class="friend-item">
             <div class="friend-avatar">
               <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="friend-avatar-img">
               <span v-else class="avatar-emoji">{{ friend.avatar }}</span>
@@ -77,12 +77,12 @@
               </wired-button>
               <div class="more-menu-wrapper">
                 <wired-button class="more-btn" @click="toggleMoreMenu(friend.id)">⋮</wired-button>
-                <div v-if="showMoreMenu === friend.id" class="more-menu hand-drawn-border">
+                <wired-card v-if="showMoreMenu === friend.id" class="more-menu">
                   <wired-button class="menu-item" @click="confirmDelete(friend.id)">删除好友</wired-button>
-                </div>
+                </wired-card>
               </div>
             </div>
-          </div>
+          </wired-card>
         </div>
         <div v-else class="empty-tip">
           还没有好友，添加一个 NPC 开始聊天吧！
@@ -90,17 +90,17 @@
       </div>
 
       <div v-if="showDeleteConfirm" class="delete-modal modal-overlay" @click.self="cancelDelete">
-        <div class="delete-dialog hand-drawn-border">
+        <wired-card class="delete-dialog">
           <p class="delete-message">确定要删除好友「{{ deleteFriendName }}」吗？</p>
           <div class="delete-actions">
             <wired-button class="cancel-btn" @click="cancelDelete">取消</wired-button>
             <wired-button class="confirm-btn" @click="executeDelete">确定</wired-button>
           </div>
-        </div>
+        </wired-card>
       </div>
 
       <div v-if="showChat" class="chat-modal modal-overlay" @click.self="closeChat">
-        <div class="chat-window hand-drawn-border">
+        <wired-card class="chat-window">
           <div class="chat-header">
             <div class="chat-avatar">
               <img v-if="currentFriend?.isNpc" :src="currentFriend.avatar" :alt="currentFriend.name" class="chat-avatar-img">
@@ -114,9 +114,9 @@
           </div>
           <div class="chat-messages" ref="chatMessagesRef">
             <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['message', msg.isUser ? 'user-message' : 'bot-message']">
-              <div class="message-content hand-drawn-border">
+              <wired-card class="message-content">
                 {{ msg.content }}
-              </div>
+              </wired-card>
             </div>
             <div ref="lastMessageRef"></div>
           </div>
@@ -127,7 +127,7 @@
           <div class="chat-refused-tip" v-else>
             <p>{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>
           </div>
-        </div>
+        </wired-card>
       </div>
       </template>
     </div>
@@ -550,22 +550,6 @@ onUnmounted(() => {
 .npc-card {
   background: #fafafa;
   padding: 16px;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  position: relative;
-}
-
-.npc-card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
 }
 
 .npc-header {
@@ -635,8 +619,6 @@ onUnmounted(() => {
 .add-npc-btn {
   width: 100%;
   padding: 10px;
-  border: 2px solid #000;
-  border-radius: 4px;
   background: #fff;
   color: #1a1a1a;
   font-size: 14px;
@@ -646,12 +628,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.add-npc-btn:active {
-  transform: translate(2px, 2px);
 }
 
 .friends-section {
@@ -676,22 +653,6 @@ onUnmounted(() => {
   gap: 12px;
   padding: 12px;
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  position: relative;
-}
-
-.friend-item::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border: 1px solid #000;
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.3;
 }
 
 .friend-avatar {
@@ -781,19 +742,12 @@ onUnmounted(() => {
 .chat-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid #000;
-  border-radius: 4px;
   background: #fff;
   font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s ease;
-}
-
-.chat-btn:active {
-  transform: translate(2px, 2px);
 }
 
 .more-menu-wrapper {
@@ -803,20 +757,13 @@ onUnmounted(() => {
 .more-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid #000;
-  border-radius: 4px;
   background: #fff;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s ease;
   line-height: 1;
-}
-
-.more-btn:active {
-  transform: translate(2px, 2px);
 }
 
 .more-menu {
@@ -825,8 +772,6 @@ onUnmounted(() => {
   right: 0;
   margin-top: 4px;
   background: #fff;
-  border: 2px solid #000;
-  border-radius: 4px;
   overflow: hidden;
   z-index: 10;
   min-width: 100px;
@@ -867,8 +812,6 @@ onUnmounted(() => {
 
 .delete-dialog {
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   padding: 24px;
   max-width: 320px;
   width: 90%;
@@ -890,31 +833,19 @@ onUnmounted(() => {
 .cancel-btn,
 .confirm-btn {
   padding: 8px 24px;
-  border-radius: 4px;
   font-size: 13px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 
 .cancel-btn {
-  border: 2px solid #000;
   background: #fff;
   color: #1a1a1a;
 }
 
-.cancel-btn:active {
-  transform: translate(2px, 2px);
-}
-
 .confirm-btn {
-  border: 2px solid #000;
   background: #1a1a1a;
   color: #fff;
-}
-
-.confirm-btn:active {
-  transform: translate(2px, 2px);
 }
 
 .empty-tip {
@@ -942,8 +873,6 @@ onUnmounted(() => {
   max-width: 400px;
   height: 80vh;
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1000,19 +929,12 @@ onUnmounted(() => {
 .close-chat-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid #000;
-  border-radius: 4px;
   background: #fff;
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s ease;
-}
-
-.close-chat-btn:active {
-  transform: translate(2px, 2px);
 }
 
 .chat-messages {
@@ -1039,8 +961,6 @@ onUnmounted(() => {
 .message-content {
   max-width: 70%;
   padding: 8px 12px;
-  border-radius: 4px;
-  border: 2px solid #000;
   font-size: 13px;
   line-height: 1.5;
 }
@@ -1077,23 +997,11 @@ onUnmounted(() => {
 
 .send-btn {
   padding: 8px 16px;
-  border: 2px solid #000;
-  border-radius: 4px;
   background: #1a1a1a;
   color: #fff;
   font-size: 13px;
   cursor: pointer;
-  transition: transform 0.1s ease;
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.send-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-}
-
-.send-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .chat-refused-tip {
