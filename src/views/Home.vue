@@ -324,11 +324,8 @@ const dailyQuote = computed(() => {
   margin-top: 16px;
   padding: 16px;
   background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .attr-section {
