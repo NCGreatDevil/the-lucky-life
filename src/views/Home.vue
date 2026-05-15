@@ -58,22 +58,22 @@
           <p class="quote-text">"{{ dailyQuote }}"</p>
         </div>
       </div>
-    </div>
 
-    <div class="attr-bar-fixed" v-if="userStore.isLoggedIn">
-      <div class="attr-item">
-        <span class="attr-name">能量</span>
-        <div class="attr-bar">
-          <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
+      <div class="attr-bar-section" v-if="userStore.isLoggedIn">
+        <div class="attr-item">
+          <span class="attr-name">能量</span>
+          <div class="attr-bar">
+            <div class="attr-fill energy" :style="{ width: (userStore.user?.attributes?.energy || 80) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
-        <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
-      </div>
-      <div class="attr-item">
-        <span class="attr-name">活力</span>
-        <div class="attr-bar">
-          <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
+        <div class="attr-item">
+          <span class="attr-name">活力</span>
+          <div class="attr-bar">
+            <div class="attr-fill vitality" :style="{ width: (userStore.user?.attributes?.vitality || 60) + '%' }"></div>
+          </div>
+          <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
-        <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
       </div>
     </div>  
 
@@ -267,8 +267,8 @@ const dailyQuote = computed(() => {
 
 .content-area {
   flex: 1;
-  padding: 0 16px 80px;
-  overflow: hidden;
+  padding: 0 16px 16px;
+  overflow-y: auto;
 }
 
 .fortune-card {
@@ -320,17 +320,23 @@ const dailyQuote = computed(() => {
   border-radius: 4px;
 }
 
-.attr-bar-fixed {
-  /* position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0; */
+.attr-bar-section {
+  margin-top: 16px;
+  padding: 16px;
   background: #fff;
-  /* border-top: 2.5px solid #000; */
-  padding: 24px;
+  border: 2.5px solid #000;
+  border-radius: 4px;
   display: flex;
-  gap: 24px;
-  z-index: 50;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attr-section {
+  margin-top: 24px;
+  padding: 20px;
+  background: #fff;
+  border: 2.5px solid #000;
+  border-radius: 4px;
 }
 
 .attr-section h2 {
