@@ -109,14 +109,13 @@
 
             <div class="btn-group">
               <wired-button
-                type="submit"
+                @click="handleUpdate"
                 :disabled="saving"
                 style="width: 100%;"
               >
                 {{ saving ? '保存中...' : '保存' }}
               </wired-button>
               <wired-button
-                type="button"
                 @click="cancelEdit"
                 style="width: 100%;"
               >

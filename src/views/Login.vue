@@ -6,7 +6,7 @@
         <p class="subtitle">进入你的虚拟人生</p>
       </div>
 
-      <form @submit.prevent="handleLogin" class="login-form">
+      <form @submit.prevent="handleLogin" class="login-form" ref="loginFormRef">
         <div class="form-group">
           <label for="loginId" class="sketch-font">用户ID</label>
           <wired-input
@@ -33,7 +33,7 @@
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
         <wired-button
-          type="submit"
+          @click="handleLogin"
           :disabled="loading"
           style="width: 100%;"
         >

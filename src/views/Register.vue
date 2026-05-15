@@ -121,7 +121,7 @@
         <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
 
         <wired-button
-          type="submit"
+          @click="handleRegister"
           :disabled="loading"
           style="width: 100%;"
         >

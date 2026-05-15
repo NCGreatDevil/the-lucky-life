@@ -12,15 +12,19 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 const pendingCount = ref(0)
 const checkTimer = ref(null)
 
 const isOnEventsPage = computed(() => route.path === '/events')
 
 async function loadPendingCount() {
+  if (!userStore.isLoggedIn) return
+
   try {
     const response = await fetch('/api/events/pending-count', {
       credentials: 'include'
@@ -29,6 +33,8 @@ async function loadPendingCount() {
     if (response.ok) {
       const result = await response.json()
       pendingCount.value = result.count || 0
+    } else if (response.status === 401) {
+      pendingCount.value = 0
     }
   } catch (error) {
     console.error('加载待处理数量错误:', error)
