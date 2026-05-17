@@ -140,6 +140,11 @@ function showUnderConstruction() {
   gap: 16px;
   padding: 16px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.location-card:active {
+  transform: translate(2px, 2px);
 }
 
 .location-icon {

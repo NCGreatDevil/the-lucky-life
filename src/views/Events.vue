@@ -848,6 +848,11 @@ onUnmounted(() => {
 .pending-item {
   padding: 12px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.pending-item:active {
+  transform: translate(2px, 2px);
 }
 
 .pending-header {

@@ -651,6 +651,12 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.friend-item:active {
+  transform: translate(2px, 2px);
 }
 
 .friend-avatar {
