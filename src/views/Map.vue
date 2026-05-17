@@ -18,13 +18,17 @@
 
     <div class="flex-1 px-6 pb-6 overflow-y-auto">
       <div class="flex flex-col gap-4">
-        <wired-card v-for="location in locations" :key="location.id" class="flex items-center gap-4 p-4 cursor-pointer active:translate-x-0.5 active:translate-y-0.5" fill="#ffffff" @click="showUnderConstruction">
-          <div class="text-3xl w-12 h-12 flex items-center justify-center bg-[#fafafa] border-2 border-black rounded flex-shrink-0">{{ location.icon }}</div>
-          <div class="flex-1">
-            <h3 class="text-base font-bold m-0 mb-1">{{ location.name }}</h3>
-            <p class="text-xs text-[#1a1a1a] m-0">{{ location.description }}</p>
+        <wired-card v-for="location in locations" :key="location.id" class="cursor-pointer active:translate-x-0.5 active:translate-y-0.5" fill="#ffffff" @click="showUnderConstruction">
+          <div class="flex items-center gap-4 p-4">
+            <div class="text-3xl w-12 h-12 flex items-center justify-center bg-[#fafafa] border-2 border-black rounded flex-shrink-0">{{ location.icon }}</div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="text-base font-bold m-0">{{ location.name }}</h3>
+                <span class="text-[10px] px-2 py-1 bg-[#e0e0e0] text-[#1a1a1a] border border-black rounded flex-shrink-0">建设中</span>
+              </div>
+              <p class="text-xs text-[#1a1a1a] m-0">{{ location.description }}</p>
+            </div>
           </div>
-          <span class="text-[10px] px-2 py-1 bg-[#e0e0e0] text-[#1a1a1a] border border-black rounded flex-shrink-0">建设中</span>
         </wired-card>
       </div>
     </div>
