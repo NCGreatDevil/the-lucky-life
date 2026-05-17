@@ -158,6 +158,11 @@ export const useRoleStore = defineStore('role', () => {
           friends: friends.value.map(f => ({
             id: f.isNpc ? f.npcId : f.id,
             isNpc: f.isNpc,
+            name: f.name || '',
+            avatar: f.avatar || '',
+            level: f.level || 1,
+            title: f.title || '',
+            tags: f.tags || [],
             createdAt: f.createdAt || new Date().toISOString()
           }))
         })
@@ -185,11 +190,11 @@ export const useRoleStore = defineStore('role', () => {
             id: f.id,
             npcId: f.is_npc ? f.friend_id : null,
             isNpc: Boolean(f.is_npc),
-            name: '',
-            avatar: '',
-            level: 1,
-            title: '',
-            tags: [],
+            name: f.friend_name || '',
+            avatar: f.friend_avatar || '',
+            level: f.friend_level || 1,
+            title: f.friend_title || '',
+            tags: f.friend_tags ? JSON.parse(f.friend_tags) : [],
             createdAt: f.created_at
           }))
         }

@@ -171,13 +171,18 @@ export async function onRequest(context) {
         for (const friend of body.friends) {
           const id = generateGUID();
           await db.prepare(`
-            INSERT INTO user_friends (id, user_id, friend_id, is_npc, created_at)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO user_friends (id, user_id, friend_id, is_npc, friend_name, friend_avatar, friend_level, friend_title, friend_tags, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `).bind(
             id,
             session.user_id,
             friend.id || friend.friendId,
             friend.isNpc ? 1 : 0,
+            friend.name || '',
+            friend.avatar || '👤',
+            friend.level || 1,
+            friend.title || '',
+            JSON.stringify(friend.tags || []),
             friend.createdAt || now
           ).run();
         }
