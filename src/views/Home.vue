@@ -27,7 +27,7 @@
 
     <nav class="grid grid-cols-4 gap-1.5 px-4 mb-6">
       <router-link to="/fortune" class="no-underline text-inherit">
-        <wired-card class="flex flex-col items-center justify-center w-full aspect-square p-1 text-center" fill="#ffffff">
+        <wired-card class="flex flex-col items-center justify-center w-full aspect-square p-1 text-center">
           <span class="text-2xl mb-1">🙏</span>
           <span class="text-[10px] font-bold">祈祷</span>
         </wired-card>
