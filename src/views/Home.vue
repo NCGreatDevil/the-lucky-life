@@ -66,11 +66,11 @@
       <div class="bg-white mt-4 px-4 py-3 flex flex-row gap-3 items-center overflow-hidden" v-if="userStore.isLoggedIn">
         <div class="flex items-center gap-1.5 flex-1 min-w-0">
           <span class="text-xs opacity-60 whitespace-nowrap">能量</span>
-          <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.energy || 80" fill="#e74c3c"></wired-progress>
+          <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.energy || 80" style="--wired-progress-color: #e74c3c;"></wired-progress>
         </div>
         <div class="flex items-center gap-1.5 flex-1 min-w-0">
           <span class="text-xs opacity-60 whitespace-nowrap">活力</span>
-          <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.vitality || 60" fill="#3498db"></wired-progress>
+          <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.vitality || 60" style="--wired-progress-color: #3498db;"></wired-progress>
         </div>
       </div>
     </div>
