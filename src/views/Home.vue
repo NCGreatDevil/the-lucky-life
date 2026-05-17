@@ -67,12 +67,10 @@
         <div class="flex items-center gap-1.5 flex-1 min-w-0">
           <span class="text-xs opacity-60 whitespace-nowrap">能量</span>
           <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.energy || 80" fill="#e74c3c"></wired-progress>
-          <span class="text-xs font-bold whitespace-nowrap sketch-font">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
         <div class="flex items-center gap-1.5 flex-1 min-w-0">
           <span class="text-xs opacity-60 whitespace-nowrap">活力</span>
           <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.vitality || 60" fill="#3498db"></wired-progress>
-          <span class="text-xs font-bold whitespace-nowrap sketch-font">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
       </div>
     </div>
