@@ -55,7 +55,8 @@
       <div class="mb-6">
         <h3 class="text-base font-bold mb-3">好友列表 ({{ roleStore.friends.length }})</h3>
         <div class="flex flex-col gap-3" v-if="roleStore.friends.length > 0">
-          <wired-card v-for="friend in roleStore.friends" :key="friend.id" class="flex items-center gap-3 p-3 cursor-pointer active:translate-x-0.5 active:translate-y-0.5" fill="#ffffff">
+          <wired-card v-for="friend in roleStore.friends" :key="friend.id" class="cursor-pointer active:translate-x-0.5 active:translate-y-0.5" fill="#ffffff">
+            <div class="flex items-center gap-3 p-3">
             <div class="w-12 h-12 border-2 border-black rounded bg-[#fafafa] overflow-hidden flex-shrink-0 flex items-center justify-center">
               <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="w-full h-full object-cover">
               <span v-else class="text-2xl">{{ friend.avatar }}</span>
@@ -81,6 +82,7 @@
                   <wired-button class="w-full py-2 px-3 border-0 border-b border-gray-200 bg-transparent text-xs cursor-pointer text-left active:bg-[#f5e8e8]" @click="confirmDelete(friend.id)">删除好友</wired-button>
                 </wired-card>
               </div>
+            </div>
             </div>
           </wired-card>
         </div>
