@@ -150,32 +150,26 @@ export const useRoleStore = defineStore('role', () => {
 
   async function syncFriendsToBackend() {
     try {
-      const friendsData = friends.value.map(f => ({
-        id: f.isNpc ? f.npcId : f.id,
-        isNpc: f.isNpc,
-        name: f.name || '',
-        avatar: f.avatar || '',
-        level: f.level || 1,
-        title: f.title || '',
-        tags: f.tags || [],
-        createdAt: f.createdAt || new Date().toISOString()
-      }))
-
-      console.log('同步好友数据:', JSON.stringify(friendsData, null, 2))
-
       const response = await fetch('/api/role-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ friends: friendsData })
+        body: JSON.stringify({
+          friends: friends.value.map(f => ({
+            id: f.isNpc ? f.npcId : f.id,
+            isNpc: f.isNpc,
+            name: f.name || '',
+            avatar: f.avatar || '',
+            level: f.level || 1,
+            title: f.title || '',
+            tags: f.tags || [],
+            createdAt: f.createdAt || new Date().toISOString()
+          }))
+        })
       })
 
       if (!response.ok) {
-        const errorText = await response.text()
-        console.error('同步好友数据失败:', response.status, errorText)
-      } else {
-        const result = await response.json()
-        console.log('同步好友数据成功:', result)
+        console.error('同步好友数据失败')
       }
     } catch (error) {
       console.error('同步好友数据错误:', error)
