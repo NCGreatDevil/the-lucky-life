@@ -53,7 +53,7 @@
     </nav>
 
     <div class="flex-1 px-4 pb-4 overflow-y-auto">
-      <wired-card class="flex flex-col items-center justify-center overflow-hidden p-4" fill="#fafafa">
+      <wired-card class="flex flex-col items-center justify-center overflow-hidden" fill="#fafafa">
         <div class="w-full h-full">
           <img :src="dailyFortuneImage" alt="今日运势" class="w-full h-full object-cover" />
         </div>
