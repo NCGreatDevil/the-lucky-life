@@ -63,16 +63,16 @@
         </div>
       </wired-card>
 
-      <div class="bg-white mt-4 p-4 flex gap-6" v-if="userStore.isLoggedIn">
-        <div class="flex items-center gap-2 flex-1">
+      <div class="bg-white mt-4 px-4 py-3 flex flex-row gap-3 items-center overflow-hidden" v-if="userStore.isLoggedIn">
+        <div class="flex items-center gap-1.5 flex-1 min-w-0">
           <span class="text-xs opacity-60 whitespace-nowrap">能量</span>
-          <wired-progress class="flex-1" :value="userStore.user?.attributes?.energy || 80"></wired-progress>
-          <span class="text-xs font-bold whitespace-nowrap min-w-[24px] text-right sketch-font">{{ userStore.user?.attributes?.energy || 80 }}</span>
+          <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.energy || 80"></wired-progress>
+          <span class="text-xs font-bold whitespace-nowrap sketch-font">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
-        <div class="flex items-center gap-2 flex-1">
+        <div class="flex items-center gap-1.5 flex-1 min-w-0">
           <span class="text-xs opacity-60 whitespace-nowrap">活力</span>
-          <wired-progress class="flex-1" :value="userStore.user?.attributes?.vitality || 60"></wired-progress>
-          <span class="text-xs font-bold whitespace-nowrap min-w-[24px] text-right sketch-font">{{ userStore.user?.attributes?.vitality || 60 }}</span>
+          <wired-progress class="flex-1 min-w-0" :value="userStore.user?.attributes?.vitality || 60"></wired-progress>
+          <span class="text-xs font-bold whitespace-nowrap sketch-font">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
       </div>
     </div>
