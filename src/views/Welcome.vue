@@ -5,11 +5,11 @@
     <h1 class="text-3xl font-bold mb-10 text-center">欢迎来到好运人生</h1>
     
     <div class="flex flex-col gap-4 w-full max-w-[280px]">
-      <wired-button class="w-full py-3.5 cursor-pointer font-bold text-lg bg-white text-[#1a1a1a] sketch-font" @click="goToRegister">
+      <wired-button class="w-full py-3.5 cursor-pointer font-bold text-lg bg-white text-[#1a1a1a] sketch-font text-center" @click="goToRegister">
         <span class="relative z-10">注册</span>
       </wired-button>
       
-      <wired-button class="w-full py-3.5 cursor-pointer font-bold text-lg bg-[#1a1a1a] text-white sketch-font" @click="goToLogin">
+      <wired-button class="w-full py-3.5 cursor-pointer font-bold text-lg bg-[#1a1a1a] text-white sketch-font text-center" @click="goToLogin">
         <span class="relative z-10">登录</span>
       </wired-button>
     </div>

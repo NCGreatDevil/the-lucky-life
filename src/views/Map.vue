@@ -32,7 +32,7 @@
     <div v-if="showTip" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4" @click.self="showTip = false">
       <wired-card class="p-6 max-w-[300px] w-full text-center" fill="#ffffff">
         <p class="text-sm mb-5 leading-relaxed">该区域建设中，暂未开放</p>
-        <wired-button class="w-full py-2.5 bg-white text-[#1a1a1a] font-bold cursor-pointer sketch-font" @click="showTip = false">知道了</wired-button>
+        <wired-button class="w-full py-2.5 bg-white text-[#1a1a1a] font-bold cursor-pointer sketch-font text-center" @click="showTip = false">知道了</wired-button>
       </wired-card>
     </div>
   </div>

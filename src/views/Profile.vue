@@ -105,20 +105,20 @@
               <wired-button
                 @click="handleUpdate"
                 :disabled="saving"
-                class="flex-1 sketch-font"
+                class="flex-1 sketch-font text-center"
               >
                 {{ saving ? '保存中...' : '保存' }}
               </wired-button>
               <wired-button
                 @click="cancelEdit"
-                class="flex-1 sketch-font"
+                class="flex-1 sketch-font text-center"
               >
                 取消
               </wired-button>
             </div>
           </form>
 
-          <wired-button v-if="!isEditing" @click="startEdit" class="w-full mt-5 py-3 text-sm font-bold bg-white sketch-font">编辑资料</wired-button>
+          <wired-button v-if="!isEditing" @click="startEdit" class="w-full mt-5 py-3 text-sm font-bold bg-white sketch-font text-center">编辑资料</wired-button>
         </wired-card>
 
         <wired-card class="p-5" v-if="user.attributes" fill="#ffffff">

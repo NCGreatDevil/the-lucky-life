@@ -103,7 +103,7 @@
               <wired-button
                 v-for="option in currentEvent.options"
                 :key="option.id"
-                class="w-full sketch-font"
+                class="w-full sketch-font text-center"
                 @click="makeChoice(option.id)"
                 :disabled="isSubmitting || !isOptionAvailable(option)"
                 :title="getOptionDisabledReason(option)"
@@ -114,7 +114,7 @@
             </div>
             <wired-button
               v-if="allOptionsDisabled"
-              class="w-full sketch-font bg-[#f0f0f0]"
+              class="w-full sketch-font bg-[#f0f0f0] text-center"
               @click="skipEvent"
               :disabled="isSubmitting"
             >
@@ -134,7 +134,7 @@
                 {{ attr }} {{ value > 0 ? '+' : '' }}{{ value }}
               </span>
             </div>
-            <wired-button class="w-full sketch-font" @click="confirmEvent">确定</wired-button>
+            <wired-button class="w-full sketch-font text-center" @click="confirmEvent">确定</wired-button>
           </div>
         </wired-card>
       </div>

@@ -172,7 +172,7 @@
             </div>
           </wired-card>
 
-          <wired-button class="w-full py-3 bg-white text-[#1a1a1a] font-bold cursor-pointer mt-4 sketch-font" @click="closeResult">确定</wired-button>
+          <wired-button class="w-full py-3 bg-white text-[#1a1a1a] font-bold cursor-pointer mt-4 sketch-font text-center" @click="closeResult">确定</wired-button>
         </wired-card>
       </div>
     </div>

@@ -35,7 +35,7 @@
         <wired-button
           @click="handleLogin"
           :disabled="loading"
-          class="w-full py-3.5 text-base font-bold bg-white text-[#1a1a1a] cursor-pointer sketch-font"
+          class="w-full py-3.5 text-base font-bold bg-white text-[#1a1a1a] cursor-pointer sketch-font text-center"
         >
           {{ loading ? '登录中...' : '登录' }}
         </wired-button>

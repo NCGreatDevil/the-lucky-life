@@ -43,7 +43,7 @@
                   <p class="text-xs text-[#1a1a1a] m-0 leading-relaxed">{{ npc.description || '神秘的 NPC 角色。' }}</p>
                 </div>
               </div>
-              <wired-button class="w-full py-2.5 bg-white text-[#1a1a1a] text-sm font-bold cursor-pointer flex items-center justify-center gap-2 sketch-font" @click="addNPCFriend(npc)">
+              <wired-button class="w-full py-2.5 bg-white text-[#1a1a1a] text-sm font-bold cursor-pointer flex items-center justify-center gap-2 sketch-font text-center" @click="addNPCFriend(npc)">
                 <span>🐾</span>
                 <span>添加为好友</span>
               </wired-button>

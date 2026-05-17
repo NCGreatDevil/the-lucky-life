@@ -123,7 +123,7 @@
         <wired-button
           @click="handleRegister"
           :disabled="loading"
-          class="w-full py-3.5 text-base font-bold bg-white text-[#1a1a1a] cursor-pointer mt-2 sketch-font"
+          class="w-full py-3.5 text-base font-bold bg-white text-[#1a1a1a] cursor-pointer mt-2 sketch-font text-center"
         >
           {{ loading ? '注册中...' : '创建角色' }}
         </wired-button>
