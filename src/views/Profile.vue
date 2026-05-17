@@ -1,200 +1,194 @@
 <template>
-  <div class="profile-page">
-        <!-- 顶部标题 -->
-    <header class="header">
-      <router-link to="/" class="back-btn">←</router-link>
-      <h1 class="title sketch-font">我的角色</h1>
-      <div class="placeholder">
-        <wired-button @click="handleLogout" class="btn-logout">退出</wired-button>
+  <div class="min-h-screen bg-[#fafafa] pb-6">
+    <header class="flex items-center px-6 pt-6 pb-4">
+      <router-link to="/" class="text-2xl no-underline text-inherit w-10 flex-shrink-0">←</router-link>
+      <h1 class="text-xl font-bold flex-1 text-center m-0 sketch-font">我的角色</h1>
+      <div class="w-auto">
+        <wired-button @click="handleLogout" class="px-2 py-1 text-xs font-bold bg-white sketch-font">退出</wired-button>
       </div> 
     </header>
-    <div class="profile-container">
-      <!-- <div class="profile-header">
-        <h1 class="sketch-font">我的角色</h1>
-        <button @click="handleLogout" class="btn-logout">退出登录</button>
-      </div> -->
 
-      <div v-if="loading" class="loading">加载中...</div>
+    <div class="max-w-[400px] mx-auto flex flex-col gap-5 px-6">
+      <div v-if="loading" class="text-center py-10 opacity-60">加载中...</div>
 
       <template v-else-if="user">
-        <wired-card class="user-card" fill="#fafafa">
-          <div class="user-id">ID: {{ user.id }}</div>
-          <div class="user-nickname">{{ user.nickname }}</div>
-          <div v-if="user.attributes" class="user-luck">
-            <span class="luck-tag">{{ user.attributes.luckLabel }}</span>
-            <!-- <span class="luck-label">{{ user.attributes.luckLabel }}</span> -->
+        <wired-card class="p-5 text-center" fill="#fafafa">
+          <div class="text-xs opacity-60 mb-2">ID: {{ user.id }}</div>
+          <div class="text-2xl font-bold mb-3">{{ user.nickname }}</div>
+          <div v-if="user.attributes" class="flex justify-center">
+            <span class="text-lg font-bold px-3 py-1 bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white rounded">{{ user.attributes.luckLabel }}</span>
           </div>
         </wired-card>
 
-        <wired-card class="info-section" fill="#ffffff">
-          <h2>基本信息</h2>
+        <wired-card class="p-5" fill="#ffffff">
+          <h2 class="text-base mb-4 pb-2 border-b-2 border-black">基本信息</h2>
 
-          <div v-if="!isEditing" class="info-list">
-            <div class="info-item">
-              <span class="label">出生日期</span>
-              <span class="value">{{ user.birthday }}</span>
+          <div v-if="!isEditing" class="flex flex-col gap-3">
+            <div class="flex justify-between text-sm">
+              <span class="opacity-60">出生日期</span>
+              <span class="font-medium">{{ user.birthday }}</span>
             </div>
-            <div class="info-item">
-              <span class="label">性别</span>
-              <span class="value">{{ genderText }}</span>
+            <div class="flex justify-between text-sm">
+              <span class="opacity-60">性别</span>
+              <span class="font-medium">{{ genderText }}</span>
             </div>
-            <div class="info-item">
-              <span class="label">职业</span>
-              <span class="value">{{ user.occupation }}</span>
+            <div class="flex justify-between text-sm">
+              <span class="opacity-60">职业</span>
+              <span class="font-medium">{{ user.occupation }}</span>
             </div>
-            <div class="info-item">
-              <span class="label">个人简介</span>
-              <span class="value">{{ user.bio || '暂无' }}</span>
+            <div class="flex justify-between text-sm">
+              <span class="opacity-60">个人简介</span>
+              <span class="font-medium">{{ user.bio || '暂无' }}</span>
             </div>
-            <div class="info-item">
-              <span class="label">创建时间</span>
-              <span class="value">{{ formatDate(user.createdAt) }}</span>
+            <div class="flex justify-between text-sm">
+              <span class="opacity-60">创建时间</span>
+              <span class="font-medium">{{ formatDate(user.createdAt) }}</span>
             </div>
-            <div class="info-item">
-              <span class="label">更新时间</span>
-              <span class="value">{{ formatDate(user.updatedAt) }}</span>
+            <div class="flex justify-between text-sm">
+              <span class="opacity-60">更新时间</span>
+              <span class="font-medium">{{ formatDate(user.updatedAt) }}</span>
             </div>
           </div>
 
-          <form v-else @submit.prevent="handleUpdate" class="edit-form">
-            <div class="form-group">
-              <label class="sketch-font">昵称</label>
+          <form v-else @submit.prevent="handleUpdate" class="flex flex-col gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-bold sketch-font">昵称</label>
               <wired-input
                 :value="editForm.nickname"
                 @input="editForm.nickname = $event.target.value"
-                style="width: 100%;"
+                class="w-full"
               ></wired-input>
             </div>
 
-            <div class="form-group">
-              <label class="sketch-font">出生日期</label>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-bold sketch-font">出生日期</label>
               <wired-input
                 type="date"
                 :value="editForm.birthday"
                 @input="editForm.birthday = $event.target.value"
-                style="width: 100%;"
+                class="w-full"
               ></wired-input>
             </div>
 
-            <div class="form-group">
-              <label class="sketch-font">性别</label>
-              <div class="radio-group">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-bold sketch-font">性别</label>
+              <div class="flex gap-4">
                 <wired-radio :checked="editForm.gender === 'male'" @click="editForm.gender = 'male'" class="sketch-font">男</wired-radio>
                 <wired-radio :checked="editForm.gender === 'female'" @click="editForm.gender = 'female'" class="sketch-font">女</wired-radio>
                 <wired-radio :checked="editForm.gender === 'other'" @click="editForm.gender = 'other'" class="sketch-font">其他</wired-radio>
               </div>
             </div>
 
-            <div class="form-group">
-              <label class="sketch-font">职业</label>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-bold sketch-font">职业</label>
               <wired-input
                 :value="editForm.occupation"
                 @input="editForm.occupation = $event.target.value"
-                style="width: 100%;"
+                class="w-full"
               ></wired-input>
             </div>
 
-            <div class="form-group">
-              <label class="sketch-font">个人简介</label>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-bold sketch-font">个人简介</label>
               <wired-textarea
                 :value="editForm.bio"
                 @input="editForm.bio = $event.target.value"
                 placeholder="简单介绍一下你的虚拟角色"
                 rows="3"
-                style="width: 100%;"
+                class="w-full"
               ></wired-textarea>
             </div>
 
-            <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+            <div v-if="errorMessage" class="text-sm text-[#c62828] p-2 bg-[#f5e8e8] border border-[#c48a8a] rounded">{{ errorMessage }}</div>
 
-            <div class="btn-group">
+            <div class="flex gap-3 mt-2">
               <wired-button
                 @click="handleUpdate"
                 :disabled="saving"
-                style="width: 100%;"
+                class="flex-1 sketch-font"
               >
                 {{ saving ? '保存中...' : '保存' }}
               </wired-button>
               <wired-button
                 @click="cancelEdit"
-                style="width: 100%;"
+                class="flex-1 sketch-font"
               >
                 取消
               </wired-button>
             </div>
           </form>
 
-          <wired-button v-if="!isEditing" @click="startEdit" class="btn-edit">编辑资料</wired-button>
+          <wired-button v-if="!isEditing" @click="startEdit" class="w-full mt-5 py-3 text-sm font-bold bg-white sketch-font">编辑资料</wired-button>
         </wired-card>
 
-        <wired-card class="attr-section" v-if="user.attributes" fill="#ffffff">
-          <h2>日常属性</h2>
-          <div class="attr-grid">
-            <div class="attr-item">
-              <span class="attr-name">能量</span>
-              <wired-progress :value="user.attributes.energy" style="flex: 1;"></wired-progress>
-              <span class="attr-value">{{ user.attributes.energy }} / 100</span>
+        <wired-card class="p-5" v-if="user.attributes" fill="#ffffff">
+          <h2 class="text-base mb-4 pb-2 border-b-2 border-black">日常属性</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">能量</span>
+              <wired-progress :value="user.attributes.energy" class="flex-1"></wired-progress>
+              <span class="text-sm font-bold sketch-font">{{ user.attributes.energy }} / 100</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">活力</span>
-              <wired-progress :value="user.attributes.vitality" style="flex: 1;"></wired-progress>
-              <span class="attr-value">{{ user.attributes.vitality }} / 100</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">活力</span>
+              <wired-progress :value="user.attributes.vitality" class="flex-1"></wired-progress>
+              <span class="text-sm font-bold sketch-font">{{ user.attributes.vitality }} / 100</span>
             </div>
           </div>
         </wired-card>
 
-        <wired-card class="attr-section" v-if="user.attributes" fill="#ffffff">
-          <h2>长期属性</h2>
-          <div class="attr-grid">
-            <div class="attr-item">
-              <span class="attr-name">道德</span>
-              <span class="attr-value-simple">{{ user.attributes.morality }}</span>
+        <wired-card class="p-5" v-if="user.attributes" fill="#ffffff">
+          <h2 class="text-base mb-4 pb-2 border-b-2 border-black">长期属性</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">道德</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.morality }}</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">智力</span>
-              <span class="attr-value-simple">{{ user.attributes.intelligence }}</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">智力</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.intelligence }}</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">体质</span>
-              <span class="attr-value-simple">{{ user.attributes.constitution }}</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">体质</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.constitution }}</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">魅力</span>
-              <span class="attr-value-simple">{{ user.attributes.charm }}</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">魅力</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.charm }}</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">意志</span>
-              <span class="attr-value-simple">{{ user.attributes.willpower }}</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">意志</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.willpower }}</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">情绪</span>
-              <span class="attr-value-simple">{{ user.attributes.emotion }}</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">情绪</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.emotion }}</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">人缘</span>
-              <span class="attr-value-simple">{{ user.attributes.popularity }}</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">人缘</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.popularity }}</span>
             </div>
-            <div class="attr-item">
-              <span class="attr-name">金钱</span>
-              <span class="attr-value-simple">{{ user.attributes.money }}</span>
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs opacity-60 sketch-font">金钱</span>
+              <span class="text-lg font-bold sketch-font">{{ user.attributes.money }}</span>
             </div>
           </div>
         </wired-card>
 
-        <wired-card class="attr-section" v-if="user.attributes" fill="#ffffff">
-          <h2>隐藏属性</h2>
-          <div class="attr-grid">
-            <div class="attr-item luck-item">
-              <span class="attr-name">运气</span>
-              <span class="luck-tag">{{ user.attributes.luckLabel }}</span>
+        <wired-card class="p-5" v-if="user.attributes" fill="#ffffff">
+          <h2 class="text-base mb-4 pb-2 border-b-2 border-black">隐藏属性</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-row items-center justify-between">
+              <span class="text-xs opacity-60 sketch-font">运气</span>
+              <span class="text-lg font-bold px-3 py-1 bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white rounded">{{ user.attributes.luckLabel }}</span>
             </div>
           </div>
         </wired-card>
       </template>
 
-      <div v-else class="not-logged-in">
-        <p>您还没有登录</p>
-        <router-link to="/login" class="btn-primary">去登录</router-link>
+      <div v-else class="text-center py-10">
+        <p class="mb-5 opacity-60">您还没有登录</p>
+        <router-link to="/login" class="inline-block px-6 py-3 no-underline sketch-font bg-white text-[#1a1a1a] border-2 border-black rounded font-bold">去登录</router-link>
       </div>
     </div>
   </div>
@@ -319,284 +313,4 @@ async function handleLogout() {
 </script>
 
 <style scoped>
-.profile-page {
-  min-height: 100vh;
-  /* padding: 24px;
-  padding-top: 48px; */
-  padding-bottom: 24px;
-  background: #fafafa;
-  overflow-y: auto;
-}
-
-.profile-container {
-  max-width: 400px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.profile-header h1 {
-  font-size: 24px;
-}
-
-
-.header {
-  display: flex;
-  align-items: center;
-  padding: 24px 24px 16px;
-}
-
-.back-btn {
-  font-size: 24px;
-  text-decoration: none;
-  color: inherit;
-  width: 40px;
-  flex-shrink: 0;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: bold;
-  flex: 1;
-  text-align: center;
-  margin: 0;
-}
-
-.placeholder {
-  width: auto;
-}
-
-.btn-logout {
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: bold;
-  background: #fff;
-  cursor: pointer;
-  flex-shrink: 0;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.loading {
-  text-align: center;
-  padding: 40px;
-  opacity: 0.6;
-}
-
-.user-card {
-  padding: 20px;
-  color: #1a1a1a;
-  text-align: center;
-}
-
-.user-id {
-  font-size: 12px;
-  opacity: 0.6;
-  margin-bottom: 8px;
-}
-
-.user-nickname {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.user-luck {
-  display: flex;
-  justify-content: center;
-}
-
-.info-section,
-.attr-section {
-  padding: 20px;
-}
-
-.info-section h2,
-.attr-section h2 {
-  font-size: 16px;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #000;
-}
-
-.info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-.info-item .label {
-  opacity: 0.6;
-}
-
-.info-item .value {
-  font-weight: 500;
-}
-
-.btn-edit {
-  width: 100%;
-  margin-top: 20px;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: bold;
-  background: #fff;
-  cursor: pointer;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group label {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 10px;
-  border: 2px solid #000;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: inherit;
-}
-
-.radio-group {
-  display: flex;
-  gap: 16px;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  font-weight: normal;
-}
-
-.radio-label input[type="radio"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-.btn-group {
-  display: flex;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.btn-primary {
-  flex: 1;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: bold;
-  background: #fff;
-  color: #1a1a1a;
-  cursor: pointer;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-secondary {
-  flex: 1;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: bold;
-  background: #fff;
-  color: #1a1a1a;
-  cursor: pointer;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.error-message {
-  color: #c62828;
-  font-size: 14px;
-  padding: 8px 12px;
-  background: #f5e8e8;
-  border: 1px solid #c48a8a;
-  border-radius: 4px;
-}
-
-.attr-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.attr-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.attr-name {
-  font-size: 12px;
-  opacity: 0.6;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.attr-value {
-  font-size: 14px;
-  font-weight: bold;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.attr-value-simple {
-  font-size: 18px;
-  font-weight: bold;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.luck-item {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.luck-tag {
-  font-size: 16px;
-  font-weight: bold;
-  padding: 4px 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  border-radius: 4px;
-}
-
-.not-logged-in {
-  text-align: center;
-  padding: 40px;
-}
-
-.not-logged-in p {
-  margin-bottom: 20px;
-  opacity: 0.6;
-}
-
-.not-logged-in .btn-primary {
-  display: inline-block;
-  padding: 12px 24px;
-  text-decoration: none;
-}
 </style>

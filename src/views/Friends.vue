@@ -1,49 +1,49 @@
 <template>
-  <div class="friends-page">
-    <div class="user-bar">
+  <div class="flex flex-col h-full">
+    <div class="flex justify-end items-center gap-3 px-4 py-2 text-xs">
       <template v-if="userStore.isLoggedIn">
-        <router-link to="/profile" class="user-link">
-          <span class="user-icon">👤</span>
-          <span class="user-name">{{ userStore.user?.nickname }}</span>
+        <router-link to="/profile" class="flex items-center gap-1 no-underline text-[#1a1a1a] font-bold">
+          <span class="text-sm">👤</span>
+          <span>{{ userStore.user?.nickname }}</span>
         </router-link>
-        <span class="notification-bell">🔔</span>
+        <span class="text-base relative">🔔</span>
       </template>
     </div>
 
-    <header class="header">
-      <router-link to="/" class="back-btn">←</router-link>
-      <h1 class="title sketch-font">我的好友</h1>
-      <div class="placeholder"></div>
+    <header class="flex justify-between items-center px-6 pt-0 pb-2">
+      <router-link to="/" class="text-2xl no-underline text-inherit w-10">←</router-link>
+      <h1 class="text-xl font-bold sketch-font">我的好友</h1>
+      <div class="w-10"></div>
     </header>
 
-    <div class="content-area">
-      <div v-if="isPageLoading" class="skeleton-container">
-        <div class="skeleton-card skeleton-npc-card"></div>
-        <div class="skeleton-card skeleton-friend-item"></div>
-        <div class="skeleton-card skeleton-friend-item"></div>
-        <div class="skeleton-card skeleton-friend-item"></div>
+    <div class="flex-1 px-6 pb-6 overflow-y-auto">
+      <div v-if="isPageLoading" class="flex flex-col gap-4">
+        <div class="skeleton-card h-[140px]"></div>
+        <div class="skeleton-card h-20"></div>
+        <div class="skeleton-card h-20"></div>
+        <div class="skeleton-card h-20"></div>
       </div>
 
       <template v-else>
-      <div class="npc-section" v-if="availableNPCs.length > 0">
-        <h3 class="section-title">可添加的 NPC</h3>
-        <div class="npc-list">
+      <div class="mb-6" v-if="availableNPCs.length > 0">
+        <h3 class="text-base font-bold mb-3">可添加的 NPC</h3>
+        <div class="flex flex-col gap-4">
           <template v-for="npc in availableNPCs" :key="npc.id">
-            <wired-card v-if="!isFriendAdded(npc.id)" class="npc-card" fill="#ffffff">
-              <div class="npc-header">
-                <div class="npc-avatar">
-                  <img :src="npc.avatarUrl" :alt="npc.name" class="npc-avatar-img">
+            <wired-card v-if="!isFriendAdded(npc.id)" class="p-4" fill="#ffffff">
+              <div class="flex gap-3 mb-3">
+                <div class="w-16 h-16 border-2 border-black rounded bg-white overflow-hidden flex-shrink-0">
+                  <img :src="npc.avatarUrl" :alt="npc.name" class="w-full h-full object-cover">
                 </div>
-                <div class="npc-info">
-                  <div class="npc-name-row">
-                    <p class="npc-name">{{ npc.name }}</p>
-                    <span class="npc-tag">NPC</span>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <p class="text-lg font-bold m-0">{{ npc.name }}</p>
+                    <span class="px-2 py-0.5 bg-gray-200 text-[#1a1a1a] border border-black rounded text-xs">NPC</span>
                   </div>
-                  <p class="npc-title">{{ npc.title }}</p>
-                  <p class="npc-desc">{{ npc.description || '神秘的 NPC 角色。' }}</p>
+                  <p class="text-sm text-[#1a1a1a] m-0 mb-1">{{ npc.title }}</p>
+                  <p class="text-xs text-[#1a1a1a] m-0 leading-relaxed">{{ npc.description || '神秘的 NPC 角色。' }}</p>
                 </div>
               </div>
-              <wired-button class="add-npc-btn" @click="addNPCFriend(npc)">
+              <wired-button class="w-full py-2.5 bg-white text-[#1a1a1a] text-sm font-bold cursor-pointer flex items-center justify-center gap-2 sketch-font" @click="addNPCFriend(npc)">
                 <span>🐾</span>
                 <span>添加为好友</span>
               </wired-button>
@@ -52,80 +52,80 @@
         </div>
       </div>
 
-      <div class="friends-section">
-        <h3 class="section-title">好友列表 ({{ roleStore.friends.length }})</h3>
-        <div class="friends-list" v-if="roleStore.friends.length > 0">
-          <wired-card v-for="friend in roleStore.friends" :key="friend.id" class="friend-item" fill="#ffffff">
-            <div class="friend-avatar">
-              <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="friend-avatar-img">
-              <span v-else class="avatar-emoji">{{ friend.avatar }}</span>
+      <div class="mb-6">
+        <h3 class="text-base font-bold mb-3">好友列表 ({{ roleStore.friends.length }})</h3>
+        <div class="flex flex-col gap-3" v-if="roleStore.friends.length > 0">
+          <wired-card v-for="friend in roleStore.friends" :key="friend.id" class="flex items-center gap-3 p-3 cursor-pointer active:translate-x-0.5 active:translate-y-0.5" fill="#ffffff">
+            <div class="w-12 h-12 border-2 border-black rounded bg-[#fafafa] overflow-hidden flex-shrink-0 flex items-center justify-center">
+              <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="w-full h-full object-cover">
+              <span v-else class="text-2xl">{{ friend.avatar }}</span>
             </div>
-            <div class="friend-details">
-              <div class="friend-header">
-                <p class="friend-name">{{ friend.name }}</p>
-                <span class="friend-level">Lv.{{ friend.level }}</span>
-                <span v-if="friend.isNpc" class="npc-tag-small">NPC</span>
+            <div class="flex-1">
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <p class="text-sm font-bold m-0">{{ friend.name }}</p>
+                <span class="text-[10px] bg-[#1a1a1a] text-white px-1 py-0.5 rounded border border-black">Lv.{{ friend.level }}</span>
+                <span v-if="friend.isNpc" class="text-[9px] bg-gray-200 text-[#1a1a1a] border border-black rounded px-1 py-0.5">NPC</span>
               </div>
-              <p class="friend-title">{{ friend.title }}</p>
-              <div class="friend-tags" v-if="friend.tags.length">
+              <p class="text-xs text-[#1a1a1a] m-0 mb-1">{{ friend.title }}</p>
+              <div class="flex gap-1 flex-wrap" v-if="friend.tags.length">
                 <span v-for="tag in friend.tags.slice(0, 3)" :key="tag" class="tag">{{ tag }}</span>
               </div>
             </div>
-            <div class="friend-actions">
-              <wired-button v-if="friend.isNpc" class="chat-btn" @click="openChat(friend)">
+            <div class="flex gap-2">
+              <wired-button v-if="friend.isNpc" class="w-8 h-8 bg-white text-base cursor-pointer flex items-center justify-center" @click="openChat(friend)">
                 💬
               </wired-button>
-              <div class="more-menu-wrapper">
-                <wired-button class="more-btn" @click="toggleMoreMenu(friend.id)">⋮</wired-button>
-                <wired-card v-if="showMoreMenu === friend.id" class="more-menu" fill="#fafafa">
-                  <wired-button class="menu-item" @click="confirmDelete(friend.id)">删除好友</wired-button>
+              <div class="relative">
+                <wired-button class="w-8 h-8 bg-white text-lg cursor-pointer flex items-center justify-center leading-none" @click="toggleMoreMenu(friend.id)">⋮</wired-button>
+                <wired-card v-if="showMoreMenu === friend.id" class="absolute top-full right-0 mt-1 overflow-hidden z-10 min-w-[100px]" fill="#fafafa">
+                  <wired-button class="w-full py-2 px-3 border-0 border-b border-gray-200 bg-transparent text-xs cursor-pointer text-left active:bg-[#f5e8e8]" @click="confirmDelete(friend.id)">删除好友</wired-button>
                 </wired-card>
               </div>
             </div>
           </wired-card>
         </div>
-        <div v-else class="empty-tip">
+        <div v-else class="text-center opacity-50 py-8 text-sm">
           还没有好友，添加一个 NPC 开始聊天吧！
         </div>
       </div>
 
-      <div v-if="showDeleteConfirm" class="delete-modal modal-overlay" @click.self="cancelDelete">
-        <wired-card class="delete-dialog" fill="#ffffff">
-          <p class="delete-message">确定要删除好友「{{ deleteFriendName }}」吗？</p>
-          <div class="delete-actions">
-            <wired-button class="cancel-btn" @click="cancelDelete">取消</wired-button>
-            <wired-button class="confirm-btn" @click="executeDelete">确定</wired-button>
+      <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="cancelDelete">
+        <wired-card class="p-6 max-w-[320px] w-[90%] text-center" fill="#ffffff">
+          <p class="text-sm mb-5 leading-relaxed">确定要删除好友「{{ deleteFriendName }}」吗？</p>
+          <div class="flex gap-3 justify-center">
+            <wired-button class="px-6 py-2 text-sm cursor-pointer sketch-font bg-white text-[#1a1a1a]" @click="cancelDelete">取消</wired-button>
+            <wired-button class="px-6 py-2 text-sm cursor-pointer sketch-font bg-[#1a1a1a] text-white" @click="executeDelete">确定</wired-button>
           </div>
         </wired-card>
       </div>
 
-      <div v-if="showChat" class="chat-modal modal-overlay" @click.self="closeChat">
-        <wired-card class="chat-window">
-          <div class="chat-header">
-            <div class="chat-avatar">
-              <img v-if="currentFriend?.isNpc" :src="currentFriend.avatar" :alt="currentFriend.name" class="chat-avatar-img">
+      <div v-if="showChat" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" @click.self="closeChat">
+        <wired-card class="w-[90%] max-w-[400px] h-[80vh] flex flex-col overflow-hidden">
+          <div class="flex items-center gap-3 p-4 border-b-2 border-black">
+            <div class="w-10 h-10 border-2 border-black rounded bg-[#fafafa] overflow-hidden flex-shrink-0 flex items-center justify-center">
+              <img v-if="currentFriend?.isNpc" :src="currentFriend.avatar" :alt="currentFriend.name" class="w-full h-full object-cover">
               <span v-else>{{ currentFriend?.avatar }}</span>
             </div>
-            <div class="chat-info">
-              <p class="chat-name">{{ currentFriend?.name }}</p>
-              <div class="chat-npc-tag" v-if="currentFriend?.isNpc">NPC</div>
+            <div class="flex-1">
+              <p class="text-base font-bold m-0">{{ currentFriend?.name }}</p>
+              <div class="inline-block px-1.5 py-0.5 bg-gray-200 text-[#1a1a1a] border border-black rounded text-[10px] mt-0.5" v-if="currentFriend?.isNpc">NPC</div>
             </div>
-            <wired-button class="close-chat-btn" @click="closeChat">×</wired-button>
+            <wired-button class="w-8 h-8 bg-white text-lg cursor-pointer flex items-center justify-center" @click="closeChat">×</wired-button>
           </div>
-          <div class="chat-messages" ref="chatMessagesRef">
-            <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['message', msg.isUser ? 'user-message' : 'bot-message']">
-              <div class="message-content">
+          <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3" ref="chatMessagesRef">
+            <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['flex', msg.isUser ? 'justify-end' : 'justify-start']">
+              <div class="max-w-[70%] py-2 px-3 text-sm leading-relaxed" :class="msg.isUser ? 'bg-[#1a1a1a] text-white' : 'bg-[#fafafa] text-[#1a1a1a]'">
                 {{ msg.content }}
               </div>
             </div>
             <div ref="lastMessageRef"></div>
           </div>
-          <div class="chat-input-area" v-if="!isRefused">
-            <wired-input type="text" :value="chatInput" @input="chatInput = $event.target.value" class="chat-input" placeholder="说点什么..." @keyup.enter="sendMessage" style="flex: 1;"></wired-input>
-            <wired-button class="send-btn" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</wired-button>
+          <div class="flex gap-2 p-3 border-t-2 border-black" v-if="!isRefused">
+            <wired-input type="text" :value="chatInput" @input="chatInput = $event.target.value" class="flex-1" placeholder="说点什么..." @keyup.enter="sendMessage"></wired-input>
+            <wired-button class="px-4 py-2 bg-[#1a1a1a] text-white text-sm cursor-pointer sketch-font" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</wired-button>
           </div>
-          <div class="chat-refused-tip" v-else>
-            <p>{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>
+          <div class="p-4 text-center border-t-2 border-black" v-else>
+            <p class="m-0 text-sm text-[#1a1a1a]">{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>
           </div>
         </wired-card>
       </div>
@@ -170,7 +170,6 @@ const allNPCsAdded = computed(() => {
 });
 
 function isFriendAdded(npcId) {
-  // console.log('检查 NPC 是否已添加:', npcId, '好友列表:', roleStore.friends.map(f => ({ id: f.id, npcId: f.npcId, isNpc: f.isNpc })));
   return roleStore.friends.some(f => f.isNpc && f.npcId === npcId);
 }
 
@@ -448,608 +447,4 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.friends-page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.user-bar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  font-size: 12px;
-}
-
-.user-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
-  color: #1a1a1a;
-  font-weight: bold;
-}
-
-.user-icon {
-  font-size: 14px;
-}
-
-.notification-bell {
-  font-size: 16px;
-  position: relative;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 24px 8px 24px;
-}
-
-.back-btn {
-  font-size: 24px;
-  text-decoration: none;
-  color: inherit;
-  width: 40px;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.placeholder {
-  width: 40px;
-}
-
-.content-area {
-  flex: 1;
-  padding: 0 24px 24px;
-  overflow-y: auto;
-}
-
-/* 骨架屏 */
-.skeleton-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.skeleton-card {
-  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2.25s infinite;
-  border-radius: 4px;
-}
-
-.skeleton-npc-card {
-  height: 140px;
-}
-
-.skeleton-friend-item {
-  height: 80px;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.npc-section {
-  margin-bottom: 24px;
-}
-
-.npc-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.npc-card {
-  padding: 16px;
-}
-
-.npc-header {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.npc-avatar {
-  width: 64px;
-  height: 64px;
-  border: 2px solid #000;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.npc-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.npc-info {
-  flex: 1;
-}
-
-.npc-name-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.npc-name {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0;
-}
-
-.npc-tag {
-  padding: 2px 8px;
-  background: #e0e0e0;
-  color: #1a1a1a;
-  border: 1px solid #000;
-  border-radius: 4px;
-  font-size: 11px;
-}
-
-.npc-title {
-  font-size: 13px;
-  color: #1a1a1a;
-  margin: 0 0 4px 0;
-}
-
-.npc-desc {
-  font-size: 12px;
-  color: #1a1a1a;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.add-npc-btn {
-  width: 100%;
-  padding: 10px;
-  background: #fff;
-  color: #1a1a1a;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.friends-section {
-  margin-bottom: 24px;
-}
-
-.section-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.friends-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.friend-item {
-  display: flex !important;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.friend-item:active {
-  transform: translate(2px, 2px);
-}
-
-.friend-avatar {
-  width: 48px;
-  height: 48px;
-  border: 2px solid #000;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fafafa;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.avatar-emoji {
-  font-size: 24px;
-}
-
-.friend-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.friend-details {
-  flex: 1;
-}
-
-.friend-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 2px;
-}
-
-.friend-header .friend-name {
-  font-size: 14px;
-  font-weight: bold;
-  margin: 0;
-}
-
-.friend-header .friend-level {
-  font-size: 10px;
-  background: #1a1a1a;
-  color: #fff;
-  padding: 1px 4px;
-  border-radius: 4px;
-  border: 1px solid #000;
-}
-
-.npc-tag-small {
-  padding: 1px 4px;
-  background: #e0e0e0;
-  color: #1a1a1a;
-  border: 1px solid #000;
-  border-radius: 4px;
-  font-size: 9px;
-}
-
-.friend-title {
-  font-size: 12px;
-  color: #1a1a1a;
-  margin: 0 0 4px 0;
-}
-
-.friend-tags {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-
-.tag {
-  padding: 2px 8px;
-  background: #f0f0f0;
-  border: 1px solid #000;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.friend-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.chat-btn {
-  width: 32px;
-  height: 32px;
-  background: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.more-menu-wrapper {
-  position: relative;
-}
-
-.more-btn {
-  width: 32px;
-  height: 32px;
-  background: #fff;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.more-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 4px;
-  overflow: hidden;
-  z-index: 10;
-  min-width: 100px;
-}
-
-.menu-item {
-  width: 100%;
-  padding: 8px 12px;
-  border: none;
-  border-bottom: 1px solid #e0e0e0;
-  background: transparent;
-  font-size: 12px;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.1s ease;
-}
-
-.menu-item:last-child {
-  border-bottom: none;
-}
-
-.menu-item:active {
-  background: #f5e8e8;
-}
-
-.delete-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-}
-
-.delete-dialog {
-  padding: 24px;
-  max-width: 320px;
-  width: 90%;
-  text-align: center;
-}
-
-.delete-message {
-  font-size: 14px;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-.delete-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.cancel-btn,
-.confirm-btn {
-  padding: 8px 24px;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.cancel-btn {
-  background: #fff;
-  color: #1a1a1a;
-}
-
-.confirm-btn {
-  background: #1a1a1a;
-  color: #fff;
-}
-
-.empty-tip {
-  text-align: center;
-  opacity: 0.5;
-  padding: 32px;
-  font-size: 14px;
-}
-
-.chat-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.chat-window {
-  width: 90%;
-  max-width: 400px;
-  height: 80vh;
-  display: flex !important;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  border-bottom: 2px solid #000;
-}
-
-.chat-avatar {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #000;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fafafa;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.chat-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.chat-info {
-  flex: 1;
-}
-
-.chat-name {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0;
-}
-
-.chat-npc-tag {
-  display: inline-block;
-  padding: 1px 6px;
-  background: #e0e0e0;
-  color: #1a1a1a;
-  border: 1px solid #000;
-  border-radius: 4px;
-  font-size: 10px;
-  margin-top: 2px;
-}
-
-.close-chat-btn {
-  width: 32px;
-  height: 32px;
-  background: #fff;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chat-messages {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.message {
-  display: flex;
-}
-
-.user-message {
-  justify-content: flex-end;
-}
-
-.bot-message {
-  justify-content: flex-start;
-}
-
-.message-content {
-  max-width: 70%;
-  padding: 8px 12px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.user-message .message-content {
-  background: #1a1a1a;
-  color: #fff;
-}
-
-.bot-message .message-content {
-  background: #fafafa;
-  color: #1a1a1a;
-}
-
-.chat-input-area {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
-  border-top: 2px solid #000;
-}
-
-.chat-input {
-  flex: 1;
-  padding: 8px 12px;
-  border: 2px solid #000;
-  border-radius: 4px;
-  font-size: 13px;
-  outline: none;
-}
-
-.chat-input:focus {
-  border-color: #333;
-}
-
-.send-btn {
-  padding: 8px 16px;
-  background: #1a1a1a;
-  color: #fff;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.chat-refused-tip {
-  padding: 16px;
-  text-align: center;
-  border-top: 2px solid #000;
-}
-
-.chat-refused-tip p {
-  margin: 0;
-  font-size: 13px;
-  color: #1a1a1a;
-}
-
-.info-section {
-  margin-top: 24px;
-}
-
-.info-card {
-  background: #fafafa;
-  border: 2px solid #000;
-  border-radius: 4px;
-  padding: 16px;
-  text-align: center;
-}
-
-.info-icon {
-  font-size: 24px;
-  margin: 0 0 8px 0;
-}
-
-.info-text {
-  font-size: 14px;
-  font-weight: bold;
-  margin: 0 0 12px 0;
-}
-
-.info-list {
-  text-align: left;
-  padding-left: 20px;
-  margin: 0;
-}
-
-.info-list li {
-  font-size: 12px;
-  color: #1a1a1a;
-  margin-bottom: 4px;
-  line-height: 1.5;
-}
 </style>

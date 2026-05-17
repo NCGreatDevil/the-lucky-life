@@ -1,136 +1,136 @@
 <template>
-  <div class="register-page">
-    <wired-card class="register-container" fill="#ffffff">
-      <div class="register-header">
-        <h1 class="sketch-font">注册</h1>
-        <p class="subtitle">创建你的虚拟角色</p>
+  <div class="min-h-screen py-12 px-6 pt-12 bg-[#fafafa] overflow-y-auto">
+    <wired-card class="w-full max-w-[400px] mx-auto bg-white p-6" fill="#ffffff">
+      <div class="text-center mb-4">
+        <h1 class="text-2xl mb-1 sketch-font">注册</h1>
+        <p class="text-sm opacity-60">创建你的虚拟角色</p>
       </div>
 
-      <wired-card class="warning-box" fill="#fafafa">
-        <p class="warning-title">⚠️ 重要提示</p>
-        <p class="warning-text">
+      <wired-card class="p-3 mb-5" fill="#fafafa">
+        <p class="text-xs font-bold mb-1">⚠️ 重要提示</p>
+        <p class="text-[11px] text-[#1a1a1a] leading-relaxed">
           这是一个虚拟人生体验项目。<strong>请勿填写真实的个人信息</strong>，<br/>
           但建议填写与真实情况相似的信息以获得更真实的体验。
         </p>
       </wired-card>
 
-      <form @submit.prevent="handleRegister" class="register-form">
-        <div class="form-group">
-          <label for="userId" class="sketch-font">用户ID <span class="required">*</span></label>
+      <form @submit.prevent="handleRegister" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label for="userId" class="text-sm font-bold sketch-font">用户ID <span class="text-[#d32f2f]">*</span></label>
           <wired-input
             type="text"
             id="userId"
             :value="form.userId"
             @input="form.userId = $event.target.value.replace(/[^A-Za-z0-9_]/g, '')"
             placeholder="字母、数字、下划线，最多16字符"
-            style="width: 100%;"
+            class="w-full"
           ></wired-input>
-          <span class="hint">用于登录的唯一标识，如：Player_01</span>
+          <span class="text-[11px] text-[#888]">用于登录的唯一标识，如：Player_01</span>
         </div>
 
-        <div class="form-group">
-          <label for="nickname" class="sketch-font">昵称 <span class="required">*</span></label>
+        <div class="flex flex-col gap-1.5">
+          <label for="nickname" class="text-sm font-bold sketch-font">昵称 <span class="text-[#d32f2f]">*</span></label>
           <wired-input
             type="text"
             id="nickname"
             :value="form.nickname"
             @input="form.nickname = $event.target.value"
             placeholder="给自己起个昵称"
-            style="width: 100%;"
+            class="w-full"
           ></wired-input>
         </div>
 
-        <div class="form-group">
-          <label for="password" class="sketch-font">密码 <span class="required">*</span></label>
+        <div class="flex flex-col gap-1.5">
+          <label for="password" class="text-sm font-bold sketch-font">密码 <span class="text-[#d32f2f]">*</span></label>
           <wired-input
             type="password"
             id="password"
             :value="form.password"
             @input="form.password = $event.target.value"
             placeholder="至少6位密码"
-            style="width: 100%;"
+            class="w-full"
           ></wired-input>
         </div>
 
-        <div class="form-group">
-          <label for="confirmPassword" class="sketch-font">确认密码 <span class="required">*</span></label>
+        <div class="flex flex-col gap-1.5">
+          <label for="confirmPassword" class="text-sm font-bold sketch-font">确认密码 <span class="text-[#d32f2f]">*</span></label>
           <wired-input
             type="password"
             id="confirmPassword"
             :value="form.confirmPassword"
             @input="form.confirmPassword = $event.target.value"
             placeholder="再次输入密码"
-            style="width: 100%;"
+            class="w-full"
           ></wired-input>
         </div>
 
-        <div class="form-group">
-          <label class="sketch-font">出生日期 <span class="required">*</span></label>
-          <div class="birthday-selects">
-            <wired-combo :value="form.birthYear" @selected="form.birthYear = $event.detail.value; updateBirthday()" style="width: 100%;">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-bold sketch-font">出生日期 <span class="text-[#d32f2f]">*</span></label>
+          <div class="flex gap-2">
+            <wired-combo :value="form.birthYear" @selected="form.birthYear = $event.detail.value; updateBirthday()" class="flex-1">
               <wired-item value="" text="年"></wired-item>
               <wired-item v-for="year in years" :key="year" :value="year" :text="String(year)"></wired-item>
             </wired-combo>
-            <wired-combo :value="form.birthMonth" @selected="form.birthMonth = $event.detail.value; updateBirthday()" style="width: 100%;">
+            <wired-combo :value="form.birthMonth" @selected="form.birthMonth = $event.detail.value; updateBirthday()" class="flex-1">
               <wired-item value="" text="月"></wired-item>
               <wired-item v-for="month in 12" :key="month" :value="month" :text="month + '月'"></wired-item>
             </wired-combo>
-            <wired-combo :value="form.birthDay" @selected="form.birthDay = $event.detail.value; updateBirthday()" style="width: 100%;">
+            <wired-combo :value="form.birthDay" @selected="form.birthDay = $event.detail.value; updateBirthday()" class="flex-1">
               <wired-item value="" text="日"></wired-item>
               <wired-item v-for="day in daysInMonth" :key="day" :value="day" :text="day + '日'"></wired-item>
             </wired-combo>
           </div>
-          <span class="hint">例如：你28岁，可以选择1999年</span>
+          <span class="text-[11px] text-[#888]">例如：你28岁，可以选择1999年</span>
         </div>
 
-        <div class="form-group">
-          <label class="sketch-font">性别 <span class="required">*</span></label>
-          <div class="radio-group">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-bold sketch-font">性别 <span class="text-[#d32f2f]">*</span></label>
+          <div class="flex gap-4">
             <wired-radio :checked="form.gender === 'male'" @click="form.gender = 'male'" class="sketch-font">男</wired-radio>
             <wired-radio :checked="form.gender === 'female'" @click="form.gender = 'female'" class="sketch-font">女</wired-radio>
             <wired-radio :checked="form.gender === 'other'" @click="form.gender = 'other'" class="sketch-font">其他</wired-radio>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="occupation" class="sketch-font">职业 <span class="required">*</span></label>
+        <div class="flex flex-col gap-1.5">
+          <label for="occupation" class="text-sm font-bold sketch-font">职业 <span class="text-[#d32f2f]">*</span></label>
           <wired-input
             type="text"
             id="occupation"
             :value="form.occupation"
             @input="form.occupation = $event.target.value"
             placeholder="请输入职业"
-            style="width: 100%;"
+            class="w-full"
           ></wired-input>
-          <span class="hint">例如：你是教师，可以填写"学校教职工"</span>
+          <span class="text-[11px] text-[#888]">例如：你是教师，可以填写"学校教职工"</span>
         </div>
 
-        <div class="form-group">
-          <label for="bio" class="sketch-font">个人简介</label>
+        <div class="flex flex-col gap-1.5">
+          <label for="bio" class="text-sm font-bold sketch-font">个人简介</label>
           <wired-textarea
             id="bio"
             :value="form.bio"
             @input="form.bio = $event.target.value"
             placeholder="简单介绍一下你的虚拟角色（选填）"
             rows="3"
-            style="width: 100%;"
+            class="w-full"
           ></wired-textarea>
         </div>
 
-        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-        <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+        <div v-if="errorMessage" class="text-sm text-[#c62828] p-2 bg-[#f5e8e8] border border-[#c48a8a] rounded">{{ errorMessage }}</div>
+        <div v-if="successMessage" class="text-sm text-[#2e7d32] p-2 bg-[#f0f5e8] border border-[#7a9a6d] rounded">{{ successMessage }}</div>
 
         <wired-button
           @click="handleRegister"
           :disabled="loading"
-          style="width: 100%;"
+          class="w-full py-3.5 text-base font-bold bg-white text-[#1a1a1a] cursor-pointer mt-2 sketch-font"
         >
           {{ loading ? '注册中...' : '创建角色' }}
         </wired-button>
       </form>
 
-      <div class="register-footer">
-        <p>已有账号？<router-link to="/login">立即登录</router-link></p>
+      <div class="mt-5 text-center text-sm">
+        <p>已有账号？<router-link to="/login" class="text-[#1a1a1a] font-bold underline">立即登录</router-link></p>
       </div>
     </wired-card>
   </div>
@@ -146,13 +146,6 @@ const userStore = useUserStore()
 
 const currentYear = new Date().getFullYear()
 const years = Array.from({ length: 120 }, (_, i) => currentYear - i)
-
-const occupationOptions = [
-  '教师', '医生', '工程师', '设计师', '销售', '公务员',
-  '学生', '管理者', '自由职业', '企业家', '艺术家',
-  '金融从业者', '媒体从业者', '医护人员', '教育工作者',
-  '技术工人', '服务员', '创业者'
-]
 
 const form = ref({
   userId: '',
@@ -221,10 +214,6 @@ watch(() => form.value.birthMonth, () => {
   updateBirthday()
 })
 
-function validateUserId() {
-  form.value.userId = form.value.userId.replace(/[^A-Za-z0-9_]/g, '')
-}
-
 async function handleRegister() {
   errorMessage.value = ''
   successMessage.value = ''
@@ -255,7 +244,7 @@ async function handleRegister() {
   }
 
   if (!form.value.birthday) {
-    errorMessage.value = '请选择完整的出生日期'
+    errorMessage.value = '请选择完整出生日期'
     return
   }
 
@@ -295,177 +284,4 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.register-page {
-  min-height: 100vh;
-  padding: 24px;
-  padding-top: 48px;
-  background: #fafafa;
-  overflow-y: auto;
-}
-
-.register-container {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 24px;
-}
-
-.register-header {
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.register-header h1 {
-  font-size: 24px;
-  margin-bottom: 4px;
-}
-
-.subtitle {
-  font-size: 14px;
-  opacity: 0.6;
-}
-
-.warning-box {
-  padding: 12px;
-  background: #fafafa;
-  margin-bottom: 20px;
-}
-
-.warning-title {
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.warning-text {
-  font-size: 11px;
-  color: #1a1a1a;
-  line-height: 1.5;
-}
-
-.register-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group label {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.required {
-  color: #d32f2f;
-}
-
-.form-group input[type="text"],
-.form-group input[type="password"],
-.form-group textarea {
-  padding: 10px;
-  border: 2px solid #000;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-  font-family: inherit;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #666;
-}
-
-.hint {
-  font-size: 11px;
-  color: #888;
-}
-
-.birthday-selects {
-  display: flex;
-  gap: 8px;
-}
-
-.birthday-select {
-  flex: 1;
-  padding: 10px;
-  border: 2px solid #000;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
-  background: #fff;
-  font-family: inherit;
-}
-
-.birthday-select:focus {
-  border-color: #666;
-}
-
-
-.radio-group {
-  display: flex;
-  gap: 16px;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  font-weight: normal;
-}
-
-.radio-label input[type="radio"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-.error-message {
-  color: #c62828;
-  font-size: 14px;
-  padding: 8px 12px;
-  background: #f5e8e8;
-  border: 1px solid #c48a8a;
-  border-radius: 4px;
-}
-
-.success-message {
-  color: #2e7d32;
-  font-size: 14px;
-  padding: 8px 12px;
-  background: #f0f5e8;
-  border: 1px solid #7a9a6d;
-  border-radius: 4px;
-}
-
-.btn-primary {
-  padding: 14px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 8px;
-  background-color: #fff;
-  color: #1a1a1a;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.register-footer {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.register-footer a {
-  color: #1a1a1a;
-  font-weight: bold;
-  text-decoration: underline;
-}
 </style>

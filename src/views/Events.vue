@@ -1,172 +1,169 @@
 <template>
-  <div class="events-page">
-    <div class="user-bar">
+  <div class="flex flex-col h-full">
+    <div class="flex justify-end items-center gap-3 px-4 py-2 text-xs">
       <template v-if="userStore.isLoggedIn">
-        <router-link to="/profile" class="user-link">
-          <span class="user-icon">👤</span>
-          <span class="user-name">{{ userStore.user?.nickname }}</span>
+        <router-link to="/profile" class="flex items-center gap-1 no-underline text-[#1a1a1a] font-bold">
+          <span class="text-sm">👤</span>
+          <span>{{ userStore.user?.nickname }}</span>
         </router-link>
       </template>
     </div>
 
-    <header class="header">
-      <router-link to="/" class="back-btn">←</router-link>
-      <h1 class="title sketch-font">事件</h1>
-      <div class="placeholder"></div>
+    <header class="flex justify-between items-center px-6 pt-0 pb-2">
+      <router-link to="/" class="text-2xl no-underline text-inherit w-10">←</router-link>
+      <h1 class="text-xl font-bold sketch-font">事件</h1>
+      <div class="w-10"></div>
     </header>
 
-    <div class="content-area">
-      <div v-if="isPageLoading" class="skeleton-container">
-        <div class="skeleton-card skeleton-trigger"></div>
-        <div class="skeleton-attr-bar">
-          <div class="skeleton-attr-item"></div>
-          <div class="skeleton-attr-item"></div>
+    <div class="flex-1 px-6 pb-6 overflow-y-auto">
+      <div v-if="isPageLoading" class="flex flex-col gap-4">
+        <div class="skeleton-card h-20"></div>
+        <div class="flex gap-6">
+          <div class="flex-1 h-5 skeleton-card"></div>
+          <div class="flex-1 h-5 skeleton-card"></div>
         </div>
-        <div class="skeleton-history">
-          <div class="skeleton-card skeleton-history-item"></div>
-          <div class="skeleton-card skeleton-history-item"></div>
-          <div class="skeleton-card skeleton-history-item"></div>
+        <div class="flex flex-col gap-3">
+          <div class="skeleton-card h-24"></div>
+          <div class="skeleton-card h-24"></div>
+          <div class="skeleton-card h-24"></div>
         </div>
       </div>
 
       <template v-else>
-
-      <div class="pending-toggle" v-if="pendingCount > 0" @click="showPendingEvents = !showPendingEvents">
-        <span class="pending-toggle-icon">📋</span>
-        <span class="pending-toggle-text">待处理事件 ({{ pendingCount }})</span>
+      <div v-if="pendingCount > 0" class="flex items-center gap-2 p-3 mb-4 bg-[#fff9e6] border-2 border-[#e6c200] rounded cursor-pointer active:translate-x-0.5 active:translate-y-0.5" @click="showPendingEvents = !showPendingEvents">
+        <span class="text-lg">📋</span>
+        <span class="text-sm font-bold">待处理事件 ({{ pendingCount }})</span>
       </div>
 
-      <div class="trigger-section">
-        <wired-button class="trigger-btn" @click="triggerActiveEvent" :disabled="isEventActive || isLoading" style="width: 100%;">
-          <span class="trigger-icon">⚡</span>
-          <span class="trigger-text">{{ isEventActive ? '事件进行中...' : isLoading ? '加载中...' : '触发随机事件' }}</span>
+      <div class="mb-4">
+        <wired-button class="w-full py-3 bg-white text-[#1a1a1a] font-bold cursor-pointer flex items-center justify-center gap-2 sketch-font active:translate-x-0.5 active:translate-y-0.5" @click="triggerActiveEvent" :disabled="isEventActive || isLoading">
+          <span class="text-xl">⚡</span>
+          <span>{{ isEventActive ? '事件进行中...' : isLoading ? '加载中...' : '触发随机事件' }}</span>
         </wired-button>
-        <p class="trigger-tip">消耗10能量，可能触发各种事件</p>
+        <p class="text-xs text-center mt-2 opacity-60">消耗10能量，可能触发各种事件</p>
       </div>
       
-      <!-- 测试按钮：恢复满状态 -->
-      <div class="test-section" v-if="isAdmin">
-        <button class="test-btn" @click="restoreFullStatus">
+      <div class="mb-4" v-if="isAdmin">
+        <button class="w-full py-2 bg-[#f0f0f0] border-2 border-black rounded text-sm cursor-pointer active:bg-[#e0e0e0]" @click="restoreFullStatus">
           恢复满状态（测试用）
         </button>
       </div>
 
-      <!-- 属性条 -->
-      <div class="attr-bar-fixed" v-if="userStore.isLoggedIn">
-        <div class="attr-item">
-          <span class="attr-name">能量</span>
-          <wired-progress :value="userStore.user?.attributes?.energy || 80" style="flex: 1;"></wired-progress>
-          <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
+      <div class="bg-white p-1 mb-4 flex gap-6" v-if="userStore.isLoggedIn">
+        <div class="flex items-center gap-2 flex-1">
+          <span class="text-xs opacity-60 whitespace-nowrap">能量</span>
+          <wired-progress class="flex-1" :value="userStore.user?.attributes?.energy || 80"></wired-progress>
+          <span class="text-xs font-bold whitespace-nowrap min-w-[24px] text-right">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
-        <div class="attr-item">
-          <span class="attr-name">活力</span>
-          <wired-progress :value="userStore.user?.attributes?.vitality || 60" style="flex: 1;"></wired-progress>
-          <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
+        <div class="flex items-center gap-2 flex-1">
+          <span class="text-xs opacity-60 whitespace-nowrap">活力</span>
+          <wired-progress class="flex-1" :value="userStore.user?.attributes?.vitality || 60"></wired-progress>
+          <span class="text-xs font-bold whitespace-nowrap min-w-[24px] text-right">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
       </div>
 
-      <div v-if="showPendingEvents && pendingEvents.length > 0" class="pending-events-panel">
-        <h3 class="panel-title">待处理事件</h3>
-        <div class="pending-list">
-          <wired-card v-for="event in pendingEvents" :key="event.id" class="pending-item" @click="resolvePendingEvent(event)" fill="#ffffff">
-            <div class="pending-header">
-              <span class="pending-badge">{{ event.category === 'npc' ? 'NPC' : event.category === 'friend' ? '好友' : '普通' }}</span>
-              <span class="pending-countdown" :class="{ 'expiring-soon': isExpiringSoon(event.expiresAt) }">
+      <div v-if="showPendingEvents && pendingEvents.length > 0" class="mb-6">
+        <h3 class="text-base font-bold mb-3">待处理事件</h3>
+        <div class="flex flex-col gap-3">
+          <wired-card v-for="event in pendingEvents" :key="event.id" class="p-4 cursor-pointer active:translate-x-0.5 active:translate-y-0.5" @click="resolvePendingEvent(event)" fill="#ffffff">
+            <div class="flex justify-between items-center mb-2">
+              <span class="px-2 py-0.5 bg-gray-200 border border-black rounded text-xs">{{ event.category === 'npc' ? 'NPC' : event.category === 'friend' ? '好友' : '普通' }}</span>
+              <span class="text-xs" :class="isExpiringSoon(event.expiresAt) ? 'text-red-600 font-bold' : 'opacity-60'">
                 {{ getCountdownText(event.expiresAt) }}
               </span>
             </div>
-            <p class="pending-name">{{ event.name }}</p>
-            <p class="pending-desc">{{ event.description }}</p>
+            <p class="text-sm font-bold mb-1">{{ event.name }}</p>
+            <p class="text-xs opacity-70">{{ event.description }}</p>
           </wired-card>
         </div>
       </div>
 
-      <div v-if="isEventActive && currentEvent" class="event-modal modal-overlay" @click.self="closeEvent">
-        <wired-card class="event-card modal-content" fill="#ffffff">
-          <div class="event-header">
-            <span v-if="!currentEvent.encounter" class="event-badge">{{ getCategoryLabel(currentEvent.category) }}</span>
-            <span v-if="currentEvent.encounter" class="encounter-badge">
+      <div v-if="isEventActive && currentEvent" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4" @click.self="closeEvent">
+        <wired-card class="max-w-[400px] w-full p-6" fill="#ffffff">
+          <div class="mb-4">
+            <span v-if="!currentEvent.encounter" class="px-2 py-0.5 bg-gray-200 border border-black rounded text-xs">{{ getCategoryLabel(currentEvent.category) }}</span>
+            <span v-if="currentEvent.encounter" class="px-2 py-0.5 bg-[#fff9e6] border border-[#e6c200] rounded text-xs">
               {{ currentEvent.encounter.type === 'npc' ? ' NPC' : '👤 真人' }}
             </span>
           </div>
 
-          <div v-if="currentEvent.encounter" class="encounter-info">
-            <img v-if="currentEvent.encounter.npcAvatar" :src="currentEvent.encounter.npcAvatar" class="encounter-avatar" />
-            <div class="encounter-details">
-              <p class="encounter-name">{{ currentEvent.encounter.npcName || currentEvent.encounter.nickname }}</p>
-              <p v-if="currentEvent.encounter.npcTitle" class="encounter-title">{{ currentEvent.encounter.npcTitle }}</p>
-              <p class="encounter-fav">好感度 +{{ currentEvent.encounter.favorabilityGained }} (总计 {{ currentEvent.encounter.totalFavorability }})</p>
+          <div v-if="currentEvent.encounter" class="flex gap-3 mb-4 p-3 bg-[#fafafa] border border-black rounded">
+            <img v-if="currentEvent.encounter.npcAvatar" :src="currentEvent.encounter.npcAvatar" class="w-12 h-12 border-2 border-black rounded" />
+            <div>
+              <p class="text-sm font-bold">{{ currentEvent.encounter.npcName || currentEvent.encounter.nickname }}</p>
+              <p v-if="currentEvent.encounter.npcTitle" class="text-xs opacity-70">{{ currentEvent.encounter.npcTitle }}</p>
+              <p class="text-xs text-[#9a85a8]">好感度 +{{ currentEvent.encounter.favorabilityGained }} (总计 {{ currentEvent.encounter.totalFavorability }})</p>
             </div>
           </div>
 
-          <h3 class="event-title">{{ currentEvent.name }}</h3>
-          <p class="event-description">{{ currentEvent.description }}</p>
+          <h3 class="text-base font-bold mb-2">{{ currentEvent.name }}</h3>
+          <p class="text-sm mb-4 leading-relaxed">{{ currentEvent.description }}</p>
 
-          <div class="event-choices" v-if="!eventResolved">
-            <p class="choices-hint">请选择：</p>
-            <wired-button
-              v-for="option in currentEvent.options"
-              :key="option.id"
-              class="choice-btn"
-              @click="makeChoice(option.id)"
-              :disabled="isSubmitting || !isOptionAvailable(option)"
-              :title="getOptionDisabledReason(option)"
-              style="width: 100%;"
-            >
-              {{ option.text }}
-              <span v-if="!isOptionAvailable(option)" class="disabled-reason">（{{ getOptionDisabledReason(option) }}）</span>
-            </wired-button>
+          <div v-if="!eventResolved">
+            <p class="text-xs font-bold mb-2 opacity-60">请选择：</p>
+            <div class="flex flex-col gap-2 mb-3">
+              <wired-button
+                v-for="option in currentEvent.options"
+                :key="option.id"
+                class="w-full sketch-font"
+                @click="makeChoice(option.id)"
+                :disabled="isSubmitting || !isOptionAvailable(option)"
+                :title="getOptionDisabledReason(option)"
+              >
+                {{ option.text }}
+                <span v-if="!isOptionAvailable(option)" class="text-xs opacity-60">（{{ getOptionDisabledReason(option) }}）</span>
+              </wired-button>
+            </div>
             <wired-button
               v-if="allOptionsDisabled"
-              class="skip-btn"
+              class="w-full sketch-font bg-[#f0f0f0]"
               @click="skipEvent"
               :disabled="isSubmitting"
-              style="width: 100%;"
             >
               跳过此事件
             </wired-button>
           </div>
 
-          <div class="event-result" v-if="eventResolved">
-            <p class="result-text">{{ resultText }}</p>
-            <div class="result-changes" v-if="resultChanges && Object.keys(resultChanges).length > 0">
+          <div v-if="eventResolved" class="mt-4">
+            <p class="text-sm mb-3">{{ resultText }}</p>
+            <div class="flex flex-wrap gap-2 mb-4" v-if="resultChanges && Object.keys(resultChanges).length > 0">
               <span
                 v-for="(value, attr) in resultChanges"
                 :key="attr"
-                class="change-tag"
-                :class="{ positive: value > 0, negative: value < 0 }"
+                class="px-2 py-1 bg-gray-100 border border-black rounded text-xs"
+                :class="value > 0 ? 'text-green-600' : value < 0 ? 'text-red-600' : ''"
               >
                 {{ attr }} {{ value > 0 ? '+' : '' }}{{ value }}
               </span>
             </div>
-            <wired-button class="confirm-btn" @click="confirmEvent" style="width: 100%;">确定</wired-button>
+            <wired-button class="w-full sketch-font" @click="confirmEvent">确定</wired-button>
           </div>
         </wired-card>
       </div>
 
-      <div class="history-section">
-        <h3 class="section-title">事件历史</h3>
-        <div class="history-list" v-if="history.length > 0">
-          <wired-card v-for="item in history" :key="item.id" class="history-item" fill="#ffffff">
-            <div class="history-header">
-              <span class="history-type">{{ item.event_type === 'active' ? '主动' : '被动' }}</span>
-              <span class="history-time">{{ formatTime(item.timestamp) }}</span>
+      <div>
+        <h3 class="text-base font-bold mb-3">事件历史</h3>
+        <div class="flex flex-col gap-3" v-if="history.length > 0">
+          <wired-card v-for="item in history" :key="item.id" class="p-4" fill="#ffffff">
+            <div class="flex justify-between items-center mb-2">
+              <span class="px-2 py-0.5 bg-gray-200 border border-black rounded text-xs">{{ item.event_type === 'active' ? '主动' : '被动' }}</span>
+              <span class="text-xs opacity-60">{{ formatTime(item.timestamp) }}</span>
             </div>
-            <p class="history-title">{{ item.event_title }}</p>
-            <p class="history-choice">选择了：{{ item.choice }}</p>
-            <div class="history-changes" v-if="item.changes">
+            <p class="text-sm font-bold mb-1">{{ item.event_title }}</p>
+            <p class="text-xs opacity-70 mb-2">选择了：{{ item.choice }}</p>
+            <div class="flex flex-wrap gap-1" v-if="item.changes">
               <span
                 v-for="(value, attr) in parseChanges(item.changes)"
                 :key="attr"
-                class="change-tag small"
-                :class="{ positive: value > 0, negative: value < 0 }"
+                class="px-2 py-0.5 bg-gray-100 border border-black rounded text-xs"
+                :class="value > 0 ? 'text-green-600' : value < 0 ? 'text-red-600' : ''"
               >
                 {{ attr }} {{ value > 0 ? '+' : '' }}{{ value }}
               </span>
             </div>
           </wired-card>
         </div>
-        <div v-else class="empty-tip">
+        <div v-else class="text-center opacity-50 py-8 text-sm">
           暂无事件记录，去触发一些事件吧！
         </div>
       </div>
@@ -619,552 +616,4 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.events-page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.user-bar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  font-size: 12px;
-}
-
-.user-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
-  color: #1a1a1a;
-  font-weight: bold;
-}
-
-.user-icon {
-  font-size: 14px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 24px 8px 24px;
-}
-
-.back-btn {
-  font-size: 24px;
-  text-decoration: none;
-  color: inherit;
-  width: 40px;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.placeholder {
-  width: 40px;
-}
-
-.content-area {
-  flex: 1;
-  padding: 0 24px 24px;
-  overflow-y: auto;
-}
-
-/* 骨架屏 */
-.skeleton-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.skeleton-card {
-  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2.25s infinite;
-  border-radius: 4px;
-}
-
-.skeleton-trigger {
-  height: 80px;
-}
-
-.skeleton-attr-bar {
-  display: flex;
-  gap: 24px;
-}
-
-.skeleton-attr-item {
-  flex: 1;
-  height: 20px;
-  background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2.25s infinite;
-  border-radius: 4px;
-}
-
-.skeleton-history {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.skeleton-history-item {
-  height: 100px;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* 测试按钮 */
-.test-section {
-  margin-bottom: 16px;
-}
-
-.test-btn {
-  width: 100%;
-  padding: 8px;
-  background: #f0f0f0;
-  border: 1px dashed #999;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #666;
-  cursor: pointer;
-}
-
-.test-btn:active {
-  background: #e0e0e0;
-}
-
-/* 属性条（固定） */
-.attr-bar-fixed {
-  background: #fff;
-  padding: 4px;
-  display: flex;
-  gap: 24px;
-  margin-bottom: 16px;
-}
-
-.attr-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.attr-name {
-  font-size: 12px;
-  opacity: 0.6;
-  white-space: nowrap;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.attr-value {
-  font-size: 12px;
-  font-weight: bold;
-  white-space: nowrap;
-  min-width: 24px;
-  text-align: right;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.trigger-section {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.trigger-btn {
-  width: 100%;
-  padding: 24px;
-  background: #fff;
-  color: #1a1a1a;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.trigger-icon {
-  font-size: 32px;
-}
-
-.trigger-text {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.trigger-tip {
-  margin-top: 12px;
-  font-size: 12px;
-  opacity: 0.5;
-}
-
-.pending-toggle {
-  background: #fff;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.pending-toggle-icon {
-  font-size: 18px;
-}
-
-.pending-toggle-text {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.pending-events-panel {
-  background: #fff;
-  padding: 16px;
-  margin-bottom: 24px;
-}
-
-.panel-title {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.pending-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.pending-item {
-  padding: 12px;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.pending-item:active {
-  transform: translate(2px, 2px);
-}
-
-.pending-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.pending-badge {
-  font-size: 10px;
-  background: #f0f0f0;
-  padding: 2px 6px;
-  border-radius: 2px;
-}
-
-.pending-countdown {
-  font-size: 10px;
-  color: #666;
-}
-
-.pending-countdown.expiring-soon {
-  color: #c62828;
-  font-weight: bold;
-}
-
-.pending-name {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.pending-desc {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
-.event-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.event-card {
-  padding: 24px;
-  max-width: 320px;
-  width: 90%;
-  text-align: center;
-}
-
-.event-header {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.event-badge {
-  display: inline-block;
-  background: #000;
-  color: #fff;
-  padding: 4px 12px;
-  border-radius: 2px;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.encounter-badge {
-  display: inline-block;
-  background: #d4a85a;
-  color: #fff;
-  padding: 4px 12px;
-  border-radius: 4px;
-  border: 1px solid #000;
-  font-size: 10px;
-}
-
-.encounter-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: #fafafa;
-  margin-bottom: 16px;
-}
-
-.encounter-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 4px;
-  object-fit: cover;
-  border: 2px solid #000;
-}
-
-.encounter-details {
-  text-align: left;
-}
-
-.encounter-name {
-  font-size: 14px;
-  font-weight: bold;
-  margin: 0;
-}
-
-.encounter-title {
-  font-size: 12px;
-  opacity: 0.7;
-  margin: 2px 0;
-}
-
-.encounter-fav {
-  font-size: 12px;
-  color: #4caf50;
-  margin: 2px 0;
-}
-
-.event-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.event-description {
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.event-choices {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.choices-hint {
-  font-size: 12px;
-  opacity: 0.6;
-  margin-bottom: 8px;
-}
-
-.choice-btn {
-  width: 100%;
-  padding: 12px;
-  background: #fff;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.skip-btn {
-  width: 100%;
-  padding: 10px;
-  background: #f9f9f9;
-  font-size: 13px;
-  color: #666;
-  cursor: pointer;
-  margin-top: 8px;
-}
-
-.event-result {
-  padding-top: 16px;
-}
-
-.result-text {
-  font-size: 14px;
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-
-.result-changes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.change-tag {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  border: 1px solid #000;
-}
-
-.change-tag.small {
-  padding: 2px 6px;
-  font-size: 10px;
-}
-
-.change-tag.positive {
-  background: #f0f5e8;
-  border-color: #7a9a6d;
-  color: #2e7d32;
-}
-
-.change-tag.negative {
-  background: #f5e8e8;
-  border-color: #c48a8a;
-  color: #c62828;
-}
-
-.confirm-btn {
-  width: 100%;
-}
-
-.history-section {
-  margin-top: 24px;
-}
-
-.section-title {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.history-item {
-  padding: 12px;
-}
-
-.history-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.history-type {
-  font-size: 10px;
-  background: #f0f0f0;
-  padding: 2px 6px;
-  border-radius: 2px;
-}
-
-.history-time {
-  font-size: 10px;
-  opacity: 0.5;
-}
-
-.history-title {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.history-choice {
-  font-size: 12px;
-  opacity: 0.7;
-  margin-bottom: 4px;
-}
-
-.history-changes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.empty-tip {
-  text-align: center;
-  opacity: 0.5;
-  padding: 24px;
-  font-size: 14px;
-}
-
-.btn-primary {
-  background: #fff;
-  color: #1a1a1a;
-  border: 2px solid #000;
-  padding: 12px;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.btn-primary:active {
-  transform: translate(2px, 2px);
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal-content {
-  background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-  padding: 20px;
-  max-width: 320px;
-  width: 90%;
-}
 </style>

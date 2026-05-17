@@ -1,89 +1,84 @@
 <template>
-  <div class="home-page">
-    <!-- 用户状态栏 -->
-    <div class="user-bar">
+  <div class="flex flex-col h-full overflow-hidden">
+    <div class="flex justify-end items-center gap-3 px-4 py-2 text-xs">
       <template v-if="userStore.isLoggedIn">
-        <router-link to="/profile" class="user-link">
-          <span class="user-icon">👤</span>
-          <span class="user-name">{{ userStore.user?.nickname }}</span>
+        <router-link to="/profile" class="flex items-center gap-1 no-underline text-[#1a1a1a] font-bold">
+          <span class="text-sm">👤</span>
+          <span>{{ userStore.user?.nickname }}</span>
         </router-link>
-        <span class="notification-bell">🔔</span>
+        <span class="text-base relative">🔔</span>
       </template>
       <template v-else>
-        <router-link to="/login" class="auth-link">登录</router-link>
-        <router-link to="/register" class="auth-link">注册</router-link>
+        <router-link to="/login" class="text-[#666] no-underline hover:underline">登录</router-link>
+        <router-link to="/register" class="text-[#666] no-underline hover:underline">注册</router-link>
       </template>
     </div>
 
-    <!-- 顶部标题 -->
-    <header class="header">
-      <div class="title-wrapper">
-        <h1 class="title sketch-font">好运人生</h1>
-        <div class="title-underline"></div>
-        <svg class="title-decoration" viewBox="0 0 100 100">
+    <header class="px-6 pt-6 pb-4 text-center">
+      <div class="inline-block relative">
+        <h1 class="text-4xl font-bold tracking-[8px] relative z-10 sketch-font">好运人生</h1>
+        <div class="absolute bottom-[-4px] left-[-8px] right-[-8px] h-3 bg-black/5 -rotate-1 z-0"></div>
+        <svg class="absolute top-[-16px] right-[-24px] w-8 h-8" viewBox="0 0 100 100">
           <path d="M10,50 Q30,10 50,50 T90,50" fill="none" stroke="black" stroke-width="3"></path>
         </svg>
       </div>
-      <p class="date-text">{{ currentDate }} · {{ solarTerm }}</p>
+      <p class="text-xs mt-2 opacity-60">{{ currentDate }} · {{ solarTerm }}</p>
     </header>
 
-    <!-- 导航格子 -->
-    <nav class="nav-grid">
-      <router-link to="/fortune" class="nav-link">
-        <wired-card class="nav-item" fill="#ffffff">
-          <span class="nav-icon">🙏</span>
-          <span class="nav-label">祈祷</span>
+    <nav class="grid grid-cols-4 gap-1.5 px-4 mb-6">
+      <router-link to="/fortune" class="no-underline text-inherit">
+        <wired-card class="flex flex-col items-center justify-center w-full aspect-square p-1 text-center" fill="#ffffff">
+          <span class="text-2xl mb-1">🙏</span>
+          <span class="text-[10px] font-bold">祈祷</span>
         </wired-card>
       </router-link>
-      <router-link to="/events" class="nav-link">
-        <wired-card class="nav-item">
-          <span class="nav-icon">⚡</span>
-          <span class="nav-label">事件</span>
+      <router-link to="/events" class="no-underline text-inherit">
+        <wired-card class="flex flex-col items-center justify-center w-full aspect-square p-1 text-center">
+          <span class="text-2xl mb-1">⚡</span>
+          <span class="text-[10px] font-bold">事件</span>
         </wired-card>
       </router-link>
-      <router-link to="/friends" class="nav-link">
-        <wired-card class="nav-item">
-          <span class="nav-icon">👥</span>
-          <span class="nav-label">好友</span>
+      <router-link to="/friends" class="no-underline text-inherit">
+        <wired-card class="flex flex-col items-center justify-center w-full aspect-square p-1 text-center">
+          <span class="text-2xl mb-1">👥</span>
+          <span class="text-[10px] font-bold">好友</span>
         </wired-card>
       </router-link>
-      <router-link to="/map" class="nav-link">
-        <wired-card class="nav-item">
-          <span class="nav-icon">🗺️</span>
-          <span class="nav-label">地图</span>
+      <router-link to="/map" class="no-underline text-inherit">
+        <wired-card class="flex flex-col items-center justify-center w-full aspect-square p-1 text-center">
+          <span class="text-2xl mb-1">🗺️</span>
+          <span class="text-[10px] font-bold">地图</span>
         </wired-card>
       </router-link>
     </nav>
 
-    <!-- 运势大图区域 -->
-    <div class="content-area">
-      <wired-card class="fortune-card" fill="#fafafa">
-        <div class="fortune-image">
-          <img :src="dailyFortuneImage" alt="今日运势" />
+    <div class="flex-1 px-4 pb-4 overflow-y-auto">
+      <wired-card class="flex flex-col items-center justify-center overflow-hidden p-4" fill="#fafafa">
+        <div class="w-full h-full">
+          <img :src="dailyFortuneImage" alt="今日运势" class="w-full h-full object-cover" />
         </div>
-        <div class="fortune-quote">
+        <div class="mt-4 px-6 text-center">
           <wired-divider></wired-divider>
-          <p class="quote-text">"{{ dailyQuote }}"</p>
+          <p class="text-sm italic font-medium">"{{ dailyQuote }}"</p>
         </div>
       </wired-card>
 
-      <div class="attr-bar-section" v-if="userStore.isLoggedIn">
-        <div class="attr-item">
-          <span class="attr-name">能量</span>
-          <wired-progress :value="userStore.user?.attributes?.energy || 80" style="flex: 1;"></wired-progress>
-          <span class="attr-value">{{ userStore.user?.attributes?.energy || 80 }}</span>
+      <div class="bg-white mt-4 p-4 flex gap-6" v-if="userStore.isLoggedIn">
+        <div class="flex items-center gap-2 flex-1">
+          <span class="text-xs opacity-60 whitespace-nowrap">能量</span>
+          <wired-progress class="flex-1" :value="userStore.user?.attributes?.energy || 80"></wired-progress>
+          <span class="text-xs font-bold whitespace-nowrap min-w-[24px] text-right sketch-font">{{ userStore.user?.attributes?.energy || 80 }}</span>
         </div>
-        <div class="attr-item">
-          <span class="attr-name">活力</span>
-          <wired-progress :value="userStore.user?.attributes?.vitality || 60" style="flex: 1;"></wired-progress>
-          <span class="attr-value">{{ userStore.user?.attributes?.vitality || 60 }}</span>
+        <div class="flex items-center gap-2 flex-1">
+          <span class="text-xs opacity-60 whitespace-nowrap">活力</span>
+          <wired-progress class="flex-1" :value="userStore.user?.attributes?.vitality || 60"></wired-progress>
+          <span class="text-xs font-bold whitespace-nowrap min-w-[24px] text-right sketch-font">{{ userStore.user?.attributes?.vitality || 60 }}</span>
         </div>
       </div>
-    </div>  
+    </div>
 
-    <!-- 底部提示 -->
-    <footer class="footer">
-      <p class="copyright">好运人生 · 凌晨五点工作室 © 2026</p>
+    <footer class="p-4 text-center">
+      <p class="text-[10px] opacity-40">好运人生 · 凌晨五点工作室 © 2026</p>
     </footer>
   </div>
 </template>
@@ -144,213 +139,4 @@ const dailyQuote = computed(() => {
 </script>
 
 <style scoped>
-.home-page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.user-bar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  font-size: 12px;
-}
-
-.user-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
-  color: #1a1a1a;
-  font-weight: bold;
-}
-
-.user-icon {
-  font-size: 14px;
-}
-
-.notification-bell {
-  font-size: 16px;
-  position: relative;
-}
-
-.auth-link {
-  color: #666;
-  text-decoration: none;
-}
-
-.auth-link:hover {
-  text-decoration: underline;
-}
-
-.header {
-  padding: 24px 24px 16px;
-  text-align: center;
-}
-
-.title-wrapper {
-  display: inline-block;
-  position: relative;
-}
-
-.title {
-  font-size: 32px;
-  font-weight: bold;
-  letter-spacing: 8px;
-  position: relative;
-  z-index: 1;
-}
-
-.title-underline {
-  position: absolute;
-  bottom: -4px;
-  left: -8px;
-  right: -8px;
-  height: 12px;
-  background: rgba(0, 0, 0, 0.05);
-  transform: rotate(-1deg);
-  z-index: 0;
-}
-
-.title-decoration {
-  position: absolute;
-  top: -16px;
-  right: -24px;
-  width: 32px;
-  height: 32px;
-}
-
-.date-text {
-  font-size: 12px;
-  margin-top: 8px;
-  opacity: 0.6;
-}
-
-.nav-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  padding: 0 16px;
-  margin-bottom: 24px;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.nav-item {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  aspect-ratio: 1;
-  padding: 4px;
-  text-align: center;
-}
-
-.nav-item:active {
-  transform: translate(2px, 2px);
-}
-
-.nav-icon {
-  font-size: 24px;
-  margin-bottom: 4px;
-}
-
-.nav-label {
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.content-area {
-  flex: 1;
-  padding: 0 16px 16px;
-  overflow-y: auto;
-}
-
-.fortune-card {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 16px;
-}
-
-.fortune-image {
-  width: 100%;
-  height: 100%;
-}
-
-.fortune-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.fortune-quote {
-  margin-top: 16px;
-  padding: 0 24px;
-  text-align: center;
-}
-
-.quote-text {
-  font-size: 14px;
-  font-style: italic;
-  font-weight: 500;
-}
-
-.attr-section {
-  margin-top: 24px;
-  padding: 20px;
-  background: #fff;
-  border: 2.5px solid #000;
-  border-radius: 4px;
-}
-
-.attr-bar-section {
-  margin-top: 16px;
-  padding: 16px;
-  background: #fff;
-  display: flex;
-  gap: 24px;
-}
-
-.attr-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.attr-name {
-  font-size: 12px;
-  opacity: 0.6;
-  white-space: nowrap;
-}
-
-.attr-value {
-  font-size: 12px;
-  font-weight: bold;
-  white-space: nowrap;
-  min-width: 24px;
-  text-align: right;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
-}
-
-.footer {
-  padding: 16px;
-  text-align: center;
-}
-
-.copyright {
-  font-size: 10px;
-  opacity: 0.4;
-}
 </style>

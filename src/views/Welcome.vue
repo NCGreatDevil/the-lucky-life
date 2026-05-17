@@ -1,16 +1,16 @@
 <template>
-  <div class="welcome-container">
-    <div class="fortune-symbol">🍀</div>
+  <div class="flex flex-col items-center justify-center h-full p-5 bg-[#E6EFFF] text-[#333]">
+    <div class="text-[80px] mb-5 animate-[float_3s_ease-in-out_infinite]">🍀</div>
     
-    <h1 class="welcome-title">欢迎来到好运人生</h1>
+    <h1 class="text-3xl font-bold mb-10 text-center">欢迎来到好运人生</h1>
     
-    <div class="buttons-container">
-      <wired-button class="btn btn-register" @click="goToRegister" style="width: 100%;">
-        <span class="btn-text">注册</span>
+    <div class="flex flex-col gap-4 w-full max-w-[280px]">
+      <wired-button class="w-full py-3.5 cursor-pointer font-bold text-lg bg-white text-[#1a1a1a] sketch-font" @click="goToRegister">
+        <span class="relative z-10">注册</span>
       </wired-button>
       
-      <wired-button class="btn btn-login" @click="goToLogin" style="width: 100%;">
-        <span class="btn-text">登录</span>
+      <wired-button class="w-full py-3.5 cursor-pointer font-bold text-lg bg-[#1a1a1a] text-white sketch-font" @click="goToLogin">
+        <span class="relative z-10">登录</span>
       </wired-button>
     </div>
   </div>
@@ -31,23 +31,6 @@ function goToLogin() {
 </script>
 
 <style scoped>
-.welcome-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 20px;
-  background: #E6EFFF;
-  color: #333;
-}
-
-.fortune-symbol {
-  font-size: 80px;
-  margin-bottom: 20px;
-  animation: float 3s ease-in-out infinite;
-}
-
 @keyframes float {
   0%, 100% {
     transform: translateY(0);
@@ -55,43 +38,5 @@ function goToLogin() {
   50% {
     transform: translateY(-10px);
   }
-}
-
-.welcome-title {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-.buttons-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  max-width: 280px;
-}
-
-.btn {
-  padding: 14px 32px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.btn-register {
-  background: #fff;
-  color: #1a1a1a;
-}
-
-.btn-login {
-  background: #1a1a1a;
-  color: #fff;
-}
-
-.btn-text {
-  position: relative;
-  z-index: 1;
-  font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
 </style>
