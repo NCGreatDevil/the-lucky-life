@@ -33,7 +33,7 @@
 
       <template v-else>
       <!-- 信仰状态 -->
-      <wired-card class="faith-status" :class="{ 'has-faith': worshippingDeity }">
+      <wired-card class="faith-status" :class="{ 'has-faith': worshippingDeity }" fill="#ffffff">
         <div class="faith-label" v-if="!worshippingDeity">当前信仰</div>
         <div class="faith-value">
           <template v-if="worshippingDeity">
@@ -91,6 +91,7 @@
             :key="relation.deityId"
             class="relation-card"
             :class="{ worshipping: relation.isWorshipping }"
+            fill="#ffffff"
           >
             <div class="relation-header">
               <span class="relation-name">{{ relation.deityName }}</span>
@@ -162,11 +163,11 @@
 
       <!-- 祈求结果弹窗 -->
       <div v-if="showResult" class="result-modal" @click.self="closeResult">
-        <wired-card class="result-content">
+        <wired-card class="result-content" fill="#ffffff">
           <h3 class="result-title">祈求完成</h3>
 
           <!-- 运气提升 -->
-          <wired-card class="result-item luck-result">
+          <wired-card class="result-item luck-result" fill="#fafafa">
             <span class="result-icon">✨</span>
             <div class="result-info">
               <span class="result-label">运气</span>
@@ -183,7 +184,7 @@
           </wired-card>
 
           <!-- 属性提升 -->
-          <wired-card class="result-item" v-if="prayerResult.attributeGain">
+          <wired-card class="result-item" v-if="prayerResult.attributeGain" fill="#fafafa">
             <span class="result-icon">️</span>
             <div class="result-info">
               <span class="result-label">{{ getAttributeName(prayerResult.attributeType) }}</span>
@@ -192,7 +193,7 @@
           </wired-card>
 
           <!-- 遇到神明 -->
-          <wired-card class="result-item" v-if="prayerResult.encounteredDeity">
+          <wired-card class="result-item" v-if="prayerResult.encounteredDeity" fill="#fafafa">
             <span class="result-icon">🌟</span>
             <div class="result-info">
               <span class="result-label">偶遇神明</span>
@@ -201,7 +202,7 @@
           </wired-card>
 
           <!-- 好感度提升 -->
-          <wired-card class="result-item" v-if="prayerResult.favorabilityResult">
+          <wired-card class="result-item" v-if="prayerResult.favorabilityResult" fill="#fafafa">
             <span class="result-icon">💕</span>
             <div class="result-info">
               <span class="result-label">{{ prayerResult.favorabilityResult.deityName }} 好感</span>
@@ -216,7 +217,7 @@
           </wired-card>
 
           <!-- 供奉邀请 -->
-          <wired-card v-if="prayerResult.favorabilityResult && prayerResult.favorabilityResult.levelUp && prayerResult.favorabilityResult.newLevel === 1" class="worship-invitation">
+          <wired-card v-if="prayerResult.favorabilityResult && prayerResult.favorabilityResult.levelUp && prayerResult.favorabilityResult.newLevel === 1" class="worship-invitation" fill="#fafafa">
             <p class="invitation-text">{{ prayerResult.favorabilityResult.deityName }} 向你发出供奉邀请</p>
             <div class="invitation-actions">
               <wired-button class="invite-btn accept" @click="acceptWorship(prayerResult.favorabilityResult.deityId)">接受</wired-button>
@@ -714,17 +715,15 @@ onMounted(() => {
 
 /* 信仰状态 */
 .faith-status {
-  display: flex;
+  display: flex !important;
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: #fafafa;
   margin-bottom: 24px;
 }
 
 .faith-status.has-faith {
   justify-content: center;
-  background: #f0f0f0;
 }
 
 .faith-label {
@@ -825,11 +824,9 @@ onMounted(() => {
 
 .relation-card {
   padding: 16px;
-  background: #fafafa;
 }
 
 .relation-card.worshipping {
-  background: #f0f0f0;
 }
 
 .relation-header {
@@ -1112,7 +1109,6 @@ onMounted(() => {
 }
 
 .result-content {
-  background: #fff;
   padding: 24px;
   max-width: 360px;
   width: 90%;
@@ -1128,11 +1124,10 @@ onMounted(() => {
 }
 
 .result-item {
-  display: flex;
+  display: flex !important;
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #fafafa;
   margin-bottom: 12px;
 }
 
@@ -1165,7 +1160,6 @@ onMounted(() => {
 .worship-invitation {
   margin-top: 20px;
   padding: 16px;
-  background: #fafafa;
   text-align: center;
 }
 

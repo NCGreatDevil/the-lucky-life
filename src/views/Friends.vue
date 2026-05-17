@@ -29,7 +29,7 @@
         <h3 class="section-title">可添加的 NPC</h3>
         <div class="npc-list">
           <template v-for="npc in availableNPCs" :key="npc.id">
-            <wired-card v-if="!isFriendAdded(npc.id)" class="npc-card">
+            <wired-card v-if="!isFriendAdded(npc.id)" class="npc-card" fill="#ffffff">
               <div class="npc-header">
                 <div class="npc-avatar">
                   <img :src="npc.avatarUrl" :alt="npc.name" class="npc-avatar-img">
@@ -55,7 +55,7 @@
       <div class="friends-section">
         <h3 class="section-title">好友列表 ({{ roleStore.friends.length }})</h3>
         <div class="friends-list" v-if="roleStore.friends.length > 0">
-          <wired-card v-for="friend in roleStore.friends" :key="friend.id" class="friend-item">
+          <wired-card v-for="friend in roleStore.friends" :key="friend.id" class="friend-item" fill="#ffffff">
             <div class="friend-avatar">
               <img v-if="friend.isNpc" :src="friend.avatar" :alt="friend.name" class="friend-avatar-img">
               <span v-else class="avatar-emoji">{{ friend.avatar }}</span>
@@ -77,7 +77,7 @@
               </wired-button>
               <div class="more-menu-wrapper">
                 <wired-button class="more-btn" @click="toggleMoreMenu(friend.id)">⋮</wired-button>
-                <wired-card v-if="showMoreMenu === friend.id" class="more-menu">
+                <wired-card v-if="showMoreMenu === friend.id" class="more-menu" fill="#fafafa">
                   <wired-button class="menu-item" @click="confirmDelete(friend.id)">删除好友</wired-button>
                 </wired-card>
               </div>
@@ -90,7 +90,7 @@
       </div>
 
       <div v-if="showDeleteConfirm" class="delete-modal modal-overlay" @click.self="cancelDelete">
-        <wired-card class="delete-dialog">
+        <wired-card class="delete-dialog" fill="#ffffff">
           <p class="delete-message">确定要删除好友「{{ deleteFriendName }}」吗？</p>
           <div class="delete-actions">
             <wired-button class="cancel-btn" @click="cancelDelete">取消</wired-button>
@@ -114,9 +114,9 @@
           </div>
           <div class="chat-messages" ref="chatMessagesRef">
             <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['message', msg.isUser ? 'user-message' : 'bot-message']">
-              <wired-card class="message-content">
+              <div class="message-content">
                 {{ msg.content }}
-              </wired-card>
+              </div>
             </div>
             <div ref="lastMessageRef"></div>
           </div>
@@ -548,7 +548,6 @@ onUnmounted(() => {
 }
 
 .npc-card {
-  background: #fafafa;
   padding: 16px;
 }
 
@@ -648,11 +647,10 @@ onUnmounted(() => {
 }
 
 .friend-item {
-  display: flex;
+  display: flex !important;
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #fff;
 }
 
 .friend-avatar {
@@ -771,7 +769,6 @@ onUnmounted(() => {
   top: 100%;
   right: 0;
   margin-top: 4px;
-  background: #fff;
   overflow: hidden;
   z-index: 10;
   min-width: 100px;
@@ -811,7 +808,6 @@ onUnmounted(() => {
 }
 
 .delete-dialog {
-  background: #fff;
   padding: 24px;
   max-width: 320px;
   width: 90%;
@@ -872,8 +868,7 @@ onUnmounted(() => {
   width: 90%;
   max-width: 400px;
   height: 80vh;
-  background: #fff;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   overflow: hidden;
 }

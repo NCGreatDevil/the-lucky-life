@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-    <wired-card class="login-container">
+    <wired-card class="login-container" fill="#ffffff">
       <div class="login-header">
         <h1 class="sketch-font">登录</h1>
         <p class="subtitle">进入你的虚拟人生</p>

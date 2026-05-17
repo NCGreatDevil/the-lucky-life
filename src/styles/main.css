@@ -176,6 +176,41 @@ wired-button, wired-card, wired-input, wired-textarea, wired-combo, wired-radio,
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive !important;
 }
 
+/* wired-card 全局覆盖：inline-block → block，消除默认 10px padding */
+wired-card {
+  display: block !important;
+  padding: 0 !important;
+}
+
+/* wired-progress 全局覆盖：默认 400×42px 改为自适应 */
+wired-progress {
+  width: 100% !important;
+  height: 24px !important;
+}
+
+/* wired-button 全局覆盖：取消 uppercase 转换 */
+wired-button button {
+  text-transform: none !important;
+}
+
+/* wired-card 需要 flex 布局时 */
+wired-card.flex-card {
+  display: flex !important;
+}
+
+/* wired-card 需要 flex-column 布局时 */
+wired-card.flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* wired-card 需要 row 布局时 */
+wired-card.flex-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
 /* 标签样式 */
 .tag {
   display: inline-block;

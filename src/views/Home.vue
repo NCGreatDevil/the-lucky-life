@@ -30,7 +30,7 @@
     <!-- 导航格子 -->
     <nav class="nav-grid">
       <router-link to="/fortune" class="nav-link">
-        <wired-card class="nav-item">
+        <wired-card class="nav-item" fill="#ffffff">
           <span class="nav-icon">🙏</span>
           <span class="nav-label">祈祷</span>
         </wired-card>
@@ -57,7 +57,7 @@
 
     <!-- 运势大图区域 -->
     <div class="content-area">
-      <wired-card class="fortune-card">
+      <wired-card class="fortune-card" fill="#fafafa">
         <div class="fortune-image">
           <img :src="dailyFortuneImage" alt="今日运势" />
         </div>
@@ -244,7 +244,7 @@ const dailyQuote = computed(() => {
 }
 
 .nav-item {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -252,7 +252,6 @@ const dailyQuote = computed(() => {
   aspect-ratio: 1;
   padding: 4px;
   text-align: center;
-  background: #fff;
 }
 
 .nav-item:active {
@@ -276,12 +275,11 @@ const dailyQuote = computed(() => {
 }
 
 .fortune-card {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #fafafa;
   padding: 16px;
 }
 

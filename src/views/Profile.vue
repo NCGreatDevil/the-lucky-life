@@ -17,7 +17,7 @@
       <div v-if="loading" class="loading">加载中...</div>
 
       <template v-else-if="user">
-        <wired-card class="user-card">
+        <wired-card class="user-card" fill="#fafafa">
           <div class="user-id">ID: {{ user.id }}</div>
           <div class="user-nickname">{{ user.nickname }}</div>
           <div v-if="user.attributes" class="user-luck">
@@ -26,7 +26,7 @@
           </div>
         </wired-card>
 
-        <wired-card class="info-section">
+        <wired-card class="info-section" fill="#ffffff">
           <h2>基本信息</h2>
 
           <div v-if="!isEditing" class="info-list">
@@ -127,7 +127,7 @@
           <wired-button v-if="!isEditing" @click="startEdit" class="btn-edit">编辑资料</wired-button>
         </wired-card>
 
-        <wired-card class="attr-section" v-if="user.attributes">
+        <wired-card class="attr-section" v-if="user.attributes" fill="#ffffff">
           <h2>日常属性</h2>
           <div class="attr-grid">
             <div class="attr-item">
@@ -143,7 +143,7 @@
           </div>
         </wired-card>
 
-        <wired-card class="attr-section" v-if="user.attributes">
+        <wired-card class="attr-section" v-if="user.attributes" fill="#ffffff">
           <h2>长期属性</h2>
           <div class="attr-grid">
             <div class="attr-item">
@@ -181,7 +181,7 @@
           </div>
         </wired-card>
 
-        <wired-card class="attr-section" v-if="user.attributes">
+        <wired-card class="attr-section" v-if="user.attributes" fill="#ffffff">
           <h2>隐藏属性</h2>
           <div class="attr-grid">
             <div class="attr-item luck-item">
@@ -391,7 +391,6 @@ async function handleLogout() {
 
 .user-card {
   padding: 20px;
-  background: #fafafa;
   color: #1a1a1a;
   text-align: center;
 }
@@ -416,7 +415,6 @@ async function handleLogout() {
 .info-section,
 .attr-section {
   padding: 20px;
-  background: #fff;
 }
 
 .info-section h2,

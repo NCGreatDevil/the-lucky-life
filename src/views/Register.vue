@@ -1,12 +1,12 @@
 <template>
   <div class="register-page">
-    <wired-card class="register-container">
+    <wired-card class="register-container" fill="#ffffff">
       <div class="register-header">
         <h1 class="sketch-font">注册</h1>
         <p class="subtitle">创建你的虚拟角色</p>
       </div>
 
-      <wired-card class="warning-box">
+      <wired-card class="warning-box" fill="#fafafa">
         <p class="warning-title">⚠️ 重要提示</p>
         <p class="warning-text">
           这是一个虚拟人生体验项目。<strong>请勿填写真实的个人信息</strong>，<br/>

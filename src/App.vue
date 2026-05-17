@@ -78,7 +78,7 @@ onUnmounted(() => {
   background-color: #ffffff;
   position: relative;
   box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 1);
-  overflow: hidden;
+  overflow: visible;
 }
 
 @media (max-width: 768px) {

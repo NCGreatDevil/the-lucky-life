@@ -22,6 +22,7 @@
           v-for="location in locations"
           :key="location.id"
           class="location-card"
+          fill="#ffffff"
           @click="showUnderConstruction"
         >
           <div class="location-icon">{{ location.icon }}</div>
@@ -35,7 +36,7 @@
     </div>
 
     <div v-if="showTip" class="tip-modal modal-overlay" @click.self="showTip = false">
-      <wired-card class="tip-content">
+      <wired-card class="tip-content" fill="#ffffff">
         <p class="tip-text">该区域建设中，暂未开放</p>
         <wired-button class="tip-close-btn" @click="showTip = false">知道了</wired-button>
       </wired-card>
@@ -134,11 +135,10 @@ function showUnderConstruction() {
 }
 
 .location-card {
-  display: flex;
+  display: flex !important;
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: #fff;
   cursor: pointer;
 }
 
@@ -195,7 +195,6 @@ function showUnderConstruction() {
 }
 
 .tip-content {
-  background: #fff;
   padding: 24px;
   max-width: 300px;
   width: 90%;

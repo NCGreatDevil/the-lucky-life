@@ -68,7 +68,7 @@
       <div v-if="showPendingEvents && pendingEvents.length > 0" class="pending-events-panel">
         <h3 class="panel-title">待处理事件</h3>
         <div class="pending-list">
-          <wired-card v-for="event in pendingEvents" :key="event.id" class="pending-item" @click="resolvePendingEvent(event)">
+          <wired-card v-for="event in pendingEvents" :key="event.id" class="pending-item" @click="resolvePendingEvent(event)" fill="#ffffff">
             <div class="pending-header">
               <span class="pending-badge">{{ event.category === 'npc' ? 'NPC' : event.category === 'friend' ? '好友' : '普通' }}</span>
               <span class="pending-countdown" :class="{ 'expiring-soon': isExpiringSoon(event.expiresAt) }">
@@ -82,7 +82,7 @@
       </div>
 
       <div v-if="isEventActive && currentEvent" class="event-modal modal-overlay" @click.self="closeEvent">
-        <wired-card class="event-card modal-content">
+        <wired-card class="event-card modal-content" fill="#ffffff">
           <div class="event-header">
             <span v-if="!currentEvent.encounter" class="event-badge">{{ getCategoryLabel(currentEvent.category) }}</span>
             <span v-if="currentEvent.encounter" class="encounter-badge">
@@ -90,14 +90,14 @@
             </span>
           </div>
 
-          <wired-card v-if="currentEvent.encounter" class="encounter-info">
+          <div v-if="currentEvent.encounter" class="encounter-info">
             <img v-if="currentEvent.encounter.npcAvatar" :src="currentEvent.encounter.npcAvatar" class="encounter-avatar" />
             <div class="encounter-details">
               <p class="encounter-name">{{ currentEvent.encounter.npcName || currentEvent.encounter.nickname }}</p>
               <p v-if="currentEvent.encounter.npcTitle" class="encounter-title">{{ currentEvent.encounter.npcTitle }}</p>
               <p class="encounter-fav">好感度 +{{ currentEvent.encounter.favorabilityGained }} (总计 {{ currentEvent.encounter.totalFavorability }})</p>
             </div>
-          </wired-card>
+          </div>
 
           <h3 class="event-title">{{ currentEvent.name }}</h3>
           <p class="event-description">{{ currentEvent.description }}</p>
@@ -147,7 +147,7 @@
       <div class="history-section">
         <h3 class="section-title">事件历史</h3>
         <div class="history-list" v-if="history.length > 0">
-          <wired-card v-for="item in history" :key="item.id" class="history-item">
+          <wired-card v-for="item in history" :key="item.id" class="history-item" fill="#ffffff">
             <div class="history-header">
               <span class="history-type">{{ item.event_type === 'active' ? '主动' : '被动' }}</span>
               <span class="history-time">{{ formatTime(item.timestamp) }}</span>
@@ -848,7 +848,6 @@ onUnmounted(() => {
 .pending-item {
   padding: 12px;
   cursor: pointer;
-  background: #fff;
 }
 
 .pending-header {
@@ -899,7 +898,6 @@ onUnmounted(() => {
 }
 
 .event-card {
-  background: #fff;
   padding: 24px;
   max-width: 320px;
   width: 90%;
@@ -1082,7 +1080,6 @@ onUnmounted(() => {
 
 .history-item {
   padding: 12px;
-  background: #fff;
 }
 
 .history-header {

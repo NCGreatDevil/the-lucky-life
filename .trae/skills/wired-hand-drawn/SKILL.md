@@ -36,17 +36,27 @@ usage: 生成前端页面、重构页面、美化UI、编写Vue组件/JS/CSS/MD�
 
 ### 2.1 wired-card（替代所有卡片 div）
 ```html
-<!-- ✅ 正确：使用 wired-card -->
-<wired-card>
+<!-- ✅ 正确：使用 wired-card，通过 fill 属性设置背景色 -->
+<wired-card fill="#ffffff">
   <div class="card-content">
     ...
   </div>
+</wired-card>
+
+<!-- ✅ 正确：浅灰背景卡片 -->
+<wired-card fill="#fafafa">
+  ...
 </wired-card>
 
 <!-- ❌ 错误：用 div 模拟 -->
 <div class="npc-card" style="border: 2px solid #000; border-radius: 4px;">
   ...
 </div>
+
+<!-- ❌ 错误：用 CSS background 设置 wired-card 背景（Shadow DOM 隔离无效） -->
+<wired-card class="my-card" style="background: #fff;">
+  ...
+</wired-card>
 ```
 
 ### 2.2 wired-progress（替代所有进度条 div）
@@ -118,6 +128,7 @@ wired-button, wired-card, wired-input, wired-textarea, wired-combo {
 - 文字颜色：深灰 `#1a1a1a`
 - 强调色：避免花哨颜色，保持黑白灰为主
 - 禁止使用高饱和度渐变色
+- **卡片背景色必须通过 `fill` 属性设置**，不可用 CSS `background`
 
 ## 5. 布局规范
 
@@ -126,22 +137,34 @@ wired-button, wired-card, wired-input, wired-textarea, wired-combo {
 - 组件间距：`16px` - `24px`
 - 内边距：`16px` - `20px`
 
-## 6. 仅允许的自定义 CSS（wired 组件内部布局用）
+## 6. 全局 CSS 覆盖规则
+
+项目已在 `main.css` 中设置了以下全局覆盖，编写组件 CSS 时需注意：
+
+```css
+/* wired-card 默认 display: block, padding: 0 */
+/* 需要 flex 布局时加 !important */
+.my-card {
+  display: flex !important;
+  flex-direction: column;
+  padding: 16px;
+}
+
+/* wired-progress 默认 width: 100%, height: 24px */
+/* wired-button 已取消 text-transform: uppercase */
+```
+
+## 7. 仅允许的自定义 CSS（wired 组件内部布局用）
 
 以下 CSS 仅用于 wired 组件内部的布局调整，**不得用于模拟手绘边框**：
 
 ```css
-/* ✅ 允许：wired-card 内部的 flex 布局 */
+/* ✅ 允许：wired-card 内部的 flex 布局（需 !important 覆盖全局） */
 .card-content {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   gap: 12px;
-}
-
-/* ✅ 允许：wired-card 内部的 padding 调整 */
-wired-card {
   padding: 16px;
-  display: block;
 }
 
 /* ❌ 禁止：给 div 加手绘边框 */
@@ -149,9 +172,14 @@ wired-card {
   border: 2px solid #000;  /* 禁止！用 wired-card */
   border-radius: 4px;       /* 禁止！用 wired-card */
 }
+
+/* ❌ 禁止：给 wired-card 设置 background（Shadow DOM 无效） */
+wired-card {
+  background: #fff;  /* 无效！用 fill 属性 */
+}
 ```
 
-## 7. 禁止事项
+## 8. 禁止事项
 
 - **禁止** 使用 `div` + CSS 边框模拟手绘卡片 → 用 `<wired-card>`
 - **禁止** 使用 `div` + CSS 渐变模拟进度条 → 用 `<wired-progress>`
@@ -159,6 +187,8 @@ wired-card {
 - **禁止** 使用 `<hr>` 或 div 边框模拟分割线 → 用 `<wired-divider>`
 - **禁止** 使用 div 模拟弹窗 → 用 `<wired-dialog>`
 - **禁止** 使用 `::before` 伪元素模拟双层边框
+- **禁止** 使用 CSS `background` 设置 wired-card 背景色 → 用 `fill` 属性
+- **禁止** 嵌套 wired-card（内层改用普通 div）
 - **禁止** 使用 Material Design、Ant Design 等现代 UI 框架风格
 - **禁止** 使用圆角过大（> 8px）的设计
 - **禁止** 使用复杂阴影效果
