@@ -227,7 +227,9 @@ function addNPCFriend(npc) {
     name: npc.name,
     avatar: npc.avatarUrl,
     title: npc.title,
-    isNpc: true
+    isNpc: true,
+    tags: [],
+    level: 1
   });
 }
 
