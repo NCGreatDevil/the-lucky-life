@@ -90,7 +90,7 @@ onUnmounted(() => {
 
   .phone-frame {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     border-radius: 0;
     box-shadow: none;
     position: static;
