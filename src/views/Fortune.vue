@@ -80,7 +80,7 @@
               <span class="text-xs px-2 py-0.5 bg-[#1a1a1a] text-white rounded border border-black ml-auto">LV{{ relation.level }}</span>
             </div>
             <div class="relative">
-              <wired-progress class="w-full" :value="getProgressPercent(relation)"></wired-progress>
+              <wired-progress class="w-full deity-progress" :value="getProgressPercent(relation)" style="--wired-progress-label-display: none;"></wired-progress>
               <span class="absolute inset-0 flex items-center justify-center text-xs font-bold pointer-events-none">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
             </div>
             <div class="mt-3 flex justify-end" v-if="relation.level >= 1 && !relation.isWorshipping">
@@ -491,7 +491,29 @@ async function abandonWorship(deityId) {
 
 onMounted(() => {
   loadDeityInfo()
+  hideProgressLabels()
 })
+
+function hideProgressLabels() {
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll('.deity-progress').forEach(el => {
+      if (el.shadowRoot) {
+        const label = el.shadowRoot.querySelector('.labelContainer, .overlay, [part="label"]')
+        if (label) label.style.display = 'none'
+      }
+    })
+  })
+  observer.observe(document.body, { childList: true, subtree: true })
+  
+  setTimeout(() => {
+    document.querySelectorAll('.deity-progress').forEach(el => {
+      if (el.shadowRoot) {
+        const label = el.shadowRoot.querySelector('.labelContainer, .overlay, [part="label"]')
+        if (label) label.style.display = 'none'
+      }
+    })
+  }, 100)
+}
 </script>
 
 <style scoped>
@@ -546,5 +568,11 @@ onMounted(() => {
 @keyframes textFade {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
+}
+
+:deep(.deity-progress::part(label)),
+:deep(.deity-progress .labelContainer),
+:deep(.deity-progress .overlay) {
+  display: none !important;
 }
 </style>
