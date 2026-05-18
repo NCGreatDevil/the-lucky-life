@@ -116,9 +116,9 @@
           </div>
           <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3" ref="chatMessagesRef">
             <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['flex', msg.isUser ? 'justify-end' : 'justify-start']">
-              <wired-card class="max-w-[70%] py-2 px-3 text-sm leading-relaxed" :fill="msg.isUser ? '#1a1a1a' : '#fafafa'" :style="msg.isUser ? 'color: white;' : 'color: #1a1a1a;'">
+              <div class="max-w-[70%] py-2 px-3 text-sm leading-relaxed chat-bubble" :class="msg.isUser ? 'chat-bubble-user' : 'chat-bubble-npc'">
                 {{ msg.content }}
-              </wired-card>
+              </div>
             </div>
             <div ref="lastMessageRef"></div>
           </div>
@@ -451,4 +451,17 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.chat-bubble {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 2px solid #000;
+  border-radius: 4px;
+}
+
+.chat-bubble-user {
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 2px solid #000;
+  border-radius: 4px;
+}
 </style>
