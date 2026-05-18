@@ -89,9 +89,3 @@ body {
 a {
   font-family: 'Ma Shan Zheng', 'Indie Flower', cursive;
 }
-
-wired-progress::part(progress-label),
-wired-progress .labelContainer,
-wired-progress .progressLabel {
-  display: none !important;
-}
