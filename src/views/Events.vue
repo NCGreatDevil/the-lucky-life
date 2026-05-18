@@ -36,7 +36,7 @@
       </div>
 
       <div class="mb-4">
-        <wired-button class="w-full py-3 bg-white text-[#1a1a1a] font-bold cursor-pointer flex items-center justify-center gap-2 sketch-font active:translate-x-0.5 active:translate-y-0.5" @click="triggerActiveEvent" :disabled="isEventActive || isLoading">
+        <wired-button class="w-full py-12 bg-white text-[#1a1a1a] font-bold cursor-pointer flex items-center justify-center gap-2 sketch-font active:translate-x-0.5 active:translate-y-0.5" @click="triggerActiveEvent" :disabled="isEventActive || isLoading">
           <span class="text-xl">⚡</span>
           <span>{{ isEventActive ? '事件进行中...' : isLoading ? '加载中...' : '触发随机事件' }}</span>
         </wired-button>
