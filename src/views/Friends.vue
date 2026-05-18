@@ -116,9 +116,9 @@
           </div>
           <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3" ref="chatMessagesRef">
             <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['flex', msg.isUser ? 'justify-end' : 'justify-start']">
-              <div class="max-w-[70%] py-2 px-3 text-sm leading-relaxed" :class="msg.isUser ? 'bg-[#1a1a1a] text-white' : 'bg-[#fafafa] text-[#1a1a1a]'">
+              <wired-card class="max-w-[70%] py-2 px-3 text-sm leading-relaxed" :fill="msg.isUser ? '#1a1a1a' : '#fafafa'" :style="msg.isUser ? 'color: white;' : 'color: #1a1a1a;'">
                 {{ msg.content }}
-              </div>
+              </wired-card>
             </div>
             <div ref="lastMessageRef"></div>
           </div>
