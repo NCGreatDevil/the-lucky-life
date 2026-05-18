@@ -80,8 +80,8 @@
               <span class="text-xs px-2 py-0.5 bg-[#1a1a1a] text-white rounded border border-black ml-auto">LV{{ relation.level }}</span>
             </div>
             <div class="relative">
-              <div class="w-full h-3 bg-[#e0e0e0] rounded overflow-hidden border border-black">
-                <div class="h-full bg-[#3498db] transition-all duration-300" :style="{ width: getProgressPercent(relation) + '%' }"></div>
+              <div class="w-full h-3 rounded overflow-hidden border border-black" style="background: rgb(200 200 200)">
+                <div class="h-full transition-all duration-300" :style="{ width: getProgressPercent(relation) + '%', background: 'rgb(20 161 49)' }"></div>
               </div>
               <span class="absolute inset-0 flex items-center justify-center text-xs font-bold pointer-events-none">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
             </div>
