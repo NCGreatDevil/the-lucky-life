@@ -115,7 +115,7 @@
             <wired-button class="w-8 h-8 bg-white text-lg cursor-pointer flex items-center justify-center" @click="closeChat">×</wired-button>
           </div>
           <div class="chat-messages p-4 overflow-y-auto" ref="chatMessagesRef" :style="{ height: chatMessagesHeight }">
-            <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['flex', msg.isUser ? 'justify-end' : 'justify-start']">
+            <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['flex my-2', msg.isUser ? 'justify-end' : 'justify-start']">
               <div class="max-w-[70%] py-2 px-3 text-sm leading-relaxed chat-bubble" :class="msg.isUser ? 'chat-bubble-user' : 'chat-bubble-npc'">
                 {{ msg.content }}
               </div>
