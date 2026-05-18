@@ -128,41 +128,49 @@
         <wired-card class="p-6 max-w-[360px] w-full max-h-[80vh] overflow-y-auto" fill="#ffffff">
           <h3 class="text-xl font-bold text-center mb-5">祈求完成</h3>
 
-          <wired-card class="flex items-center gap-3 p-3 mb-3 bg-[#f0f0f0]" v-if="prayerResult.isMaxLuck || prayerResult.luckLevelUp || prayerResult.attributeGain" fill="#fafafa">
-            <span class="text-2xl">✨</span>
-            <div class="flex-1 flex flex-col gap-1">
-              <span class="text-xs opacity-60">运气</span>
-              <span class="text-base font-bold" v-if="prayerResult.isMaxLuck">你的运气已经到达顶峰，必定事事顺利，好运连连</span>
-              <span class="text-base font-bold" v-else-if="prayerResult.luckLevelUp">提升至 {{ prayerResult.newLuckLabel }}</span>
-              <span class="text-base font-bold" v-else>获得提升</span>
+          <wired-card class="p-3 mb-3 bg-[#f0f0f0]" v-if="prayerResult.isMaxLuck || prayerResult.luckLevelUp || prayerResult.attributeGain" fill="#fafafa">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">✨</span>
+              <div class="flex-1 flex flex-col gap-1">
+                <span class="text-xs opacity-60">运气</span>
+                <span class="text-base font-bold" v-if="prayerResult.isMaxLuck">你的运气已经到达顶峰，必定事事顺利，好运连连</span>
+                <span class="text-base font-bold" v-else-if="prayerResult.luckLevelUp">提升至 {{ prayerResult.newLuckLabel }}</span>
+                <span class="text-base font-bold" v-else>获得提升</span>
+              </div>
             </div>
           </wired-card>
 
-          <wired-card class="flex items-center gap-3 p-3 mb-3" v-if="prayerResult.attributeGain" fill="#fafafa">
-            <span class="text-2xl">️</span>
-            <div class="flex-1 flex flex-col gap-1">
-              <span class="text-xs opacity-60">{{ getAttributeName(prayerResult.attributeType) }}</span>
-              <span class="text-base font-bold">+{{ prayerResult.attributeGain }}</span>
+          <wired-card class="p-3 mb-3" v-if="prayerResult.attributeGain" fill="#fafafa">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">️</span>
+              <div class="flex-1 flex flex-col gap-1">
+                <span class="text-xs opacity-60">{{ getAttributeName(prayerResult.attributeType) }}</span>
+                <span class="text-base font-bold">+{{ prayerResult.attributeGain }}</span>
+              </div>
             </div>
           </wired-card>
 
-          <wired-card class="flex items-center gap-3 p-3 mb-3" v-if="prayerResult.encounteredDeity" fill="#fafafa">
-            <span class="text-2xl">🌟</span>
-            <div class="flex-1 flex flex-col gap-1">
-              <span class="text-xs opacity-60">偶遇神明</span>
-              <span class="text-base font-bold">{{ prayerResult.encounteredDeity.name }}</span>
+          <wired-card class="p-3 mb-3" v-if="prayerResult.encounteredDeity" fill="#fafafa">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">🌟</span>
+              <div class="flex-1 flex flex-col gap-1">
+                <span class="text-xs opacity-60">偶遇神明</span>
+                <span class="text-base font-bold">{{ prayerResult.encounteredDeity.name }}</span>
+              </div>
             </div>
           </wired-card>
 
-          <wired-card class="flex items-center gap-3 p-3 mb-3" v-if="prayerResult.favorabilityResult" fill="#fafafa">
-            <span class="text-2xl">💕</span>
-            <div class="flex-1 flex flex-col gap-1">
-              <span class="text-xs opacity-60">{{ prayerResult.favorabilityResult.deityName }} 好感</span>
-              <span class="text-base font-bold">
-                +{{ prayerResult.favorabilityResult.favorabilityGain }}
-                <span v-if="prayerResult.favorabilityResult.isFirstEncounter">（首次相遇，好感翻倍！）</span>
-                <span v-if="prayerResult.favorabilityResult.levelUp">(升至LV{{ prayerResult.favorabilityResult.newLevel }})</span>
-              </span>
+          <wired-card class="p-3 mb-3" v-if="prayerResult.favorabilityResult" fill="#fafafa">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">💕</span>
+              <div class="flex-1 flex flex-col gap-1">
+                <span class="text-xs opacity-60">{{ prayerResult.favorabilityResult.deityName }} 好感</span>
+                <span class="text-base font-bold">
+                  +{{ prayerResult.favorabilityResult.favorabilityGain }}
+                  <span v-if="prayerResult.favorabilityResult.isFirstEncounter">（首次相遇，好感翻倍！）</span>
+                  <span v-if="prayerResult.favorabilityResult.levelUp">(升至LV{{ prayerResult.favorabilityResult.newLevel }})</span>
+                </span>
+              </div>
             </div>
           </wired-card>
 
