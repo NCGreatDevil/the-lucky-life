@@ -190,7 +190,7 @@ function calculateChatLayout() {
   const inputHeight = inputEl ? inputEl.offsetHeight : 0;
   const padding = 32;
   
-  const messagesHeight = totalHeight - headerHeight - inputHeight - padding;
+  const messagesHeight = totalHeight - headerHeight - inputHeight - padding + 35;
   chatMessagesHeight.value = Math.max(messagesHeight, 100) + 'px';
 }
 
