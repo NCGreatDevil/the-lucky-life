@@ -102,32 +102,34 @@
       </div>
 
       <div v-if="showChat" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" @click.self="closeChat">
-        <wired-card class="w-[90%] max-w-[400px] h-[80vh] flex flex-col overflow-hidden" fill="#ffffff">
-          <div class="flex items-center gap-3 p-4 border-b-2 border-black">
-            <div class="w-10 h-10 border-2 border-black rounded bg-[#fafafa] overflow-hidden flex-shrink-0 flex items-center justify-center">
-              <img v-if="currentFriend?.isNpc" :src="currentFriend.avatar" :alt="currentFriend.name" class="w-full h-full object-cover">
-              <span v-else>{{ currentFriend?.avatar }}</span>
-            </div>
-            <div class="flex-1">
-              <p class="text-base font-bold m-0">{{ currentFriend?.name }}</p>
-              <div class="inline-block px-1.5 py-0.5 bg-gray-200 text-[#1a1a1a] border border-black rounded text-[10px] mt-0.5" v-if="currentFriend?.isNpc">NPC</div>
-            </div>
-            <wired-button class="w-8 h-8 bg-white text-lg cursor-pointer flex items-center justify-center" @click="closeChat">×</wired-button>
-          </div>
-          <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 chat-messages" ref="chatMessagesRef">
-            <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['flex', msg.isUser ? 'justify-end' : 'justify-start']">
-              <div class="max-w-[70%] py-2 px-3 text-sm leading-relaxed chat-bubble" :class="msg.isUser ? 'chat-bubble-user' : 'chat-bubble-npc'">
-                {{ msg.content }}
+        <wired-card class="w-[90%] max-w-[400px] h-[80vh] overflow-hidden" fill="#ffffff">
+          <div class="flex flex-col h-full">
+            <div class="flex items-center gap-3 p-4 border-b-2 border-black">
+              <div class="w-10 h-10 border-2 border-black rounded bg-[#fafafa] overflow-hidden flex-shrink-0 flex items-center justify-center">
+                <img v-if="currentFriend?.isNpc" :src="currentFriend.avatar" :alt="currentFriend.name" class="w-full h-full object-cover">
+                <span v-else>{{ currentFriend?.avatar }}</span>
               </div>
+              <div class="flex-1">
+                <p class="text-base font-bold m-0">{{ currentFriend?.name }}</p>
+                <div class="inline-block px-1.5 py-0.5 bg-gray-200 text-[#1a1a1a] border border-black rounded text-[10px] mt-0.5" v-if="currentFriend?.isNpc">NPC</div>
+              </div>
+              <wired-button class="w-8 h-8 bg-white text-lg cursor-pointer flex items-center justify-center" @click="closeChat">×</wired-button>
             </div>
-            <div ref="lastMessageRef"></div>
-          </div>
-          <div class="flex gap-2 p-3 border-t-2 border-black bg-white" v-if="!isRefused">
-            <wired-input type="text" :value="chatInput" @input="chatInput = $event.target.value" class="flex-1" placeholder="说点什么..." @keyup.enter="sendMessage"></wired-input>
-            <wired-button class="px-4 py-2 bg-[#1a1a1a] text-white text-sm cursor-pointer sketch-font" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</wired-button>
-          </div>
-          <div class="p-4 text-center border-t-2 border-black bg-white" v-else>
-            <p class="m-0 text-sm text-[#1a1a1a]">{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>
+            <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 chat-messages" ref="chatMessagesRef">
+              <div v-for="(msg, index) in chatMessagesList" :key="index + '-' + msg.content" :class="['flex', msg.isUser ? 'justify-end' : 'justify-start']">
+                <div class="max-w-[70%] py-2 px-3 text-sm leading-relaxed chat-bubble" :class="msg.isUser ? 'chat-bubble-user' : 'chat-bubble-npc'">
+                  {{ msg.content }}
+                </div>
+              </div>
+              <div ref="lastMessageRef"></div>
+            </div>
+            <div class="flex gap-2 p-3 border-t-2 border-black bg-white" v-if="!isRefused">
+              <wired-input type="text" :value="chatInput" @input="chatInput = $event.target.value" class="flex-1" placeholder="说点什么..." @keyup.enter="sendMessage"></wired-input>
+              <wired-button class="px-4 py-2 bg-[#1a1a1a] text-white text-sm cursor-pointer sketch-font" @click="sendMessage" :disabled="isSending">{{ isSending ? '发送中...' : '发送' }}</wired-button>
+            </div>
+            <div class="p-4 text-center border-t-2 border-black bg-white" v-else>
+              <p class="m-0 text-sm text-[#1a1a1a]">{{ currentFriend?.name }}不想说话了，下次再来吧 😴</p>
+            </div>
           </div>
         </wired-card>
       </div>
