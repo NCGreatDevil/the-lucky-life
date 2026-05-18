@@ -81,7 +81,7 @@
             </div>
             <div class="relative">
               <wired-progress class="w-full" :value="getProgressPercent(relation)"></wired-progress>
-              <span class="absolute inset-0 flex items-center justify-center text-xs font-bold pointer-events-none bg-white/70 rounded">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
+              <span class="absolute inset-0 flex items-center justify-center text-xs font-bold pointer-events-none">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
             </div>
             <div class="mt-3 flex justify-end" v-if="relation.level >= 1 && !relation.isWorshipping">
               <wired-button class="px-4 py-2 text-xs font-bold bg-white text-[#1a1a1a] cursor-pointer sketch-font" @click="showSwitchToConfirm(relation)">更换</wired-button>
