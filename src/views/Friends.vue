@@ -387,10 +387,11 @@ async function sendMessage() {
     isSending.value = false;
   }
   
+  await nextTick();
+  
   setTimeout(() => {
-    const chatMessages = document.querySelector('.chat-messages');
-    if (chatMessages) {
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (chatMessagesRef.value) {
+      chatMessagesRef.value.scrollTop = chatMessagesRef.value.scrollHeight;
     }
   }, 100);
 }
