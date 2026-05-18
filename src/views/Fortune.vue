@@ -73,7 +73,7 @@
       <div class="mt-6" v-if="deityRelations.length > 0">
         <h3 class="text-base font-bold mb-3">神明关系</h3>
         <div class="flex flex-col gap-3">
-          <wired-card v-for="relation in deityRelations" :key="relation.deityId" class="p-4" :class="{ 'border-2 border-[#7a9a6d]': relation.isWorshipping }" fill="#ffffff">
+          <wired-card v-for="relation in deityRelations" :key="relation.deityId" class="p-4" :class="{ 'bg-[#e8f5e9]': relation.isWorshipping }" fill="#ffffff">
             <div class="flex justify-between items-center mb-3">
               <span class="text-base font-bold">{{ relation.deityName }}</span>
               <span v-if="relation.isWorshipping" class="text-xs px-2 py-0.5 bg-[#7a9a6d] text-white rounded border border-black font-bold ml-4">供奉中</span>
