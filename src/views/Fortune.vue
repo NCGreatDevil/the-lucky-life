@@ -46,7 +46,7 @@
       </wired-card>
 
       <div class="mb-8">
-        <wired-button class="w-full py-4 bg-white text-[#1a1a1a] cursor-pointer flex flex-col items-center gap-2 sketch-font" :disabled="isPraying || vitality < 30" @click="startPrayer">
+        <wired-button class="w-full py-12 bg-white text-[#1a1a1a] cursor-pointer flex flex-col items-center gap-2 sketch-font" :disabled="isPraying || vitality < 30" @click="startPrayer">
           <span class="text-3xl">🙏</span>
           <span class="text-lg font-bold">{{ vitality < 30 ? '活力不足' : '祈求好运' }}</span>
           <span class="text-xs opacity-80">消耗30活力</span>
