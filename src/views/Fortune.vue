@@ -79,9 +79,9 @@
               <span v-if="relation.isWorshipping" class="text-xs px-2 py-0.5 bg-[#7a9a6d] text-white rounded border border-black font-bold ml-4">供奉中</span>
               <span class="text-xs px-2 py-0.5 bg-[#1a1a1a] text-white rounded border border-black ml-auto">LV{{ relation.level }}</span>
             </div>
-            <div class="flex items-center gap-3">
-              <wired-progress class="flex-1" :value="getProgressPercent(relation)"></wired-progress>
-              <span class="text-xs opacity-60 whitespace-nowrap">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
+            <div class="relative">
+              <wired-progress class="w-full" :value="getProgressPercent(relation)"></wired-progress>
+              <span class="absolute inset-0 flex items-center justify-center text-xs font-bold pointer-events-none">{{ relation.favorability }} / {{ getNextLevelFavorability(relation.level) }}</span>
             </div>
             <div class="mt-3 flex justify-end" v-if="relation.level >= 1 && !relation.isWorshipping">
               <wired-button class="px-4 py-2 text-xs font-bold bg-white text-[#1a1a1a] cursor-pointer sketch-font" @click="showSwitchToConfirm(relation)">更换</wired-button>
