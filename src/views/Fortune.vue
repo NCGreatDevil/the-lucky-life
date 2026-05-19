@@ -162,7 +162,7 @@
             </div>
           </wired-card>
 
-          <wired-button class="w-full py-3 font-bold cursor-pointer mt-4 sketch-font text-center" style="background: rgba(255,255,255,0.5); border-radius: 30px;" @click="closeResult">确定</wired-button>
+          <wired-button class="w-full py-3 font-bold cursor-pointer mt-4 sketch-font text-center bg-white/50 rounded-[30px]" @click="closeResult">确定</wired-button>
         </wired-card>
       </div>
     </div>
