@@ -96,9 +96,9 @@
       </div>
       </template>
 
-      <div v-if="isPraying" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[200]">
-        <div class="w-[80%] max-w-[400px] relative">
-          <img :src="getPrayerImageUrl()" alt="祈祷" class="w-full h-auto prayer-image" />
+      <div v-if="isPraying" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] overflow-hidden">
+        <div class="prayer-image-container">
+          <img :src="getPrayerImageUrl()" alt="祈祷" class="prayer-image" />
 
           <div class="cloud cloud-1"></div>
           <div class="cloud cloud-2"></div>
@@ -109,7 +109,7 @@
 
           <div v-for="i in 15" :key="i" class="sparkle" :style="getSparkleStyle(i)"></div>
 
-          <div class="absolute bottom-[-40px] left-1/2 -translate-x-1/2 text-lg text-white animate-[textFade_2s_ease-in-out_infinite]">正在祈求...</div>
+          <div class="absolute bottom-[10%] left-1/2 -translate-x-1/2 text-lg text-white animate-[textFade_2s_ease-in-out_infinite] z-10">正在祈求...</div>
         </div>
       </div>
 
@@ -547,14 +547,29 @@ onMounted(() => {
   50% { opacity: 1; }
 }
 
+.prayer-image-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
 .prayer-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 110%;
+  min-height: 110%;
+  width: 110%;
+  height: 110%;
+  object-fit: cover;
   animation: prayerFloat 4s ease-in-out infinite;
   filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
 }
 
 @keyframes prayerFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-20px); }
 }
 
 .cloud {
