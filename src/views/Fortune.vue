@@ -98,7 +98,7 @@
 
       <div v-if="isPraying" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[200]">
         <div class="w-[80%] max-w-[400px] relative">
-          <img src="/r2?path=deity/prayer.png" alt="祈祷" class="w-full h-auto prayer-image" />
+          <img :src="prayerImageUrl" alt="祈祷" class="w-full h-auto prayer-image" />
 
           <div class="cloud cloud-1"></div>
           <div class="cloud cloud-2"></div>
@@ -173,6 +173,7 @@ const isPraying = ref(false)
 const showResult = ref(false)
 const prayerResult = ref(null)
 const encounteredDeity = ref(null)
+const prayerImageUrl = '/r2?path=deity/prayer.png'
 
 function getAttributeName(type) {
   const names = {
