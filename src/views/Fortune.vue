@@ -97,30 +97,19 @@
       </template>
 
       <div v-if="isPraying" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[200]">
-        <div class="w-[70%] h-[70%] relative flex items-center justify-center">
-          <div class="absolute inset-0 bg-[radial-gradient(circle,rgba(102,126,234,0.3)_0%,transparent_70%)] animate-[glowPulse_2s_ease-in-out_infinite]"></div>
+        <div class="w-[80%] max-w-[400px] relative">
+          <img src="/r2/deity/prayer.png" alt="祈祷" class="w-full h-auto prayer-image" />
 
-          <div class="relative z-10">
-            <div class="relative w-[120px] h-[200px]">
-              <div class="w-[50px] h-[50px] bg-white rounded-full mx-auto mb-2.5 animate-[headBob_3s_ease-in-out_infinite]"></div>
-              <div class="w-[80px] h-[100px] bg-white rounded-t-[40px] mx-auto"></div>
-              <div class="absolute top-[60px] left-1/2 -translate-x-1/2 w-[100px] flex justify-between">
-                <div class="w-5 h-20 bg-white rounded-[10px] -rotate-[20deg] animate-[armRaise_2s_ease-in-out_infinite]"></div>
-                <div class="w-5 h-20 bg-white rounded-[10px] rotate-[20deg] animate-[armRaise_2s_ease-in-out_infinite_reverse]"></div>
-              </div>
-            </div>
-          </div>
+          <div class="cloud cloud-1"></div>
+          <div class="cloud cloud-2"></div>
+          <div class="cloud cloud-3"></div>
 
-          <div v-if="encounteredDeity" class="absolute top-[20%] left-1/2 -translate-x-1/2 text-center z-5">
-            <div class="w-[150px] h-[150px] bg-[radial-gradient(circle,rgba(255,215,0,0.6)_0%,transparent_70%)] rounded-full animate-[deityGlow_1.5s_ease-in-out_infinite] mx-auto"></div>
-            <div class="text-2xl font-bold text-[#ffd700] animate-[textGlow_1.5s_ease-in-out_infinite]">{{ encounteredDeity.name }}</div>
-          </div>
+          <div class="mist mist-1"></div>
+          <div class="mist mist-2"></div>
 
-          <div class="absolute inset-0 overflow-hidden">
-            <div v-for="i in 20" :key="i" class="absolute bottom-[-10px] bg-white/80 rounded-full animate-[particleRise_linear_infinite]" :style="getParticleStyle(i)"></div>
-          </div>
+          <div v-for="i in 15" :key="i" class="sparkle" :style="getSparkleStyle(i)"></div>
 
-          <div class="absolute bottom-[10%] left-1/2 -translate-x-1/2 text-lg text-white animate-[textFade_2s_ease-in-out_infinite]">正在祈求...</div>
+          <div class="absolute bottom-[-40px] left-1/2 -translate-x-1/2 text-lg text-white animate-[textFade_2s_ease-in-out_infinite]">正在祈求...</div>
         </div>
       </div>
 
@@ -225,6 +214,22 @@ function getParticleStyle(index) {
   const left = Math.random() * 100
   const size = 2 + Math.random() * 4
   return {
+    left: `${left}%`,
+    animationDelay: `${delay}s`,
+    animationDuration: `${duration}s`,
+    width: `${size}px`,
+    height: `${size}px`
+  }
+}
+
+function getSparkleStyle(index) {
+  const delay = Math.random() * 4
+  const duration = 1.5 + Math.random() * 2
+  const top = 10 + Math.random() * 80
+  const left = Math.random() * 100
+  const size = 3 + Math.random() * 6
+  return {
+    top: `${top}%`,
     left: `${left}%`,
     animationDelay: `${delay}s`,
     animationDuration: `${duration}s`,
@@ -536,6 +541,92 @@ onMounted(() => {
 @keyframes textFade {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
+}
+
+.prayer-image {
+  animation: prayerFloat 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes prayerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  filter: blur(15px);
+}
+
+.cloud-1 {
+  width: 120px;
+  height: 40px;
+  top: 20%;
+  left: -10%;
+  animation: cloudDrift 8s ease-in-out infinite;
+}
+
+.cloud-2 {
+  width: 100px;
+  height: 35px;
+  top: 50%;
+  right: -15%;
+  animation: cloudDrift 10s ease-in-out infinite reverse;
+}
+
+.cloud-3 {
+  width: 80px;
+  height: 30px;
+  bottom: 10%;
+  left: 5%;
+  animation: cloudDrift 6s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+@keyframes cloudDrift {
+  0%, 100% { transform: translateX(0) translateY(0); opacity: 0.6; }
+  25% { transform: translateX(20px) translateY(-5px); opacity: 0.8; }
+  50% { transform: translateX(10px) translateY(5px); opacity: 0.4; }
+  75% { transform: translateX(-10px) translateY(-3px); opacity: 0.7; }
+}
+
+.mist {
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.2), transparent);
+  filter: blur(10px);
+}
+
+.mist-1 {
+  bottom: -20px;
+  animation: mistFade 3s ease-in-out infinite;
+}
+
+.mist-2 {
+  top: -10px;
+  animation: mistFade 4s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes mistFade {
+  0%, 100% { opacity: 0.3; transform: scaleX(1); }
+  50% { opacity: 0.6; transform: scaleX(1.1); }
+}
+
+.sparkle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: sparkleTwinkle ease-in-out infinite;
+  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes sparkleTwinkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
 }
 
 .prayer-result-card {
